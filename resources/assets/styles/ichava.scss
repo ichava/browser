@@ -1,0 +1,428 @@
+/**
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * Ichava Package Styles
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * Tailwind CSS v4 with v4 prototype theme variables.
+ * Combines shadcn-vue design tokens with custom Ichava theming.
+ *
+ * @version 3.0.0
+ */
+/*---break---
+ */
+/* Tailwind CSS v4 - Import base styles */
+@use "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+/* Custom Animations */
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-loading-bar {
+  animation: loadingBar 2s ease-in-out infinite;
+}
+
+/* Transition classes */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/*---break---
+ */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   THEME VARIABLES
+   ============================================ */
+
+:root {
+  /* Light theme (default) */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-sidebar: #ffffff;
+  --bg-input: #f1f5f9;
+  --bg-muted: #e2e8f0;
+  --bg-accent: #8b5cf6;
+  --bg-accent-muted: rgba(139, 92, 246, 0.1);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-accent: #8b5cf6;
+  --text-inverse: #ffffff;
+
+  --border-default: #e2e8f0;
+  --border-muted: #cbd5e1;
+
+  --icon-fill: #64748b;
+  --icon-color: #8b5cf6;
+
+  /* Scrollbar */
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+
+  /* shadcn-vue Design Tokens (HSL format) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: 0 0% 98%;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* Dark theme */
+.dark {
+  --bg-page: #0a0d1a;
+  --bg-card: #151823;
+  --bg-card-hover: #1a1d2e;
+  --bg-sidebar: #0a0d1a;
+  --bg-input: #151823;
+  --bg-muted: #1e2235;
+  --bg-accent: #8b5cf6;
+  --bg-accent-muted: rgba(139, 92, 246, 0.15);
+
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-accent: #a78bfa;
+  --text-inverse: #ffffff;
+
+  --border-default: #1e2235;
+  --border-muted: #2d3348;
+
+  --icon-fill: #6b7280;
+  --icon-color: #8b5cf6;
+
+  /* Scrollbar */
+  --scrollbar-track: #0a0d1a;
+  --scrollbar-thumb: #1e2235;
+  --scrollbar-thumb-hover: #2d3348;
+
+  /* shadcn-vue Design Tokens (Dark) */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: 0 0% 98%;
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ============================================
+   UTILITY CLASSES FOR THEMING
+   ============================================ */
+
+/* Backgrounds */
+.theme-bg-page { background-color: var(--bg-page); }
+.theme-bg-card { background-color: var(--bg-card); }
+.theme-bg-card-hover:hover { background-color: var(--bg-card-hover); }
+.theme-bg-sidebar { background-color: var(--bg-sidebar); }
+.theme-bg-input { background-color: var(--bg-input); }
+.theme-bg-muted { background-color: var(--bg-muted); }
+.theme-bg-accent { background-color: var(--bg-accent); }
+.theme-bg-accent-muted { background-color: var(--bg-accent-muted); }
+
+/* Text */
+.theme-text-primary { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted { color: var(--text-muted); }
+.theme-text-accent { color: var(--text-accent); }
+.theme-text-inverse { color: var(--text-inverse); }
+
+/* Borders */
+.theme-border { border-color: var(--border-default); }
+.theme-border-muted { border-color: var(--border-muted); }
+
+/* Transitions */
+.theme-transition {
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Thin scrollbar variant */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* ============================================
+   ICON SVG STYLING
+   ============================================ */
+
+/* Icon SVG styling - make SVGs inherit color and size */
+.icon-svg :deep(svg),
+.icon-svg-modal :deep(svg) {
+  width: 100%;
+  height: 100%;
+}
+
+/* When icon-colored class is applied, use currentColor */
+.icon-svg.icon-colored :deep(svg),
+.icon-svg-modal.icon-colored :deep(svg) {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.icon-svg.icon-colored :deep(svg path),
+.icon-svg.icon-colored :deep(svg circle),
+.icon-svg.icon-colored :deep(svg rect),
+.icon-svg.icon-colored :deep(svg line),
+.icon-svg.icon-colored :deep(svg polyline),
+.icon-svg.icon-colored :deep(svg polygon),
+.icon-svg-modal.icon-colored :deep(svg path),
+.icon-svg-modal.icon-colored :deep(svg circle),
+.icon-svg-modal.icon-colored :deep(svg rect),
+.icon-svg-modal.icon-colored :deep(svg line),
+.icon-svg-modal.icon-colored :deep(svg polyline),
+.icon-svg-modal.icon-colored :deep(svg polygon) {
+  fill: inherit;
+  stroke: inherit;
+}
+
+/* For SVGs that use stroke only (outline icons) */
+.icon-svg :deep(svg[fill="none"]),
+.icon-svg-modal :deep(svg[fill="none"]) {
+  fill: none;
+}
+
+.icon-svg.icon-colored :deep(svg[fill="none"] path),
+.icon-svg.icon-colored :deep(svg[fill="none"] circle),
+.icon-svg.icon-colored :deep(svg[fill="none"] rect),
+.icon-svg.icon-colored :deep(svg[fill="none"] line),
+.icon-svg-modal.icon-colored :deep(svg[fill="none"] path),
+.icon-svg-modal.icon-colored :deep(svg[fill="none"] circle),
+.icon-svg-modal.icon-colored :deep(svg[fill="none"] rect),
+.icon-svg-modal.icon-colored :deep(svg[fill="none"] line) {
+  fill: none;
+  stroke: currentColor;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade transition for loading overlay */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Slide down transition for error banner */
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+/*---break---
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*---break---
+ */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

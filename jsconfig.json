@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./resources/assets/scripts/*"],
+      "@/components/*": ["./resources/assets/scripts/components/*"],
+      "@/lib/*": ["./resources/assets/scripts/lib/*"],
+      "@/composables/*": ["./resources/assets/scripts/composables/*"]
+    }
+  },
+  "exclude": ["node_modules", "public", "vendor"]
+}
+

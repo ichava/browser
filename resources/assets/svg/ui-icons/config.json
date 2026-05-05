@@ -1,0 +1,35 @@
+{
+    "schema_version": "1.0",
+    "package": {
+        "name": "ichava/ui-icons",
+        "title": "Browser UI Icons",
+        "description": "UI icons for the Ichava icon browser interface, navigation, and interactive components",
+        "keywords": ["icons", "ui", "browser", "interface", "navigation", "internal"],
+        "version": "1.0.0",
+        "type": "collection",
+        "license": "MIT"
+    },
+    "metadata": {
+        "authors": [
+            {
+                "name": "Ichava Team",
+                "email": "",
+                "role": "Developer",
+                "url": "https://github.com/simtabi/ichava"
+            }
+        ],
+        "homepage": "https://github.com/simtabi/ichava",
+        "repository": "https://github.com/simtabi/ichava",
+        "data": {
+            "variants": {},
+            "categories": {}
+        }
+    },
+    "config": {
+        "icon_prefix": "ui",
+        "defaults": {
+            "class": "w-6 h-6",
+            "attributes": {}
+        }
+    }
+}
