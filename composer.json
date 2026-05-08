@@ -31,6 +31,16 @@
         "illuminate/support": "^13.0",
         "illuminate/view": "^13.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ichava/core"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/package-tools"
+        }
+    ],
     "require-dev": {
         "orchestra/testbench": "^11.0",
         "pestphp/pest": "^3.0",
