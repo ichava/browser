@@ -11,9 +11,9 @@ use Simtabi\Laranail\Ichava\Support\HostCapabilities;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Three-tier guard: browser localStorage (always available) → Laravel session
- * (when started) → host authentication (when present). Each tier is best-effort
- *, the middleware never aborts when a tier is unavailable.
+ * Three-tier guard: browser localStorage (always available) -> Laravel session
+ * (when started) -> host authentication (when present). Each tier is best-
+ * effort; the middleware never aborts when a tier is unavailable.
  */
 final class IchavaStatefulGuard
 {

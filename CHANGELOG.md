@@ -2,6 +2,26 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Web-route coverage for `IconBrowserController` (`tests/Feature/Web/IconBrowserControllerTest.php`) -- pins index/stats/clearCache/rebuildCache.
+- `tests/TestCase::defineEnvironment()` now sets `app.key`, the SQLite testing connection, and `cache.default = array` so Web tests that exercise sessions/cookies don't trip `MissingAppKeyException`.
+
+### Fixed
+
+- `resources/views/stats/index.blade.php` now defaults missing `total_icons`/`total_packages`/`total_categories`/`total_variants` keys to 0 instead of crashing with `number_format(null)`.
+- `resources/views/stats/index.blade.php` cache-stat values that come back as nested arrays are now rendered via `json_encode()` instead of crashing `htmlspecialchars()`.
+- `IchavaApiSecurity::getCorsHeaders()` no longer wraps the CORS-origins config read in a redundant `config('app.url', '')` fallback -- the config file already resolves the chain via `env('APP_URL', 'http://localhost')`.
+- `IconBrowserApiController::package()` now returns a structured `validationErrorResponse()` for the package-name format check instead of raw `response()->json([..., 422])`, restoring response-shape consistency with the rest of the API.
+- `routes/web.php` no longer carries an unused `Simtabi\Laranail\Ichava\Support\Helpers` import.
+
+### Changed
+
+- AI-tell phrase scrub in `IconBrowserController`.
+- Idiomatic-Laravel pass on `src/`: every raw `str_*` call in `IchavaApiSecurity`, `ValidateIchavaRoute`, and `SriAsset` replaced with `Str::*` equivalents; every raw `file_*` call in `InjectNpmScriptsCommand` replaced with `File::*` facade methods.
+
 ## [1.0.0] - 2026-05-05
 
 ### Added

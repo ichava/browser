@@ -60,7 +60,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-muted-foreground truncate">Total Icons</dt>
-                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_icons']) }}</dd>
+                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_icons'] ?? 0) }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-muted-foreground truncate">Packages</dt>
-                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_packages']) }}</dd>
+                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_packages'] ?? 0) }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-muted-foreground truncate">Categories</dt>
-                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_categories']) }}</dd>
+                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_categories'] ?? 0) }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-muted-foreground truncate">Variants</dt>
-                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_variants']) }}</dd>
+                                <dd class="text-2xl font-bold text-foreground">{{ number_format($statistics['total_variants'] ?? 0) }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -153,7 +153,7 @@
                     @foreach($cacheStats as $key => $value)
                         <div class="border-t border-border pt-4">
                             <dt class="text-sm font-medium text-muted-foreground">{{ ucwords(str_replace('_', ' ', $key)) }}</dt>
-                            <dd class="mt-1 text-sm text-foreground">{{ is_numeric($value) ? number_format($value) : $value }}</dd>
+                            <dd class="mt-1 text-sm text-foreground">@if(is_numeric($value)){{ number_format($value) }}@elseif(is_array($value)){{ json_encode($value) }}@else{{ $value }}@endif</dd>
                         </div>
                     @endforeach
                 </div>

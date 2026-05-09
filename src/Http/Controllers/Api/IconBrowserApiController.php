@@ -217,7 +217,7 @@ final class IconBrowserApiController extends BaseApiController
                 throw IchavaException::iconNotFound($icon->name, $icon->package);
             }
 
-            // Defence in depth: even though the content has been sanitised by
+            // Defense in depth: even though the content has been sanitised by
             // SvgProcessingService, browsers will execute scripts in an SVG
             // navigated to directly. Lock the response down with nosniff, a
             // restrictive CSP, and explicit non-attachment disposition.
@@ -276,10 +276,10 @@ final class IconBrowserApiController extends BaseApiController
 
             // Validate package name format
             if (!preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/i', $package)) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Invalid package name format. Expected: vendor/package-name',
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->validationErrorResponse(
+                    ['package' => ['Invalid package name format. Expected: vendor/package-name']],
+                    'Invalid package name format'
+                );
             }
 
             // Get package info from registry (may throw IchavaException if not found)

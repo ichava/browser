@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\Ichava\Browser\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 /**
  * Injects Ichava npm build scripts into the host application's package.json.
@@ -28,12 +29,12 @@ class InjectNpmScriptsCommand extends Command
     {
         $path = $this->option('path') ?: base_path('package.json');
 
-        if (! file_exists($path)) {
+        if (! File::exists($path)) {
             $this->error("package.json not found at: {$path}");
             return self::FAILURE;
         }
 
-        $contents = file_get_contents($path);
+        $contents = File::get($path);
         $data     = json_decode($contents, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -60,7 +61,7 @@ class InjectNpmScriptsCommand extends Command
             return self::SUCCESS;
         }
 
-        file_put_contents(
+        File::put(
             $path,
             json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n"
         );

@@ -23,7 +23,7 @@ use Simtabi\Laranail\Ichava\Services\IchavaLogger;
  * - Rendering views
  * - Web-triggered cache operations (with redirects)
  *
- * Design: Thin controller, delegates to services, comprehensive logging
+ * Design: Thin controller, delegates to services, with structured logging
  */
 final class IconBrowserController extends Controller
 {
@@ -90,7 +90,7 @@ final class IconBrowserController extends Controller
         ]);
 
         try {
-            // Get comprehensive statistics
+            // Get statistics
             $statistics = $this->browserService->getStatistics();
             
             // Get package details

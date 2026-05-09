@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use Throwable;
+use Illuminate\Support\Str;
 
 /**
  * Emit a `<script>` or `<link>` tag with a Subresource Integrity hash so the
@@ -58,10 +59,10 @@ final class SriAsset extends Component
 
     private function resolveUrl(string $path): string
     {
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '//')) {
+        if (Str::startsWith($path, 'http://') || Str::startsWith($path, 'https://') || Str::startsWith($path, '//')) {
             return $path;
         }
-        if (str_starts_with($path, '/')) {
+        if (Str::startsWith($path, '/')) {
             return $path;
         }
 
@@ -114,7 +115,7 @@ final class SriAsset extends Component
         // or symlinks. This stops SRI from doubling as an existence/contents
         // oracle for arbitrary filesystem paths.
         if ($resolved === false
-            || ! str_starts_with($resolved, $publicRoot . DIRECTORY_SEPARATOR)
+            || ! Str::startsWith($resolved, $publicRoot . DIRECTORY_SEPARATOR)
             || is_link($candidate)
         ) {
             throw new FileNotFoundException("SRI asset is outside the public/ root: {$path}");

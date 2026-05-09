@@ -11,6 +11,7 @@ use Simtabi\Laranail\Ichava\Support\AuditLogger;
 use Simtabi\Laranail\Ichava\Support\SecurityNonce;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use Illuminate\Support\Str;
 
 /**
  * Hardens Ichava API responses: CORS, request-size limits, SQL/XSS/path-traversal
@@ -143,9 +144,9 @@ final class IchavaApiSecurity
             return true;
         }
 
-        return str_contains($contentType, 'application/json') 
-            || str_contains($contentType, 'application/x-www-form-urlencoded')
-            || str_contains($contentType, 'multipart/form-data');
+        return Str::contains($contentType, 'application/json') 
+            || Str::contains($contentType, 'application/x-www-form-urlencoded')
+            || Str::contains($contentType, 'multipart/form-data');
     }
 
     /**
@@ -201,7 +202,7 @@ final class IchavaApiSecurity
         $path = $request->path();
 
         // Check URL path
-        if (str_contains($path, '..') || str_contains($path, '%2e%2e')) {
+        if (Str::contains($path, '..') || Str::contains($path, '%2e%2e')) {
             return true;
         }
 
@@ -211,10 +212,10 @@ final class IchavaApiSecurity
                 continue;
             }
 
-            if (str_contains($value, '../') || 
-                str_contains($value, '..\\') ||
-                str_contains($value, '%2e%2e') ||
-                str_contains($value, '....')) {
+            if (Str::contains($value, '../') || 
+                Str::contains($value, '..\\') ||
+                Str::contains($value, '%2e%2e') ||
+                Str::contains($value, '....')) {
                 return true;
             }
         }
@@ -416,7 +417,7 @@ final class IchavaApiSecurity
      */
     private function getCorsHeaders(): array
     {
-        $allowedOrigins = config('ichava-browser.api.cors.allowed_origins', config('app.url', ''));
+        $allowedOrigins = config('ichava-browser.api.cors.allowed_origins');
         $allowedMethods = config('ichava-browser.api.cors.allowed_methods', 'GET, POST, PUT, DELETE, OPTIONS');
         $allowedHeaders = config('ichava-browser.api.cors.allowed_headers', 'Content-Type, Authorization, X-Requested-With, Accept');
 

@@ -7,6 +7,7 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
 
 /**
  * Validate Ichava Routes Middleware
@@ -25,7 +26,7 @@ final class ValidateIchavaRoute
         $path = $request->path();
 
         // Ensure request is for an Ichava route
-        if (!str_starts_with($path, $prefix)) {
+        if (!Str::startsWith($path, $prefix)) {
             abort(404, 'Not an Ichava route');
         }
 
