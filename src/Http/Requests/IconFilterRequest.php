@@ -31,19 +31,19 @@ class IconFilterRequest extends FormRequest
             'search' => ['nullable', 'string', 'max:255', 'min:2'],
 
             // Filters
-            'packages'     => ['nullable', 'array', 'max:20'],
-            'packages.*'   => ['required', 'string', 'max:100'],
-            'categories'   => ['nullable', 'array', 'max:50'],
+            'packages' => ['nullable', 'array', 'max:20'],
+            'packages.*' => ['required', 'string', 'max:100'],
+            'categories' => ['nullable', 'array', 'max:50'],
             'categories.*' => ['required', 'string', 'max:100'],
-            'variants'     => ['nullable', 'array', 'max:20'],
-            'variants.*'   => ['required', 'string', 'max:50'],
+            'variants' => ['nullable', 'array', 'max:20'],
+            'variants.*' => ['required', 'string', 'max:50'],
 
             // Pagination
-            'page'     => ['nullable', 'integer', 'min:1', 'max:10000'],
+            'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
             'per_page' => ['nullable', 'integer', 'min:10', 'max:120'],
 
             // Sorting
-            'sort_by'        => ['nullable', 'string', 'in:name,package,category,created_at'],
+            'sort_by' => ['nullable', 'string', 'in:name,package,category,created_at'],
             'sort_direction' => ['nullable', 'string', 'in:asc,desc'],
         ];
     }
@@ -54,13 +54,13 @@ class IconFilterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'search.min'        => 'Search query must be at least 2 characters.',
-            'search.max'        => 'Search query cannot exceed 255 characters.',
-            'packages.max'      => 'You cannot select more than 20 packages at once.',
-            'categories.max'    => 'You cannot select more than 50 categories at once.',
-            'per_page.min'      => 'Results per page must be at least 10.',
-            'per_page.max'      => 'Results per page cannot exceed 120.',
-            'sort_by.in'        => 'Invalid sort field. Must be one of: name, package, category, created_at.',
+            'search.min' => 'Search query must be at least 2 characters.',
+            'search.max' => 'Search query cannot exceed 255 characters.',
+            'packages.max' => 'You cannot select more than 20 packages at once.',
+            'categories.max' => 'You cannot select more than 50 categories at once.',
+            'per_page.min' => 'Results per page must be at least 10.',
+            'per_page.max' => 'Results per page cannot exceed 120.',
+            'sort_by.in' => 'Invalid sort field. Must be one of: name, package, category, created_at.',
             'sort_direction.in' => 'Sort direction must be either asc or desc.',
         ];
     }
@@ -71,13 +71,13 @@ class IconFilterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'search'         => 'search query',
-            'packages'       => 'package filters',
-            'categories'     => 'category filters',
-            'variants'       => 'variant filters',
-            'page'           => 'page number',
-            'per_page'       => 'results per page',
-            'sort_by'        => 'sort field',
+            'search' => 'search query',
+            'packages' => 'package filters',
+            'categories' => 'category filters',
+            'variants' => 'variant filters',
+            'page' => 'page number',
+            'per_page' => 'results per page',
+            'sort_by' => 'sort field',
             'sort_direction' => 'sort direction',
         ];
     }

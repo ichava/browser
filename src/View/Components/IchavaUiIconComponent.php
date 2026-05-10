@@ -19,8 +19,6 @@ use Simtabi\Laranail\Ichava\View\Components\IconComponent as BaseIconComponent;
  * <x-ichava::icon name="ichava/ui-icons::filter" class="w-5 h-5" />
  * <x-ichava::icon name="ichava/ui-icons::moon" />
  * <x-ichava::icon name="ichava/ui-icons::sun" />
- *
- * @package Simtabi\Laranail\Ichava\Browser\View\Components
  */
 class IchavaUiIconComponent extends BaseIconComponent
 {
@@ -66,4 +64,3 @@ class IchavaUiIconComponent extends BaseIconComponent
         return IchavaUiIconsConstants::getVendorPackage();
     }
 }
-

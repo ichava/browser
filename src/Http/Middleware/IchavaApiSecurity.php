@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Simtabi\Laranail\Ichava\Support\AuditLogger;
 use Simtabi\Laranail\Ichava\Support\SecurityNonce;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-use Illuminate\Support\Str;
 
 /**
  * Hardens Ichava API responses: CORS, request-size limits, SQL/XSS/path-traversal
@@ -61,8 +61,9 @@ final class IchavaApiSecurity
             if (! $this->isValidContentType($request)) {
                 $this->audit('http.invalid_content_type', AuditLogger::SEVERITY_WARNING, [
                     'content_type' => $request->header('Content-Type'),
-                    'path'         => $request->path(),
+                    'path' => $request->path(),
                 ]);
+
                 return $this->errorResponse(
                     'Invalid Content-Type. Expected application/json.',
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE
@@ -75,8 +76,9 @@ final class IchavaApiSecurity
         if ($request->header('Content-Length') && (int) $request->header('Content-Length') > $maxSize) {
             $this->audit('http.request_too_large', AuditLogger::SEVERITY_WARNING, [
                 'content_length' => (int) $request->header('Content-Length'),
-                'max_size'       => $maxSize,
+                'max_size' => $maxSize,
             ]);
+
             return $this->errorResponse(
                 'Request body too large.',
                 Response::HTTP_REQUEST_ENTITY_TOO_LARGE
@@ -88,6 +90,7 @@ final class IchavaApiSecurity
             $this->audit('http.sql_injection_attempt', AuditLogger::SEVERITY_ERROR, [
                 'path' => $request->path(),
             ]);
+
             return $this->errorResponse(
                 'Potentially malicious request detected.',
                 Response::HTTP_BAD_REQUEST
@@ -99,6 +102,7 @@ final class IchavaApiSecurity
             $this->audit('http.xss_attempt', AuditLogger::SEVERITY_ERROR, [
                 'path' => $request->path(),
             ]);
+
             return $this->errorResponse(
                 'Potentially malicious content detected.',
                 Response::HTTP_BAD_REQUEST
@@ -110,6 +114,7 @@ final class IchavaApiSecurity
             $this->audit('http.path_traversal_attempt', AuditLogger::SEVERITY_ERROR, [
                 'path' => $request->path(),
             ]);
+
             return $this->errorResponse(
                 'Invalid path detected.',
                 Response::HTTP_BAD_REQUEST
@@ -138,13 +143,13 @@ final class IchavaApiSecurity
     private function isValidContentType(Request $request): bool
     {
         $contentType = $request->header('Content-Type', '');
-        
+
         // Allow empty body requests
         if (empty($request->getContent())) {
             return true;
         }
 
-        return Str::contains($contentType, 'application/json') 
+        return Str::contains($contentType, 'application/json')
             || Str::contains($contentType, 'application/x-www-form-urlencoded')
             || Str::contains($contentType, 'multipart/form-data');
     }
@@ -157,7 +162,7 @@ final class IchavaApiSecurity
         $inputs = $this->getAllInputs($request);
 
         foreach ($inputs as $value) {
-            if (!is_string($value)) {
+            if (! is_string($value)) {
                 continue;
             }
 
@@ -179,7 +184,7 @@ final class IchavaApiSecurity
         $inputs = $this->getAllInputs($request);
 
         foreach ($inputs as $value) {
-            if (!is_string($value)) {
+            if (! is_string($value)) {
                 continue;
             }
 
@@ -208,11 +213,11 @@ final class IchavaApiSecurity
 
         // Check inputs
         foreach ($inputs as $value) {
-            if (!is_string($value)) {
+            if (! is_string($value)) {
                 continue;
             }
 
-            if (Str::contains($value, '../') || 
+            if (Str::contains($value, '../') ||
                 Str::contains($value, '..\\') ||
                 Str::contains($value, '%2e%2e') ||
                 Str::contains($value, '....')) {
@@ -251,15 +256,15 @@ final class IchavaApiSecurity
         // some configurations. CSP supersedes it; see security-model.md.
         $headers = [
             'X-Content-Type-Options' => 'nosniff',
-            'X-Frame-Options'        => (string) config('ichava-browser.security.frame_options', 'DENY'),
-            'Referrer-Policy'        => (string) config(
+            'X-Frame-Options' => (string) config('ichava-browser.security.frame_options', 'DENY'),
+            'Referrer-Policy' => (string) config(
                 'ichava-browser.security.referrer_policy',
                 'strict-origin-when-cross-origin'
             ),
-            'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma'                 => 'no-cache',
-            'X-Ichava-API-Version'   => '1.0',
-            'Permissions-Policy'     => (string) config(
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'X-Ichava-API-Version' => '1.0',
+            'Permissions-Policy' => (string) config(
                 'ichava-browser.security.permissions_policy',
                 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
             ),
@@ -290,18 +295,18 @@ final class IchavaApiSecurity
     /**
      * Build the CSP header value for the configured mode.
      *
-     * @return array{0:string,1:string}|null  [header-name, header-value]
+     * @return array{0:string,1:string}|null [header-name, header-value]
      */
     private function buildCspHeader(): ?array
     {
-        $mode  = (string) config('ichava-browser.security.csp.mode', 'strict');
-        $extra = (array)  config('ichava-browser.security.csp.extra_directives', []);
+        $mode = (string) config('ichava-browser.security.csp.mode', 'strict');
+        $extra = (array) config('ichava-browser.security.csp.extra_directives', []);
 
         $directives = match ($mode) {
             'nonce' => $this->cspNonceDirectives(),
-            'hash'  => $this->cspHashDirectives(),
+            'hash' => $this->cspHashDirectives(),
             default => [
-                'default-src'     => "'none'",
+                'default-src' => "'none'",
                 'frame-ancestors' => "'none'",
             ],
         };
@@ -316,7 +321,7 @@ final class IchavaApiSecurity
 
         $value = '';
         foreach ($directives as $name => $directive) {
-            $value .= $name . ' ' . $directive . '; ';
+            $value .= $name.' '.$directive.'; ';
         }
         $value = rtrim($value, '; ');
 
@@ -336,16 +341,16 @@ final class IchavaApiSecurity
         $token = $nonce !== null ? "'nonce-{$nonce}'" : "'self'";
 
         return [
-            'default-src'     => "'self'",
-            'script-src'      => "'self' {$token}",
-            'style-src'       => "'self' {$token}",
-            'img-src'         => "'self' data:",
-            'font-src'        => "'self' data:",
-            'connect-src'     => "'self'",
+            'default-src' => "'self'",
+            'script-src' => "'self' {$token}",
+            'style-src' => "'self' {$token}",
+            'img-src' => "'self' data:",
+            'font-src' => "'self' data:",
+            'connect-src' => "'self'",
             'frame-ancestors' => "'none'",
-            'base-uri'        => "'self'",
-            'form-action'     => "'self'",
-            'object-src'      => "'none'",
+            'base-uri' => "'self'",
+            'form-action' => "'self'",
+            'object-src' => "'none'",
         ];
     }
 
@@ -356,18 +361,18 @@ final class IchavaApiSecurity
     {
         $hashes = (array) config('ichava-browser.security.csp.hashes', []);
         $script = isset($hashes['script-src']) ? implode(' ', (array) $hashes['script-src']) : '';
-        $style  = isset($hashes['style-src'])  ? implode(' ', (array) $hashes['style-src'])  : '';
+        $style = isset($hashes['style-src']) ? implode(' ', (array) $hashes['style-src']) : '';
 
         return [
-            'default-src'     => "'self'",
-            'script-src'      => trim("'self' {$script}"),
-            'style-src'       => trim("'self' {$style}"),
-            'img-src'         => "'self' data:",
-            'connect-src'     => "'self'",
+            'default-src' => "'self'",
+            'script-src' => trim("'self' {$script}"),
+            'style-src' => trim("'self' {$style}"),
+            'img-src' => "'self' data:",
+            'connect-src' => "'self'",
             'frame-ancestors' => "'none'",
-            'base-uri'        => "'self'",
-            'form-action'     => "'self'",
-            'object-src'      => "'none'",
+            'base-uri' => "'self'",
+            'form-action' => "'self'",
+            'object-src' => "'none'",
         ];
     }
 
@@ -389,7 +394,7 @@ final class IchavaApiSecurity
         }
 
         $maxAge = (int) config('ichava-browser.security.hsts.max_age', 31536000);
-        $value  = "max-age={$maxAge}";
+        $value = "max-age={$maxAge}";
 
         if ((bool) config('ichava-browser.security.hsts.include_subdomains', true)) {
             $value .= '; includeSubDomains';
@@ -431,7 +436,7 @@ final class IchavaApiSecurity
 
     /**
      * Determine if response should be pretty printed
-     * 
+     *
      * Pretty print is ENABLED BY DEFAULT for better developer experience.
      * Can be disabled with ?pretty=0 or ?pretty=false if needed.
      */
@@ -440,7 +445,7 @@ final class IchavaApiSecurity
         // Check for explicit disable: ?pretty=0 or ?pretty=false
         if ($request->has('pretty')) {
             $pretty = $request->query('pretty');
-            
+
             // Only disable if explicitly set to 0 or false
             if ($pretty === '0' || $pretty === 'false') {
                 return false;
@@ -468,4 +473,3 @@ final class IchavaApiSecurity
         ]);
     }
 }
-

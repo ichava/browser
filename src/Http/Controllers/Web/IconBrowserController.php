@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Contracts\View\View;
+use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Simtabi\Laranail\Ichava\Models\IconTerm;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconBrowserService;
 use Simtabi\Laranail\Ichava\Services\IconCacheService;
 use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 use Simtabi\Laranail\Ichava\Services\IconRegistry;
-use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 
 /**
  * IconBrowserController - Web Controller for Icon Browser UI
@@ -37,13 +37,16 @@ final class IconBrowserController extends Controller
 
     /**
      * Display the icon browser interface
-     * 
+     *
      * Passes initial data to Vue for server-side rendering optimization.
      * This follows the botble pattern where initial data is passed from controller.
      */
     public function index(): View
     {
-        $this->logger->info('🎨 Icon browser page accessed', [
+        // PII (IP + user-agent) intentionally at debug level so production logs
+        // don't carry per-request identifiers; promote to audit channel if you
+        // need traceability.
+        $this->logger->debug('Icon browser page accessed', [
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
@@ -51,13 +54,13 @@ final class IconBrowserController extends Controller
         try {
             // Get preferences from session
             $preferences = $this->preferenceService->getAll();
-            
+
             // Get filter options (packages, categories, variants)
             $filters = $this->browserService->getFilters();
-            
+
             // Get statistics
             $statistics = $this->browserService->getStatistics();
-            
+
             return view('ichava::browser.index', [
                 'packages' => $filters['packages'] ?? [],
                 'categories' => $filters['categories'] ?? [],
@@ -68,7 +71,7 @@ final class IconBrowserController extends Controller
             $this->logger->error('❌ Failed to load browser data', [
                 'error' => $e->getMessage(),
             ]);
-            
+
             // Return view with empty data on error
             return view('ichava::browser.index', [
                 'packages' => [],
@@ -85,45 +88,49 @@ final class IconBrowserController extends Controller
      */
     public function stats(): View
     {
-        $this->logger->info('📊 Statistics page accessed', [
+        $this->logger->debug('Statistics page accessed', [
             'ip' => request()->ip(),
         ]);
 
         try {
             // Get statistics
             $statistics = $this->browserService->getStatistics();
-            
-            // Get package details
+
+            // Get package details. Batch the icon and term counts via two GROUP BY
+            // queries instead of 3 queries per package (N+1 to N+2 total).
             $packages = $this->registry->all();
+
+            $iconCounts = Icon::selectRaw('package, COUNT(*) as count')
+                ->groupBy('package')
+                ->pluck('count', 'package');
+
+            $termCounts = IconTerm::selectRaw('package, type, COUNT(*) as count')
+                ->whereIn('type', ['category', 'variant'])
+                ->groupBy('package', 'type')
+                ->get()
+                ->groupBy('package');
+
             $packageStats = [];
-            
             foreach ($packages as $packageKey => $packageData) {
-                $iconCount = Icon::where('package', $packageKey)->count();
-                $categoryCount = IconTerm::where('type', 'category')
-                    ->where('package', $packageKey)
-                    ->count();
-                $variantCount = IconTerm::where('type', 'variant')
-                    ->where('package', $packageKey)
-                    ->count();
-                
+                $terms = $termCounts->get($packageKey, collect());
                 $packageStats[] = [
                     'name' => $packageKey,
                     'label' => $packageData['browser_metadata']['name'] ?? $packageKey,
                     'description' => $packageData['browser_metadata']['description'] ?? '',
                     'vendor' => $packageData['browser_metadata']['vendor'] ?? '',
-                    'icon_count' => $iconCount,
-                    'category_count' => $categoryCount,
-                    'variant_count' => $variantCount,
+                    'icon_count' => (int) ($iconCounts[$packageKey] ?? 0),
+                    'category_count' => (int) ($terms->firstWhere('type', 'category')->count ?? 0),
+                    'variant_count' => (int) ($terms->firstWhere('type', 'variant')->count ?? 0),
                 ];
             }
-            
+
             // Get top categories - use morph alias (registered as 'icon' in morphMap)
-            $iconMorphAlias = (new Icon())->getMorphClass();
+            $iconMorphAlias = (new Icon)->getMorphClass();
             $topCategories = \DB::table('ichava_icon_termables')
                 ->join('ichava_icon_terms', 'ichava_icon_termables.term_id', '=', 'ichava_icon_terms.id')
                 ->join('ichava_icons', function ($join) use ($iconMorphAlias) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')
-                         ->where('ichava_icon_termables.termable_type', '=', $iconMorphAlias);
+                        ->where('ichava_icon_termables.termable_type', '=', $iconMorphAlias);
                 })
                 ->where('ichava_icon_terms.type', 'category')
                 ->select('ichava_icon_terms.name', 'ichava_icon_terms.slug', 'ichava_icons.package')
@@ -132,11 +139,11 @@ final class IconBrowserController extends Controller
                 ->orderByDesc('icon_count')
                 ->limit(10)
                 ->get();
-            
+
             // Get cache stats
             $cacheStats = $this->cacheService->getStats();
             $cacheHealthy = $this->cacheService->isHealthy();
-            
+
             return view('ichava::stats.index', [
                 'statistics' => $statistics,
                 'packageStats' => $packageStats,
@@ -148,7 +155,7 @@ final class IconBrowserController extends Controller
             $this->logger->error('❌ Failed to load statistics', [
                 'error' => $e->getMessage(),
             ]);
-            
+
             return view('ichava::stats.index', [
                 'statistics' => [
                     'total_icons' => 0,
@@ -172,9 +179,9 @@ final class IconBrowserController extends Controller
     public function clearCache(): RedirectResponse
     {
         try {
-            $this->logger->info('🧹 Cache clear initiated from web', [
-                'ip' => request()->ip(),
-            ]);
+            // Cache mutation is auditable; keep at info but drop the IP from
+            // structured context (audit channel is the right place for that).
+            $this->logger->info('Cache clear initiated from web');
 
             $stats = $this->cacheService->clearAll();
             $this->browserService->clearCache();
@@ -201,9 +208,7 @@ final class IconBrowserController extends Controller
     public function rebuildCache(): RedirectResponse
     {
         try {
-            $this->logger->info('💾 Cache rebuild initiated from web', [
-                'ip' => request()->ip(),
-            ]);
+            $this->logger->info('Cache rebuild initiated from web');
 
             $stats = $this->cacheService->rebuild();
             $this->browserService->clearCache();

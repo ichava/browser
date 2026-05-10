@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Log Ichava Requests Middleware
- * 
+ *
  * Logs API requests for debugging and monitoring.
  * Only active when debug mode is enabled.
  */
@@ -35,7 +35,7 @@ final class LogRequests
 
         if ($shouldLog) {
             $duration = round((microtime(true) - $startTime) * 1000, 2);
-            
+
             $this->logger->debug('API request', [
                 'method' => $request->method(),
                 'uri' => $request->path(),

@@ -32,6 +32,7 @@ class IconCollection extends ResourceCollection
     public function groupBy(?string $key): self
     {
         $this->groupBy = $key;
+
         return $this;
     }
 
@@ -45,7 +46,7 @@ class IconCollection extends ResourceCollection
         $data = parent::toArray($request);
 
         // Add grouped data if grouping is enabled
-        if ($this->groupBy && !empty($data)) {
+        if ($this->groupBy && ! empty($data)) {
             $data['grouped'] = $this->groupIcons($data, $this->groupBy);
         }
 
@@ -60,11 +61,11 @@ class IconCollection extends ResourceCollection
         $grouped = [];
 
         foreach ($data as $icon) {
-            if (!is_array($icon)) {
+            if (! is_array($icon)) {
                 continue;
             }
 
-            $key = match($groupBy) {
+            $key = match ($groupBy) {
                 'package' => $icon['package'] ?? 'Unknown',
                 'category' => $icon['category'] ?? 'Uncategorized',
                 default => $icon['package'] ?? 'Unknown',
@@ -76,4 +77,3 @@ class IconCollection extends ResourceCollection
         return $grouped;
     }
 }
-

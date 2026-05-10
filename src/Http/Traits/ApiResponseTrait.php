@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * ApiResponseTrait
- * 
+ *
  * Standardized API response formatting for all controllers
  */
 trait ApiResponseTrait
@@ -29,7 +29,7 @@ trait ApiResponseTrait
             'message' => $message,
         ];
 
-        if (!empty($meta)) {
+        if (! empty($meta)) {
             $response['meta'] = $meta;
         }
 
@@ -50,11 +50,11 @@ trait ApiResponseTrait
             'error' => $error,
         ];
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             $response['errors'] = $errors;
         }
 
-        if (!empty($meta)) {
+        if (! empty($meta)) {
             $response['meta'] = $meta;
         }
 
@@ -186,7 +186,8 @@ trait ApiResponseTrait
     /**
      * Return no content response
      */
-    protected function noContentResponse(): JsonResponse {
+    protected function noContentResponse(): JsonResponse
+    {
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

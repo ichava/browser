@@ -12,22 +12,19 @@ use Illuminate\View\View;
  *
  * Base layout wrapper for all Ichava pages.
  * Provides common HTML structure, meta tags, and asset loading.
- *
- * @package Simtabi\Laranail\Ichava\Browser\View\Components\Layouts
  */
 class App extends Component
 {
     /**
      * Create a new component instance.
      *
-     * @param string $title Page title
-     * @param string|null $description Page meta description
+     * @param  string  $title  Page title
+     * @param  string|null  $description  Page meta description
      */
     public function __construct(
         public string $title = 'Ichava',
         public ?string $description = null
-    ) {
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
@@ -37,4 +34,3 @@ class App extends Component
         return view('ichava::components.layouts.app');
     }
 }
-

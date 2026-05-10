@@ -16,11 +16,16 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 - `IchavaApiSecurity::getCorsHeaders()` no longer wraps the CORS-origins config read in a redundant `config('app.url', '')` fallback -- the config file already resolves the chain via `env('APP_URL', 'http://localhost')`.
 - `IconBrowserApiController::package()` now returns a structured `validationErrorResponse()` for the package-name format check instead of raw `response()->json([..., 422])`, restoring response-shape consistency with the rest of the API.
 - `routes/web.php` no longer carries an unused `Simtabi\Laranail\Ichava\Support\Helpers` import.
+- `IconBrowserController::stats()` no longer fires 3 queries per registered package (N+1). Replaced with two batched `GROUP BY` queries that fetch all icon counts and all term counts in O(1) round-trips, then reassembled in PHP.
+- `IconBrowserApiController::svg()` now sanitises the icon name before emitting it in the `Content-Disposition` header (whitelisted to `[A-Za-z0-9._-]`); previously a name containing a quote / newline / semicolon could break out of the header value.
+- PII (`request()->ip()` + `request()->userAgent()`) demoted from `info` to `debug` in `IconBrowserController::index()` and `stats()`; removed entirely from cache mutation logs (audit channel is the right place if you need it).
 
 ### Changed
 
 - AI-tell phrase scrub in `IconBrowserController`.
+- IchavaStatefulGuard docblock orphan-asterisk fixed; "Defence in depth" -> "Defense in depth".
 - Idiomatic-Laravel pass on `src/`: every raw `str_*` call in `IchavaApiSecurity`, `ValidateIchavaRoute`, and `SriAsset` replaced with `Str::*` equivalents; every raw `file_*` call in `InjectNpmScriptsCommand` replaced with `File::*` facade methods.
+- Pint formatting normalised to the project's CI ruleset.
 
 ## [1.0.0] - 2026-05-05
 

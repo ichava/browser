@@ -19,10 +19,10 @@ class InjectNpmScriptsCommand extends Command
     protected $description = 'Inject Ichava npm build/watch scripts into the host application package.json';
 
     private const SCRIPTS = [
-        '// Package: Ichava'    => '',
-        'ichava:build'          => 'cd vendor/ichava/ichava && npm run build --silent',
-        'ichava:build:prod'     => 'cd vendor/ichava/ichava && npm run build:prod --silent',
-        'ichava:watch'          => 'cd vendor/ichava/ichava && npm run watch --silent',
+        '// Package: Ichava' => '',
+        'ichava:build' => 'cd vendor/ichava/ichava && npm run build --silent',
+        'ichava:build:prod' => 'cd vendor/ichava/ichava && npm run build:prod --silent',
+        'ichava:watch' => 'cd vendor/ichava/ichava && npm run watch --silent',
     ];
 
     public function handle(): int
@@ -31,14 +31,16 @@ class InjectNpmScriptsCommand extends Command
 
         if (! File::exists($path)) {
             $this->error("package.json not found at: {$path}");
+
             return self::FAILURE;
         }
 
         $contents = File::get($path);
-        $data     = json_decode($contents, true);
+        $data = json_decode($contents, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('Could not parse package.json: ' . json_last_error_msg());
+            $this->error('Could not parse package.json: '.json_last_error_msg());
+
             return self::FAILURE;
         }
 
@@ -52,18 +54,19 @@ class InjectNpmScriptsCommand extends Command
         foreach (self::SCRIPTS as $key => $value) {
             if ($force || ! array_key_exists($key, $data['scripts'])) {
                 $data['scripts'][$key] = $value;
-                $added[]               = $key;
+                $added[] = $key;
             }
         }
 
         if (empty($added)) {
             $this->info('Ichava npm scripts already present, nothing to do. Use --force to overwrite.');
+
             return self::SUCCESS;
         }
 
         File::put(
             $path,
-            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n"
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n"
         );
 
         $this->info('Ichava npm scripts injected into package.json:');

@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
+use Illuminate\Validation\ValidationException;
 use Simtabi\Laranail\Ichava\Browser\Http\Traits\ApiResponseTrait;
+use Simtabi\Laranail\Ichava\Models\Icon;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 
 /**
  * BaseApiController - Base class for all Ichava API controllers
@@ -36,22 +40,32 @@ abstract class BaseApiController extends Controller
 
     /**
      * Format timestamp as human-readable "time ago"
-     * 
+     *
      * Shared helper method used by multiple controllers
      */
     protected function formatTimeAgo(string $timestamp): string
     {
         try {
             $date = new \DateTime($timestamp);
-            $now = new \DateTime();
+            $now = new \DateTime;
             $diff = $now->diff($date);
-            
-            if ($diff->y > 0) return $diff->y . 'y ago';
-            if ($diff->m > 0) return $diff->m . 'mo ago';
-            if ($diff->d > 0) return $diff->d . 'd ago';
-            if ($diff->h > 0) return $diff->h . 'h ago';
-            if ($diff->i > 0) return $diff->i . 'm ago';
-            
+
+            if ($diff->y > 0) {
+                return $diff->y.'y ago';
+            }
+            if ($diff->m > 0) {
+                return $diff->m.'mo ago';
+            }
+            if ($diff->d > 0) {
+                return $diff->d.'d ago';
+            }
+            if ($diff->h > 0) {
+                return $diff->h.'h ago';
+            }
+            if ($diff->i > 0) {
+                return $diff->i.'m ago';
+            }
+
             return 'Just now';
         } catch (\Exception $e) {
             return $timestamp;
@@ -60,20 +74,20 @@ abstract class BaseApiController extends Controller
 
     /**
      * Verify icon exists
-     * 
+     *
      * Common validation used across controllers
      */
     protected function iconExists(int $iconId): bool
     {
-        return \Simtabi\Laranail\Ichava\Models\Icon::where('id', $iconId)->exists();
+        return Icon::where('id', $iconId)->exists();
     }
 
     /**
      * Get icon or fail with standardized response
      */
-    protected function findIconOrFail(int $iconId): \Simtabi\Laranail\Ichava\Models\Icon
+    protected function findIconOrFail(int $iconId): Icon
     {
-        return \Simtabi\Laranail\Ichava\Models\Icon::findOrFail($iconId);
+        return Icon::findOrFail($iconId);
     }
 
     /**
@@ -110,10 +124,10 @@ abstract class BaseApiController extends Controller
 
     /**
      * Handle common validation exceptions
-     * 
+     *
      * Wraps validation errors in standardized response
      */
-    protected function handleValidationException(\Illuminate\Validation\ValidationException $e): \Illuminate\Http\JsonResponse
+    protected function handleValidationException(ValidationException $e): JsonResponse
     {
         return $this->validationErrorResponse($e->errors(), 'Validation failed');
     }
@@ -121,18 +135,20 @@ abstract class BaseApiController extends Controller
     /**
      * Handle common not found exceptions
      */
-    protected function handleNotFoundException(\Illuminate\Database\Eloquent\ModelNotFoundException $e, string $resource = 'Resource'): \Illuminate\Http\JsonResponse
+    protected function handleNotFoundException(ModelNotFoundException $e, string $resource = 'Resource'): JsonResponse
     {
         $this->logWarning("$resource not found", ['exception' => $e->getMessage()]);
+
         return $this->notFoundResponse($resource);
     }
 
     /**
      * Handle generic exceptions
      */
-    protected function handleException(\Exception $e, string $message = 'An error occurred'): \Illuminate\Http\JsonResponse
+    protected function handleException(\Exception $e, string $message = 'An error occurred'): JsonResponse
     {
         $this->logError($message, $e);
+
         return $this->errorResponse($message);
     }
 }

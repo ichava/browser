@@ -17,8 +17,6 @@ use Simtabi\Laranail\Ichava\View\Components\IconComponent as BaseIconComponent;
  * <x-ichava::icon name="ichava/test-icons::check" />
  * <x-ichava::icon name="ichava/test-icons::circle" class="w-6 h-6" />
  * <x-ichava::icon name="ichava/test-icons::square" />
- *
- * @package Simtabi\Laranail\Ichava\Browser\View\Components
  */
 class IchavaTestIconComponent extends BaseIconComponent
 {

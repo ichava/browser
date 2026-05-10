@@ -26,7 +26,7 @@ final class IchavaStatefulGuard
 
     /**
      * Handle an incoming request
-     * 
+     *
      * Detects available features and adds context, but NEVER blocks requests.
      */
     public function handle(Request $request, Closure $next): Response
@@ -43,11 +43,11 @@ final class IchavaStatefulGuard
         // Debug logging if enabled
         if (config('app.debug') && config('ichava.logging.auth_debug', false)) {
             $this->logger->debug('Request context', [
-                'tier'            => $request->attributes->get('ichava_tier'),
-                'authenticated'   => $request->attributes->get('ichava_authenticated', false),
-                'session'         => $request->attributes->get('ichava_session_available', false),
-                'route'           => $request->route()?->getName(),
-                'browser_id'      => $request->header('X-Browser-Id'),
+                'tier' => $request->attributes->get('ichava_tier'),
+                'authenticated' => $request->attributes->get('ichava_authenticated', false),
+                'session' => $request->attributes->get('ichava_session_available', false),
+                'route' => $request->route()?->getName(),
+                'browser_id' => $request->header('X-Browser-Id'),
             ]);
         }
 
@@ -82,7 +82,7 @@ final class IchavaStatefulGuard
                 if (config('app.debug') && config('ichava.logging.auth_debug', false)) {
                     $this->logger->debug('Authenticated user detected', [
                         'user_id' => $user->id ?? null,
-                        'email'   => $user->email ?? null,
+                        'email' => $user->email ?? null,
                     ]);
                 }
             }
@@ -159,7 +159,7 @@ final class IchavaStatefulGuard
 
     /**
      * Get storage tier for current request
-     * 
+     *
      * @return string 'basic'|'enhanced'|'premium'
      */
     public static function getTier(Request $request): string

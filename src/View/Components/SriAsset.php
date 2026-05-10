@@ -6,10 +6,10 @@ namespace Simtabi\Laranail\Ichava\Browser\View\Components;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use Throwable;
-use Illuminate\Support\Str;
 
 /**
  * Emit a `<script>` or `<link>` tag with a Subresource Integrity hash so the
@@ -27,8 +27,11 @@ use Illuminate\Support\Str;
 final class SriAsset extends Component
 {
     public string $integrity = '';
+
     public string $crossorigin = 'anonymous';
+
     public string $tag;
+
     public string $url;
 
     public function __construct(
@@ -108,14 +111,14 @@ final class SriAsset extends Component
     private function computeFromDisk(string $algo, string $path): string
     {
         $publicRoot = realpath(public_path()) ?: public_path();
-        $candidate  = public_path(ltrim($path, '/'));
-        $resolved   = realpath($candidate);
+        $candidate = public_path(ltrim($path, '/'));
+        $resolved = realpath($candidate);
 
         // Containment: refuse anything that escapes public/ via .. segments
         // or symlinks. This stops SRI from doubling as an existence/contents
         // oracle for arbitrary filesystem paths.
         if ($resolved === false
-            || ! Str::startsWith($resolved, $publicRoot . DIRECTORY_SEPARATOR)
+            || ! Str::startsWith($resolved, $publicRoot.DIRECTORY_SEPARATOR)
             || is_link($candidate)
         ) {
             throw new FileNotFoundException("SRI asset is outside the public/ root: {$path}");
@@ -132,6 +135,6 @@ final class SriAsset extends Component
             throw new \RuntimeException("Unable to hash SRI asset {$resolved} with algorithm {$algo}.");
         }
 
-        return $algo . '-' . base64_encode($digest);
+        return $algo.'-'.base64_encode($digest);
     }
 }

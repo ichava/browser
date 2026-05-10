@@ -17,6 +17,7 @@ use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaTestIconComponent;
 use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaUiIconComponent;
 use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\App as AppLayout;
 use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\Browser as BrowserLayout;
+use Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconRegistry;
 use Simtabi\Laranail\Ichava\Support\HostCapabilities;
@@ -86,7 +87,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         // the public-path file at render time.
         Blade::component(
             'ichava::sri-asset',
-            \Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset::class
+            SriAsset::class
         );
 
         // Anonymous Blade components (views without PHP classes) under the
@@ -134,12 +135,12 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         $router = $this->app['router'];
 
         // Per-middleware aliases.
-        $router->aliasMiddleware('ichava.session',  EnsureSession::class);
+        $router->aliasMiddleware('ichava.session', EnsureSession::class);
         $router->aliasMiddleware('ichava.security', IchavaApiSecurity::class);
-        $router->aliasMiddleware('ichava.json',     ForceJsonResponse::class);
-        $router->aliasMiddleware('ichava.log',      LogRequests::class);
+        $router->aliasMiddleware('ichava.json', ForceJsonResponse::class);
+        $router->aliasMiddleware('ichava.log', LogRequests::class);
         $router->aliasMiddleware('ichava.validate', ValidateIchavaRoute::class);
-        $router->aliasMiddleware('ichava.guard',    IchavaStatefulGuard::class);
+        $router->aliasMiddleware('ichava.guard', IchavaStatefulGuard::class);
 
         // Legacy alias for backward compatibility.
         $router->aliasMiddleware('ichava.api.security', IchavaApiSecurity::class);

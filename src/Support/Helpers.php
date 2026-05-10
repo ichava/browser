@@ -20,9 +20,9 @@ final class Helpers
      * `ichava-browser.rate_limiting.{type}`. When rate limiting is disabled,
      * returns an empty array (caller spreads it into ->middleware([...])).
      *
-     * @param  string  $type     Rate limit bucket (e.g. 'browser', 'api').
-     * @param  int     $default  Fallback per-minute limit if not configured.
-     * @return array<int, string>  Array containing one `throttle:N,1` entry or empty.
+     * @param  string  $type  Rate limit bucket (e.g. 'browser', 'api').
+     * @param  int  $default  Fallback per-minute limit if not configured.
+     * @return array<int, string> Array containing one `throttle:N,1` entry or empty.
      */
     public static function getRateLimit(string $type, int $default): array
     {

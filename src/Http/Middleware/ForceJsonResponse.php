@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * JSON Response Middleware
- * 
+ *
  * Ensures all Ichava API responses are JSON formatted with consistent structure.
  * Handles content negotiation and sets appropriate headers.
  */
@@ -22,14 +22,14 @@ final class ForceJsonResponse
     public function handle(Request $request, Closure $next): Response
     {
         // Force Accept header to JSON if not specified
-        if (!$request->headers->has('Accept') || $request->headers->get('Accept') === '*/*') {
+        if (! $request->headers->has('Accept') || $request->headers->get('Accept') === '*/*') {
             $request->headers->set('Accept', 'application/json');
         }
 
         $response = $next($request);
 
         // Ensure response is JSON
-        if (!$response->headers->has('Content-Type')) {
+        if (! $response->headers->has('Content-Type')) {
             $response->headers->set('Content-Type', 'application/json');
         }
 

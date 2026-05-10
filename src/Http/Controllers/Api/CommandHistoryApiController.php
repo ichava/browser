@@ -6,8 +6,9 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
+use Illuminate\Validation\ValidationException;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
+use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 
 /**
  * CommandHistoryApiController - RESTful API for Command Palette History
@@ -28,9 +29,9 @@ final class CommandHistoryApiController extends BaseApiController
     {
         try {
             $this->logDebug('Fetching command history');
-            
+
             $history = $this->preferenceService->getCommandHistory();
-            
+
             foreach ($history as &$entry) {
                 if (isset($entry['timestamp'])) {
                     $entry['formatted_time'] = $this->formatTimeAgo($entry['timestamp']);
@@ -65,7 +66,7 @@ final class CommandHistoryApiController extends BaseApiController
                 $validated['type'],
                 $validated['metadata'] ?? []
             );
-            
+
             $this->logDebug('Command history entry added', [
                 'command' => $validated['command'],
                 'type' => $validated['type'],
@@ -75,7 +76,7 @@ final class CommandHistoryApiController extends BaseApiController
                 ['command' => $validated['command'], 'type' => $validated['type']],
                 'Command logged successfully'
             );
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return $this->handleValidationException($e);
         } catch (\Exception $e) {
             return $this->handleException($e, 'Failed to log command');
@@ -89,7 +90,7 @@ final class CommandHistoryApiController extends BaseApiController
     {
         try {
             $this->preferenceService->clearCommandHistory();
-            
+
             $this->logDebug('Command history cleared');
 
             return $this->deletedResponse('Command history cleared successfully');

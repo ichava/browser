@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web\IconBrowserController;
 
@@ -48,5 +47,3 @@ Route::prefix(config('ichava.prefix', 'ichava'))
                     ->name('rebuild');
             });
     });
-
-

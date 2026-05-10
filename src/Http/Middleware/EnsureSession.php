@@ -25,7 +25,7 @@ final class EnsureSession
 
     /**
      * Handle an incoming request
-     * 
+     *
      * Try to start session if available, but don't fail if not.
      */
     public function handle(Request $request, Closure $next): Response

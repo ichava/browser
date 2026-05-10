@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
+use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
+use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceSearchRequest;
+use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceUpdateRequest;
+use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconCollection;
+use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconResource;
+use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
 use Simtabi\Laranail\Ichava\Models\Icon;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconBrowserService;
 use Simtabi\Laranail\Ichava\Services\IconCacheService;
 use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceUpdateRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceSearchRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconResource;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconCollection;
-use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
+use Simtabi\Laranail\Ichava\Services\IconRegistry;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * IconBrowserApiController - RESTful API for Icon Browser
@@ -49,10 +51,10 @@ final class IconBrowserApiController extends BaseApiController
 
             $paginator = $this->browserService->getIcons(
                 filters: [
-                    'search'     => $request->getSearch(),
-                    'packages'   => $request->getPackages(),
+                    'search' => $request->getSearch(),
+                    'packages' => $request->getPackages(),
                     'categories' => $request->getCategories(),
-                    'variants'   => $request->getVariants(),
+                    'variants' => $request->getVariants(),
                 ],
                 page: $request->getPage(),
                 perPage: $request->getPerPage(),
@@ -69,20 +71,20 @@ final class IconBrowserApiController extends BaseApiController
             // Transform using IconCollection with grouping support
             $groupBy = $request->getSortBy();
             $collection = new IconCollection($paginator);
-            
+
             if ($groupBy) {
                 $collection->groupBy($groupBy);
             }
 
             return $collection->additional([
                 'meta' => [
-                    'total'        => $paginator->total(),
-                    'per_page'     => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                    'per_page' => $paginator->perPage(),
                     'current_page' => $paginator->currentPage(),
-                    'last_page'    => $paginator->lastPage(),
-                    'from'         => $paginator->firstItem(),
-                    'to'           => $paginator->lastItem(),
-                    'group_by'     => $groupBy,
+                    'last_page' => $paginator->lastPage(),
+                    'from' => $paginator->firstItem(),
+                    'to' => $paginator->lastItem(),
+                    'group_by' => $groupBy,
                 ],
             ])->response();
         } catch (IchavaException $e) {
@@ -172,7 +174,7 @@ final class IconBrowserApiController extends BaseApiController
                     $q->select('ichava_icon_terms.id', 'type', 'slug', 'name', 'package', 'parent_id');
                 },
                 'categories',
-                'variants'
+                'variants',
             ])->findOrFail($id);
 
             $this->logDebug('Icon details retrieved', [
@@ -185,7 +187,7 @@ final class IconBrowserApiController extends BaseApiController
                 'success' => true,
                 'data' => new IconResource($icon),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             $this->logWarning('Icon not found', ['icon_id' => $id]);
 
             return $this->notFoundResponse('Icon', $id);
@@ -204,7 +206,7 @@ final class IconBrowserApiController extends BaseApiController
         try {
             $icon = Icon::select(['id', 'name', 'package', 'path', 'file_hash'])
                 ->findOrFail($id);
-            
+
             $this->logDebug('Serving SVG', [
                 'icon_id' => $id,
                 'icon_name' => $icon->name,
@@ -213,7 +215,7 @@ final class IconBrowserApiController extends BaseApiController
 
             $svg = $icon->svg_content;
 
-            if (!$svg) {
+            if (! $svg) {
                 throw IchavaException::iconNotFound($icon->name, $icon->package);
             }
 
@@ -221,14 +223,19 @@ final class IconBrowserApiController extends BaseApiController
             // SvgProcessingService, browsers will execute scripts in an SVG
             // navigated to directly. Lock the response down with nosniff, a
             // restrictive CSP, and explicit non-attachment disposition.
+            // Filename is whitelisted to ASCII safe characters so a name with
+            // an embedded quote / newline / semicolon cannot break out of the
+            // header value (Content-Disposition header injection).
+            $safeFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $icon->name) ?: 'icon';
+
             return response($svg)
                 ->header('Content-Type', 'image/svg+xml; charset=utf-8')
                 ->header('X-Content-Type-Options', 'nosniff')
                 ->header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox")
-                ->header('Content-Disposition', "inline; filename=\"{$icon->name}.svg\"")
+                ->header('Content-Disposition', "inline; filename=\"{$safeFilename}.svg\"")
                 ->header('Cache-Control', 'public, max-age=31536000, immutable')
                 ->header('ETag', '"'.md5($svg).'"');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             $this->logWarning('Icon not found for SVG', ['icon_id' => $id]);
 
             return $this->notFoundResponse('Icon', $id);
@@ -275,7 +282,7 @@ final class IconBrowserApiController extends BaseApiController
             $this->logDebug('Fetching package details', ['package' => $package]);
 
             // Validate package name format
-            if (!preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/i', $package)) {
+            if (! preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/i', $package)) {
                 return $this->validationErrorResponse(
                     ['package' => ['Invalid package name format. Expected: vendor/package-name']],
                     'Invalid package name format'
@@ -283,17 +290,18 @@ final class IconBrowserApiController extends BaseApiController
             }
 
             // Get package info from registry (may throw IchavaException if not found)
-            $registry = app(\Simtabi\Laranail\Ichava\Services\IconRegistry::class);
-            
+            $registry = app(IconRegistry::class);
+
             try {
                 $packageData = $registry->get($package);
             } catch (IchavaException $e) {
                 // Package not registered
                 $this->logWarning('Package not found', ['package' => $package]);
+
                 return $this->notFoundResponse('Package', $package);
             }
 
-            if (!$packageData) {
+            if (! $packageData) {
                 return $this->notFoundResponse('Package', $package);
             }
 
@@ -301,14 +309,14 @@ final class IconBrowserApiController extends BaseApiController
             $iconCount = Icon::where('package', $package)->count();
 
             // Get the morph alias for the join condition (registered as 'icon' in morphMap)
-            $iconMorphAlias = (new Icon())->getMorphClass();
-            
+            $iconMorphAlias = (new Icon)->getMorphClass();
+
             // OPTIMIZED: Single query to get all term icon counts for this package
             $termIconCounts = \DB::table('ichava_icon_termables')
                 ->join('ichava_icons', function ($join) use ($package, $iconMorphAlias) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')
-                         ->where('ichava_icon_termables.termable_type', '=', $iconMorphAlias)
-                         ->where('ichava_icons.package', '=', $package);
+                        ->where('ichava_icon_termables.termable_type', '=', $iconMorphAlias)
+                        ->where('ichava_icons.package', '=', $package);
                 })
                 ->select('ichava_icon_termables.term_id')
                 ->selectRaw('COUNT(DISTINCT ichava_icons.id) as icon_count')
@@ -370,7 +378,7 @@ final class IconBrowserApiController extends BaseApiController
 
     /**
      * Get all categories with icon counts
-     * 
+     *
      * Returns ALL categories from the terms table, with icon counts from relationships.
      * Categories without icon relationships will have count = 0.
      */
@@ -380,7 +388,7 @@ final class IconBrowserApiController extends BaseApiController
             $this->logDebug('Fetching categories');
 
             // Get morph alias for icon relationships
-            $iconMorphAlias = (new Icon())->getMorphClass();
+            $iconMorphAlias = (new Icon)->getMorphClass();
 
             // Get ALL categories from terms table with icon counts
             $iconCounts = \DB::table('ichava_icon_termables')
@@ -422,7 +430,7 @@ final class IconBrowserApiController extends BaseApiController
 
     /**
      * Get all variants with icon counts
-     * 
+     *
      * Returns ALL variants from the terms table, with icon counts from relationships.
      * Variants without icon relationships will have count = 0.
      */
@@ -432,7 +440,7 @@ final class IconBrowserApiController extends BaseApiController
             $this->logDebug('Fetching variants');
 
             // Get morph alias for icon relationships
-            $iconMorphAlias = (new Icon())->getMorphClass();
+            $iconMorphAlias = (new Icon)->getMorphClass();
 
             // Get ALL variants from terms table with icon counts
             $iconCounts = \DB::table('ichava_icon_termables')
@@ -488,7 +496,7 @@ final class IconBrowserApiController extends BaseApiController
             $termIconCounts = \DB::table('ichava_icon_termables')
                 ->join('ichava_icons', function ($join) use ($iconMorphType) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')
-                         ->where('ichava_icon_termables.termable_type', '=', $iconMorphType);
+                        ->where('ichava_icon_termables.termable_type', '=', $iconMorphType);
                 })
                 ->select('ichava_icon_termables.term_id')
                 ->selectRaw('COUNT(DISTINCT ichava_icons.id) as icon_count')
@@ -571,7 +579,7 @@ final class IconBrowserApiController extends BaseApiController
 
             return response()->json([
                 'success' => true,
-                'data'    => $validated,
+                'data' => $validated,
             ]);
         } catch (IchavaException $e) {
             $this->logError('Failed to fetch preferences', $e);
@@ -622,7 +630,7 @@ final class IconBrowserApiController extends BaseApiController
 
             return response()->json([
                 'success' => true,
-                'data'    => [
+                'data' => [
                     'search' => $this->preferenceService->getSearch(),
                 ],
                 'message' => 'Search query updated successfully',
@@ -697,7 +705,7 @@ final class IconBrowserApiController extends BaseApiController
             return response()->json([
                 'success' => true,
                 'message' => 'Ichava icon cache cleared successfully',
-                'stats'   => $stats,
+                'stats' => $stats,
             ]);
         } catch (\Exception $e) {
             $this->logError('Failed to clear cache', $e);
@@ -742,7 +750,7 @@ final class IconBrowserApiController extends BaseApiController
             return response()->json([
                 'success' => true,
                 'healthy' => $healthy,
-                'stats'   => $stats,
+                'stats' => $stats,
             ]);
         } catch (IchavaException $e) {
             $this->logError('Failed to fetch cache stats', $e);
@@ -757,16 +765,16 @@ final class IconBrowserApiController extends BaseApiController
     protected function emptyIconResponse(IconFilterRequest $request, string $error): array
     {
         return [
-            'data'    => [],
+            'data' => [],
             'grouped' => [],
-            'meta'    => [
-                'total'        => 0,
-                'per_page'     => $request->getPerPage(),
+            'meta' => [
+                'total' => 0,
+                'per_page' => $request->getPerPage(),
                 'current_page' => 1,
-                'last_page'    => 1,
-                'from'         => null,
-                'to'           => null,
-                'group_by'     => $request->getSortBy(),
+                'last_page' => 1,
+                'from' => null,
+                'to' => null,
+                'group_by' => $request->getSortBy(),
             ],
             'error' => $error,
         ];
@@ -782,7 +790,7 @@ final class IconBrowserApiController extends BaseApiController
         foreach ($terms as $term) {
             if ($term['parent_id'] === $parentId) {
                 $children = $this->buildTermTree($terms, $term['id']);
-                if (!empty($children)) {
+                if (! empty($children)) {
                     $term['children'] = $children;
                 }
                 $tree[] = $term;
@@ -792,4 +800,3 @@ final class IconBrowserApiController extends BaseApiController
         return $tree;
     }
 }
-

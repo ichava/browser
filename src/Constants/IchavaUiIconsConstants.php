@@ -25,4 +25,3 @@ final class IchavaUiIconsConstants extends JsonConfigConstants
         return PathResolver::resolvePackagePath(self::class, levelsUp: 3, append: 'resources/assets/svg/ui-icons');
     }
 }
-

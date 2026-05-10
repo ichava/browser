@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\FavoritesApiController;
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\CollectionsApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\HistoryApiController;
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\CommandHistoryApiController;
+use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\FavoritesApiController;
+use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\HistoryApiController;
+use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiController;
 use Simtabi\Laranail\Ichava\Browser\Support\Helpers;
 
 /*
@@ -30,7 +30,7 @@ use Simtabi\Laranail\Ichava\Browser\Support\Helpers;
 // - ichava.security (XSS, SQL injection protection)
 // - ichava.json (force JSON responses)
 // - ichava.log (request logging in debug mode)
-Route::prefix(config('ichava.prefix', 'ichava') . '/api')
+Route::prefix(config('ichava.prefix', 'ichava').'/api')
     ->middleware('ichava.api')
     ->name('ichava.api.')
     ->group(function () {
@@ -280,4 +280,3 @@ Route::prefix(config('ichava.prefix', 'ichava') . '/api')
                     ->name('clear');
             });
     });
-

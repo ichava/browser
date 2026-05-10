@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * PreferenceUpdateRequest
- * 
+ *
  * Validates bulk preference updates for icon browser
  */
 class PreferenceUpdateRequest extends FormRequest
@@ -53,4 +53,3 @@ class PreferenceUpdateRequest extends FormRequest
         ];
     }
 }
-

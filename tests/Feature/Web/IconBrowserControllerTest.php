@@ -11,7 +11,6 @@ use Simtabi\Laranail\Ichava\Models\Icon;
  * future refactor cannot silently break the SPA mount, the stats dashboard,
  * or the two web-triggered cache operations.
  */
-
 describe('IconBrowserController::index', function () {
     it('renders the SPA mount view at the configured prefix', function () {
         $response = test()->get(route('ichava.browser'));
@@ -41,8 +40,8 @@ describe('IconBrowserController::stats', function () {
     it('shows per-package counts when icons exist in the database', function () {
         Icon::create([
             'package' => 'ichava/test-pack',
-            'name'    => 'star',
-            'path'    => '/fake/star.svg',
+            'name' => 'star',
+            'path' => '/fake/star.svg',
         ]);
 
         $response = test()->get(route('ichava.stats'));

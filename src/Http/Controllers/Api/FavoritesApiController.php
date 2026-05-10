@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
-use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Models\Icon;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
+use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 
 /**
  * FavoritesApiController - RESTful API for User Favorites
@@ -30,13 +30,13 @@ final class FavoritesApiController extends BaseApiController
     {
         try {
             $this->logDebug('Fetching favorites');
-            
+
             $favoriteIds = $this->preferenceService->getFavorites();
-            
+
             $icons = Icon::whereIn('id', $favoriteIds)
                 ->select(['id', 'name', 'package', 'path'])
                 ->get()
-                ->map(fn($icon) => [
+                ->map(fn ($icon) => [
                     'id' => $icon->id,
                     'name' => $icon->name,
                     'package' => $icon->package,
@@ -59,7 +59,7 @@ final class FavoritesApiController extends BaseApiController
     public function store(int $iconId): JsonResponse
     {
         try {
-            if (!$this->iconExists($iconId)) {
+            if (! $this->iconExists($iconId)) {
                 return $this->notFoundResponse('Icon', $iconId);
             }
 
@@ -96,12 +96,12 @@ final class FavoritesApiController extends BaseApiController
     public function toggle(int $iconId): JsonResponse
     {
         try {
-            if (!$this->iconExists($iconId)) {
+            if (! $this->iconExists($iconId)) {
                 return $this->notFoundResponse('Icon', $iconId);
             }
 
             $isFavorite = $this->preferenceService->toggleFavorite($iconId);
-            
+
             $this->logDebug('Favorite toggled', [
                 'icon_id' => $iconId,
                 'is_favorite' => $isFavorite,

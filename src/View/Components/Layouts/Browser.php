@@ -12,22 +12,19 @@ use Illuminate\View\View;
  *
  * Main layout wrapper for the Ichava icon browser.
  * Extends the base app layout with browser-specific header and structure.
- *
- * @package Simtabi\Laranail\Ichava\Browser\View\Components\Layouts
  */
 class Browser extends Component
 {
     /**
      * Create a new component instance.
      *
-     * @param string $title Page title
-     * @param array|null $statistics Icon statistics data
+     * @param  string  $title  Page title
+     * @param  array|null  $statistics  Icon statistics data
      */
     public function __construct(
         public string $title = 'Icon Browser',
         public ?array $statistics = null
-    ) {
-    }
+    ) {}
 
     /**
      * Get the view / contents that represent the component.
@@ -37,4 +34,3 @@ class Browser extends Component
         return view('ichava::components.layouts.browser');
     }
 }
-

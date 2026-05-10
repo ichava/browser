@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * PreferenceSearchRequest
- * 
+ *
  * Validates search query updates
  */
 class PreferenceSearchRequest extends FormRequest
@@ -45,4 +45,3 @@ class PreferenceSearchRequest extends FormRequest
         ];
     }
 }
-
