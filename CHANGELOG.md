@@ -25,7 +25,13 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 - AI-tell phrase scrub in `IconBrowserController`.
 - IchavaStatefulGuard docblock orphan-asterisk fixed; "Defence in depth" -> "Defense in depth".
 - Idiomatic-Laravel pass on `src/`: every raw `str_*` call in `IchavaApiSecurity`, `ValidateIchavaRoute`, and `SriAsset` replaced with `Str::*` equivalents; every raw `file_*` call in `InjectNpmScriptsCommand` replaced with `File::*` facade methods.
+- Exception details no longer leak to the rendered view in `IconBrowserController::{index, stats, clearCache, rebuildCache}`. The full exception is still logged with trace via `logger->error(...['exception' => $e])`; the user-facing flash / view error is now a generic message.
 - Pint formatting normalised to the project's CI ruleset.
+
+### Added (tests)
+
+- `tests/Feature/Middleware/IchavaApiSecurityTest.php` -- pins the security middleware (header emission, SQL/XSS/path-traversal rejection, Content-Type validation). 5 tests.
+- `tests/Feature/Api/IconsApiTest.php` -- 8 tests against `/ichava/api/icons*` endpoints (pagination contract, per_page minimum, SVG security headers, Content-Disposition filename escape).
 
 ## [1.0.0] - 2026-05-05
 

@@ -68,17 +68,18 @@ final class IconBrowserController extends Controller
                 'statistics' => $statistics,
             ]);
         } catch (\Exception $e) {
-            $this->logger->error('❌ Failed to load browser data', [
-                'error' => $e->getMessage(),
+            // Log full exception (with trace) but return a generic message to
+            // the view so internal details aren't leaked to end users.
+            $this->logger->error('Failed to load browser data', [
+                'exception' => $e,
             ]);
 
-            // Return view with empty data on error
             return view('ichava::browser.index', [
                 'packages' => [],
                 'categories' => [],
                 'preferences' => $this->preferenceService->getAll(),
                 'statistics' => null,
-                'error' => $e->getMessage(),
+                'error' => 'Unable to load icon browser. Please try again later.',
             ]);
         }
     }
@@ -152,8 +153,8 @@ final class IconBrowserController extends Controller
                 'cacheHealthy' => $cacheHealthy,
             ]);
         } catch (\Exception $e) {
-            $this->logger->error('❌ Failed to load statistics', [
-                'error' => $e->getMessage(),
+            $this->logger->error('Failed to load statistics', [
+                'exception' => $e,
             ]);
 
             return view('ichava::stats.index', [
@@ -168,7 +169,7 @@ final class IconBrowserController extends Controller
                 'topCategories' => [],
                 'cacheStats' => [],
                 'cacheHealthy' => false,
-                'error' => $e->getMessage(),
+                'error' => 'Unable to load statistics. Please try again later.',
             ]);
         }
     }
@@ -192,13 +193,13 @@ final class IconBrowserController extends Controller
                 ->back()
                 ->with('success', 'Ichava icon cache cleared successfully');
         } catch (IchavaException $e) {
-            $this->logger->error('❌ Failed to clear cache from web', [
-                'error' => $e->getMessage(),
+            $this->logger->error('Failed to clear cache from web', [
+                'exception' => $e,
             ]);
 
             return redirect()
                 ->back()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Cache clear failed. See application logs for details.');
         }
     }
 
@@ -220,8 +221,8 @@ final class IconBrowserController extends Controller
                 ->back()
                 ->with('success', 'Icon cache rebuilt successfully. Preferences have been reset.');
         } catch (IchavaException $e) {
-            $this->logger->error('❌ Failed to rebuild cache from web', [
-                'error' => $e->getMessage(),
+            $this->logger->error('Failed to rebuild cache from web', [
+                'exception' => $e,
             ]);
 
             return redirect()
