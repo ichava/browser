@@ -30,6 +30,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { sanitizeSvg } from '@/ichava-ts/utils/sanitizeSvg'
 import {
   Dialog,
   DialogContent,
@@ -469,7 +470,7 @@ onUnmounted(() => {
                         v-if="icon.svgContent || icon.svg_content"
                         class="w-full h-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full [&>svg]:w-auto [&>svg]:h-auto"
                         :style="{ maxWidth: `${iconSize}px`, maxHeight: `${iconSize}px` }"
-                        v-html="icon.svgContent || icon.svg_content"
+                        v-html="sanitizeSvg(icon.svgContent || icon.svg_content)"
                       />
                       <div
                         v-else
@@ -519,7 +520,7 @@ onUnmounted(() => {
                     class="icon-svg w-8 h-8 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
                     :class="{ 'icon-colored': iconColor }"
                     :style="iconColor ? { color: iconColor } : {}"
-                    v-html="icon.svgContent || icon.svg_content"
+                    v-html="sanitizeSvg(icon.svgContent || icon.svg_content)"
                   />
                   <div
                     v-else
@@ -713,7 +714,7 @@ onUnmounted(() => {
                   <div
                     v-if="icon.svgContent || icon.svg_content"
                     class="w-6 h-6 [&>svg]:w-full [&>svg]:h-full"
-                    v-html="icon.svgContent || icon.svg_content"
+                    v-html="sanitizeSvg(icon.svgContent || icon.svg_content)"
                   />
                 </div>
                 <div
@@ -842,7 +843,7 @@ onUnmounted(() => {
                     <div
                       v-if="icon.svgContent || icon.svg_content"
                       class="w-7 h-7 [&>svg]:w-full [&>svg]:h-full"
-                      v-html="icon.svgContent || icon.svg_content"
+                      v-html="sanitizeSvg(icon.svgContent || icon.svg_content)"
                     />
                   </div>
                   <div
@@ -957,7 +958,7 @@ onUnmounted(() => {
               >
                 <div
                   class="w-6 h-6 [&>svg]:w-full [&>svg]:h-full"
-                  v-html="entry.icon.svgContent || entry.icon.svg_content"
+                  v-html="sanitizeSvg(entry.icon.svgContent || entry.icon.svg_content)"
                 />
               </div>
             </div>

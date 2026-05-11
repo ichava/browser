@@ -33,6 +33,18 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 - `tests/Feature/Middleware/IchavaApiSecurityTest.php` -- pins the security middleware (header emission, SQL/XSS/path-traversal rejection, Content-Type validation). 5 tests.
 - `tests/Feature/Api/IconsApiTest.php` -- 8 tests against `/ichava/api/icons*` endpoints (pagination contract, per_page minimum, SVG security headers, Content-Disposition filename escape).
 
+### Added (frontend)
+
+- Client-side SVG sanitiser at `resources/assets/scripts/ichava-ts/utils/sanitizeSvg.ts` (DOMPurify wrapper with SVG allowlist + forbidden-tag list). Wired into all 8 `v-html` sites in `IconCard.vue`, `App.vue`, `IconModal.vue`, and `IconPreview.vue` for defense-in-depth on top of the existing server-side `SanitizesSvg` trait.
+- Vitest scaffold: `vitest.config.ts`, `npm run test:js` / `test:js:watch` scripts, happy-dom environment, Vue Test Utils + V8 coverage reporter, plus a starter `sanitizeSvg.test.ts` exercising the XSS-strip paths.
+- IconGrid pagination buttons now carry `role="navigation"`, `aria-label="Pagination"`, per-button `aria-label`, and `aria-current="page"` on the active page (accessibility).
+- `HttpClient::handleError()` signature changed from `error: any` to `error: unknown` with proper type narrowing (no behaviour change; tightens types).
+
+### Dependencies
+
+- Added `dompurify ^3.2.4` and `@types/dompurify ^3.0.5` to `dependencies`.
+- Added `vitest ^2.1.5`, `@vitest/coverage-v8 ^2.1.5`, `@vue/test-utils ^2.4.6`, and `happy-dom ^15.11.6` to `devDependencies`.
+
 ## [1.0.0] - 2026-05-05
 
 ### Added

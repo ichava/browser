@@ -65,16 +65,17 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                 </div>
 
                 <!-- Pagination Controls -->
-                <div class="join">
+                <div class="join" role="navigation" aria-label="Pagination">
                     <!-- First Page -->
                     <button
                         type="button"
                         class="join-item btn btn-sm"
                         title="First Page"
+                        aria-label="Go to first page"
                         :disabled="currentPage === 1"
                         @click="$emit('page-change', 1)"
                     >
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
                         </svg>
                     </button>
@@ -84,10 +85,11 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                         type="button"
                         class="join-item btn btn-sm"
                         title="Previous Page"
+                        aria-label="Go to previous page"
                         :disabled="currentPage === 1"
                         @click="$emit('page-change', currentPage - 1)"
                     >
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
                         </svg>
                     </button>
@@ -99,6 +101,8 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                         type="button"
                         class="join-item btn btn-sm"
                         :class="{ 'btn-active': page === currentPage }"
+                        :aria-label="`Go to page ${page}`"
+                        :aria-current="page === currentPage ? 'page' : undefined"
                         @click="$emit('page-change', page)"
                     >
                         {{ page }}
@@ -109,6 +113,8 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                         v-if="totalPages > 7 && currentPage < totalPages - 3"
                         type="button"
                         class="join-item btn btn-sm btn-disabled"
+                        aria-hidden="true"
+                        tabindex="-1"
                     >
                         ...
                     </button>
@@ -118,10 +124,11 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                         type="button"
                         class="join-item btn btn-sm"
                         title="Next Page"
+                        aria-label="Go to next page"
                         :disabled="currentPage === totalPages"
                         @click="$emit('page-change', currentPage + 1)"
                     >
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                         </svg>
                     </button>
@@ -131,10 +138,11 @@ High-performance icon grid with virtual scrolling for 87k+ icons.
                         type="button"
                         class="join-item btn btn-sm"
                         title="Last Page"
+                        aria-label="Go to last page"
                         :disabled="currentPage === totalPages"
                         @click="$emit('page-change', totalPages)"
                     >
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                             <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                             <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                         </svg>

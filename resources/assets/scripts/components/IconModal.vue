@@ -194,6 +194,7 @@ Uses shadcn-vue Dialog component.
 <script>
 import { ref, computed, watch } from 'vue';
 import { toast } from 'vue-sonner';
+import { sanitizeSvg } from '@/ichava-ts/utils/sanitizeSvg';
 import { 
     Dialog, 
     DialogContent, 
@@ -313,9 +314,14 @@ export default {
 
         const processedSvg = computed(() => {
             if (!svgContent.value) return '';
-            
+
+            // Sanitise FIRST so the DOM we manipulate is already trusted; the
+            // innerHTML assignment below would otherwise be the XSS surface.
+            const safeSource = sanitizeSvg(svgContent.value);
+            if (!safeSource) return '';
+
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = svgContent.value;
+            tempDiv.innerHTML = safeSource;
             const svg = tempDiv.querySelector('svg');
 
             if (svg) {
@@ -329,7 +335,7 @@ export default {
                 return svg.outerHTML;
             }
 
-            return svgContent.value;
+            return safeSource;
         });
 
         const loadSvgContent = async () => {

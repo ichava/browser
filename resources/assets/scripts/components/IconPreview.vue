@@ -49,7 +49,7 @@ Matches framework screenshot design.
 
                 <!-- Icon Preview -->
                 <div class="flex justify-center p-12 bg-base-200 rounded-lg mb-6">
-                    <div v-html="icon.svg" class="w-32 h-32"></div>
+                    <div v-html="sanitizedIconSvg" class="w-32 h-32"></div>
                 </div>
 
                 <!-- Tabs -->
@@ -136,6 +136,7 @@ Matches framework screenshot design.
 
 <script>
 import { ref, computed, onMounted } from 'vue';
+import { sanitizeSvg } from '@/ichava-ts/utils/sanitizeSvg';
 
 export default {
     name: 'IconPreview',
@@ -162,6 +163,9 @@ export default {
         const filePath = computed(() => {
             return `${props.icon.package}::${props.icon.category || 'default'}/${props.icon.name}`;
         });
+
+        // Defense-in-depth SVG sanitisation for v-html rendering.
+        const sanitizedIconSvg = computed(() => sanitizeSvg(props.icon?.svg ?? ''));
 
         const bladeCleanSyntax = computed(() => {
             return `<x-ichava::${props.icon.package} name="${props.icon.name}" category="${props.icon.category || ''}" class="w-6 h-6" />`;
@@ -217,6 +221,7 @@ export default {
             copied,
             isMounted,
             filePath,
+            sanitizedIconSvg,
             bladeCleanSyntax,
             bladeGenericSyntax,
             helperSyntax,

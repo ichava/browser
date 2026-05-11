@@ -81,6 +81,7 @@ Matches framework design with hover effects and lazy loading support.
 <script>
 import { computed } from 'vue';
 import { Button } from '@/components/ui/button';
+import { sanitizeSvg } from '@/ichava-ts/utils/sanitizeSvg';
 
 export default {
     name: 'IconCard',
@@ -109,12 +110,12 @@ export default {
 
         const processedSvg = computed(() => {
             if (!props.icon.svg_content) return '';
-            
+
             let svg = props.icon.svg_content.trim();
-            
+
             // Remove width/height attributes
             svg = svg.replace(/\s+(width|height)=["'][^"']*["']/gi, '');
-            
+
             // Add viewBox if missing
             if (!svg.includes('viewBox')) {
                 const widthMatch = props.icon.svg_content.match(/width=["'](\d+)["']/);
@@ -123,11 +124,14 @@ export default {
                 const height = heightMatch ? heightMatch[1] : '24';
                 svg = svg.replace('<svg', `<svg viewBox="0 0 ${width} ${height}"`);
             }
-            
+
             // Add responsive attributes
             svg = svg.replace('<svg', '<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet"');
-            
-            return svg;
+
+            // Defense-in-depth: server already sanitises but we filter again
+            // on the v-html boundary to protect against poisoned caches and
+            // any future regression on the API side.
+            return sanitizeSvg(svg);
         });
 
         const generateBladeComponent = (icon) => {

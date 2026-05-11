@@ -278,26 +278,32 @@ export class HttpClient {
   }
 
   /**
-   * Handle error response
+   * Handle error response.
+   *
+   * Accepts `unknown` and narrows via type guards so callers can pass raw
+   * caught exceptions without an upstream cast.
    */
-  private handleError(error: any): ApiResponse<never> {
+  private handleError(error: unknown): ApiResponse<never> {
     if (axios.isAxiosError(error) && error.response) {
       const { data, status } = error.response
-      
+      const payload = (data ?? {}) as { error?: string; message?: string; errors?: unknown; meta?: Record<string, unknown> }
+
       return {
         success: false,
-        error: data.error || data.message || 'An error occurred',
-        errors: data.errors,
+        error: payload.error || payload.message || 'An error occurred',
+        errors: payload.errors as ApiResponse<never>['errors'],
         meta: {
           status,
-          ...data.meta
+          ...(payload.meta ?? {})
         }
       }
     }
-    
+
+    const message = error instanceof Error ? error.message : 'Network error occurred'
+
     return {
       success: false,
-      error: error.message || 'Network error occurred',
+      error: message,
       meta: {
         status: 0
       }

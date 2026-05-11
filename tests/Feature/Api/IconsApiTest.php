@@ -15,7 +15,6 @@ use Simtabi\Laranail\Ichava\Models\Icon;
  * the assertions to validate JSON shape, pagination, error paths, and the
  * SVG response's security headers.
  */
-
 beforeEach(function () {
     // Two cache stores need clearing per test:
     //   1. default ('array') -- application cache, set by browser TestCase.
@@ -23,27 +22,30 @@ beforeEach(function () {
     //      filter / statistics / tree memoization persists across tests in
     //      the same Testbench storage path.
     Cache::flush();
-    try { Cache::store('file')->flush(); } catch (\Throwable) {}
+    try {
+        Cache::store('file')->flush();
+    } catch (Throwable) {
+    }
 
-    $this->package = 'ichava/test-' . bin2hex(random_bytes(4));
-    $this->otherPackage = 'ichava/other-' . bin2hex(random_bytes(4));
+    $this->package = 'ichava/test-'.bin2hex(random_bytes(4));
+    $this->otherPackage = 'ichava/other-'.bin2hex(random_bytes(4));
 
     Icon::create([
         'package' => $this->package,
-        'name'    => 'star',
-        'path'    => '/fake/star.svg',
+        'name' => 'star',
+        'path' => '/fake/star.svg',
     ]);
 
     Icon::create([
         'package' => $this->package,
-        'name'    => 'heart',
-        'path'    => '/fake/heart.svg',
+        'name' => 'heart',
+        'path' => '/fake/heart.svg',
     ]);
 
     Icon::create([
         'package' => $this->otherPackage,
-        'name'    => 'arrow',
-        'path'    => '/fake/arrow.svg',
+        'name' => 'arrow',
+        'path' => '/fake/arrow.svg',
     ]);
 });
 
@@ -106,8 +108,8 @@ describe('IconBrowserApiController::svg', function () {
     it('serves the SVG with the locked-down security headers', function () {
         $icon = Icon::create([
             'package' => 'ichava/headers-test',
-            'name'    => 'square',
-            'path'    => '/fake/square.svg',
+            'name' => 'square',
+            'path' => '/fake/square.svg',
         ]);
 
         // The endpoint reads $icon->svg_content which falls back to a stub
@@ -132,11 +134,11 @@ describe('IconBrowserApiController::svg', function () {
 
     it('sanitises the Content-Disposition filename against header injection', function () {
         // Create an icon with a name containing a quote + newline + semicolon
-        // — exactly the kind of payload that would break out of the header.
+        // -- exactly the kind of payload that would break out of the header.
         $icon = Icon::create([
             'package' => 'ichava/escape-test',
-            'name'    => 'evil"; rm -rf /'."\n".'X-Bad: yes',
-            'path'    => '/fake/evil.svg',
+            'name' => 'evil"; rm -rf /'."\n".'X-Bad: yes',
+            'path' => '/fake/evil.svg',
         ]);
 
         $response = test()->getJson(route('ichava.api.icons.svg', ['id' => $icon->id]));

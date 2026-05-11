@@ -10,7 +10,6 @@ declare(strict_types=1);
  * that the security response headers (CSP, X-Frame-Options, etc.) are emitted
  * on the happy path.
  */
-
 describe('IchavaApiSecurity::handle', function () {
     it('emits the standard security response headers on a clean request', function () {
         $response = test()->getJson(route('ichava.api.packages.index'));
