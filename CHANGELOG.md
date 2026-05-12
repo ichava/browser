@@ -6,6 +6,7 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ### Added
 
+- **`GET /api/icons/update-status` endpoint** (`UpdateStatusApiController`). Surfaces core's `IconPackUpdateChecker` over HTTP for host apps that want to display pack health on a dashboard / admin panel. Response shape mirrors `php artisan ichava:icons:check-updates --format=json` (`{ rows, summary }` with summary tallies for up-to-date / update-available / unreachable). Optional `?package=vendor/name` query filters to one pack. Rate-limited at 30/min (lower than other read endpoints because each call fans out to multiple upstream registries).
 - Web-route coverage for `IconBrowserController` (`tests/Feature/Web/IconBrowserControllerTest.php`) -- pins index/stats/clearCache/rebuildCache.
 - `tests/TestCase::defineEnvironment()` now sets `app.key`, the SQLite testing connection, and `cache.default = array` so Web tests that exercise sessions/cookies don't trip `MissingAppKeyException`.
 
