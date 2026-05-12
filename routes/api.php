@@ -8,6 +8,7 @@ use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\CommandHistoryApiContro
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\FavoritesApiController;
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\HistoryApiController;
 use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiController;
+use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\UpdateStatusApiController;
 use Simtabi\Laranail\Ichava\Browser\Support\Helpers;
 
 /*
@@ -72,6 +73,13 @@ Route::prefix(config('ichava.prefix', 'ichava').'/api')
                 Route::get('/statistics', [IconBrowserApiController::class, 'statistics'])
                     ->middleware(Helpers::getRateLimit('api', 60))
                     ->name('statistics');
+
+                // Upstream-tracking health: per-pack { current, latest, status }.
+                // Backed by core's IconPackUpdateChecker (12h cache); rate limit
+                // mirrors the read-only filters/tree endpoints.
+                Route::get('/update-status', [UpdateStatusApiController::class, 'index'])
+                    ->middleware(Helpers::getRateLimit('api', 30))
+                    ->name('update-status');
             });
 
         // =====================================================================
