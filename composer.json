@@ -26,7 +26,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4.1 || ^8.5",
         "ichava/core": "^1.0",
         "illuminate/support": "^13.0",
         "illuminate/view": "^13.0"
@@ -35,10 +35,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/ichava/core"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/laranail/package-tools"
         }
     ],
     "require-dev": {
