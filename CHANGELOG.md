@@ -2,6 +2,18 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-07-08
+
+### Changed (BREAKING)
+
+- Migrated to the `Simtabi\Laranail\Package\Tools` namespace
+  (laranail/package-tools 3.0 family).
+- PHP floor raised to `^8.4.1 || ^8.5`.
+- Resolves `ichava/core ^2.0` (the package-tools 3.0 family).
+- Composer metadata adopts the canonical OSS-portal URLs; CI test
+  matrix runs on PHP 8.4/8.5.
+
+
 ## [Unreleased]
 
 ### Added
