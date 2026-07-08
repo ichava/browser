@@ -12,11 +12,12 @@
         "vite",
         "ichava"
     ],
-    "homepage": "https://github.com/ichava/browser",
+    "homepage": "https://opensource.simtabi.com/products/ichava/browser",
     "support": {
         "source": "https://github.com/ichava/browser",
         "issues": "https://github.com/ichava/browser/issues",
-        "security": "https://github.com/ichava/browser/security/policy"
+        "security": "https://github.com/ichava/browser/security/policy",
+        "docs": "https://opensource.simtabi.com/documentation/ichava/browser/"
     },
     "license": "MIT",
     "authors": [
