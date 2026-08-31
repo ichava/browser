@@ -34,7 +34,7 @@ composer require ichava/browser
 Publish the browser config and the SPA assets:
 
 ```bash
-php artisan vendor:publish --tag=ichava-browser-config
+php artisan vendor:publish --tag=ichava::browser-config
 php artisan vendor:publish --tag=ichava-assets
 ```
 

@@ -26,7 +26,7 @@ npm i react@^19 react-dom@^19
 npm i file:../react-browser        # links @ichava/react-browser (the sibling repo)
 ```
 
-### 2. Config kill-switch — `config/ichava-browser.php`
+### 2. Config kill-switch — `config/ichava/browser.php`
 Add under the `browser` block (env-overridable, default OFF):
 ```php
 'react_ui_enabled' => env('ICHAVA_REACT_UI', false),
@@ -38,7 +38,7 @@ The Vue mount (`<div id="ichava-app">`, ~line 114) and the bundle `<script>`
 Compute the flag once near the top of the layout:
 ```blade
 @php
-    $useReact = config('ichava-browser.react_ui_enabled', false)
+    $useReact = config('ichava.browser.react_ui_enabled', false)
         && request()->query('ui') === 'react';
 @endphp
 ```
