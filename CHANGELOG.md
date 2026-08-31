@@ -17,8 +17,8 @@ are withdrawn: the ecosystem restarts from a single `0.1.0` across every package
   delivery, and `GET /api/icons/update-status`, which surfaces core's `IconPackUpdateChecker` for
   dashboards. Response shape mirrors `ichava:check-icon-updates --format=json`.
 - Vue 3 + Vite single-page browser with Blade views and layout components.
-- `HostCapabilities`, which adapts the middleware stack to whatever the host app provides —
-  Sanctum plus sessions, sessions only, or a stateless host — rather than assuming one shape.
+- `HostCapabilities`, which adapts the middleware stack to whatever the host app provides, 
+  Sanctum plus sessions, sessions only, or a stateless host: rather than assuming one shape.
 - `SriAsset` Blade component resolving subresource-integrity hashes from a Vite manifest or from
   disk.
 - A configurable security layer: CSP with `strict`/`nonce`/`hash` modes, HSTS, frame, referrer and
@@ -53,7 +53,7 @@ are withdrawn: the ecosystem restarts from a single `0.1.0` across every package
   `config/ichava-browser.php` while the package short name is `browser`, so it merged at
   `ichava.browser.ichava-browser.*` while all 27 read sites used `config('ichava-browser.*')`.
   Every one returned `null`, which left the CSP, HSTS, frame and referrer policies, the rate
-  limits, `max_request_size` and the CORS origins inert — the CORS default above included. The
+  limits, `max_request_size` and the CORS origins inert, the CORS default above included. The
   file is now `config/browser.php` and the key is `ichava.browser`.
 - `stats()` no longer fires three queries per registered package. Two batched `GROUP BY` queries
   fetch all icon and term counts, reassembled in PHP.
