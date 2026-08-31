@@ -1,0 +1,87 @@
+{
+    "name": "ichava/browser",
+    "description": "Visual icon browser for the Ichava ecosystem. Vue/Vite SPA, Blade views, REST API, and middleware for searching, previewing, and copying icons from installed Ichava icon packs.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "blade",
+        "icons",
+        "svg",
+        "browser",
+        "vue",
+        "vite",
+        "ichava"
+    ],
+    "homepage": "https://opensource.simtabi.com/products/ichava/browser",
+    "support": {
+        "source": "https://github.com/ichava/browser",
+        "issues": "https://github.com/ichava/browser/issues",
+        "security": "https://github.com/ichava/browser/security/policy",
+        "docs": "https://opensource.simtabi.com/documentation/ichava/browser/"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com"
+        }
+    ],
+    "require": {
+        "php": "^8.4.1 || ^8.5",
+        "ichava/core": "^0.1",
+        "illuminate/support": "^13.0",
+        "illuminate/view": "^13.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ichava/core"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/package-tools.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/enumerator.git"
+        }
+    ],
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^3.0",
+        "phpunit/phpunit": "^10.0|^11.0",
+        "laravel/pint": "^1.18"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Ichava\\Browser\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Ichava\\Browser\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\Ichava\\Browser\\Providers\\IchavaBrowserServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
