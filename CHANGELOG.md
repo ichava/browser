@@ -2,6 +2,31 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-09-02
+
+### Fixed
+
+- **`IchavaApiSecurity` no longer overwrites headers a route set deliberately.** It ran after
+  the controller and unconditionally `set()` every header, so the SVG endpoint's `immutable`
+  cache header and its tight `sandbox` CSP never reached a client and every icon was served
+  `no-store`. Routes now declare ownership through `IchavaApiSecurity::claimHeaders()`, limited
+  to an `OVERRIDABLE_HEADERS` allow-list — a route cannot opt out of `nosniff`,
+  `X-Frame-Options`, CORS or HSTS. A plain `has()` check could not implement this: Symfony
+  synthesises `Cache-Control: no-cache, private` on every response, so a `has()`-gated
+  middleware would have silently stopped sending `no-store` on the JSON API.
+- **The client SVG sanitiser fails closed.** It returned its raw input when DOMPurify was
+  unavailable, emitting unsanitised markup exactly when it could not sanitise. It now returns
+  an empty string.
+
+### Changed
+
+- **The SVG URL is content-addressed.** `IconResource::svg_url` publishes
+  `?v=<render_version>`, and the endpoint serves `public, max-age=31536000, immutable` only
+  when the request carries the current token; anything else gets
+  `public, max-age=300, must-revalidate` with the same ETag. Callers on the bare id URL keep
+  working and receive current bytes — they simply do not get a year of immutability on a URL
+  that cannot express which year. Requires `ichava/core` 0.1.1 for `Icon::render_version`.
+
 ## [0.1.0] - 2026-08-31
 
 First open-source release. The entire HTTP layer of the Ichava icon ecosystem: REST API, web

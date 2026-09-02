@@ -48,13 +48,27 @@ export function sanitizeSvg(input: unknown, opts: SanitizeOptions = {}): string 
         return ''
     }
 
-    // DOMPurify is a browser-only library (uses window.document). If it's
-    // unavailable (SSR, missing install), fall back to a pass-through and
-    // rely on server-side sanitisation. Log once in dev for visibility.
+    // DOMPurify is a browser-only library (uses window.document). When it is
+    // unavailable (SSR, missing install) this returned `input` -- raw,
+    // unsanitised markup -- justified by a comment claiming server-side
+    // sanitisation would cover it.
+    //
+    // Fail closed instead. Two reasons, and the second outlives the first:
+    //
+    //  1. The justification was false when it was written. `Icon::svg_content`
+    //     was a bare `File::get()` and the JSON API path sanitised nothing, so
+    //     on the path that mattered this was the only sanitiser and it opted
+    //     out exactly when it could not run.
+    //  2. It is still wrong now that the server does sanitise, because a
+    //     sanitiser whose error path emits its input is not a sanitiser. R4 in
+    //     the engineering brief: no `catch { return raw }`, on any path.
+    //
+    // An empty string renders nothing, which is visible and reportable. Raw
+    // markup renders something that looks correct. (`S4-c` / `S7`, W1-7c.)
     if (typeof DOMPurify?.sanitize !== 'function') {
         // eslint-disable-next-line no-console
-        console.warn('[ichava] DOMPurify unavailable; SVG rendered with server-side sanitisation only.')
-        return input
+        console.warn('[ichava] DOMPurify unavailable; refusing to render unsanitised SVG.')
+        return ''
     }
 
     const allowedTags = opts.allowStyle

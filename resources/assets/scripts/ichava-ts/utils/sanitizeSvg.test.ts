@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { sanitizeSvg, pickSanitizedSvg } from './sanitizeSvg'
 
 /**
@@ -16,6 +16,25 @@ describe('sanitizeSvg', () => {
 
     it('returns empty for the empty string', () => {
         expect(sanitizeSvg('')).toBe('')
+    })
+
+    // W1-7c / S4-c. This used to `return input` -- raw, unsanitised markup -- whenever
+    // DOMPurify was unavailable, on the reasoning that server-side sanitisation would
+    // cover it. That was false when written (the JSON API path sanitised nothing) and is
+    // still the wrong shape now that it is true: a sanitiser whose unavailable path emits
+    // its input opts out exactly when it cannot run. R4 -- fail closed.
+    it('returns an empty string, not the input, when DOMPurify is unavailable', async () => {
+        vi.resetModules()
+        vi.doMock('dompurify', () => ({ default: {} }))
+
+        const fresh = await import('./sanitizeSvg')
+        const hostile = '<svg onload="alert(1)"><script>alert(2)</script></svg>'
+
+        expect(fresh.sanitizeSvg(hostile)).toBe('')
+        expect(fresh.sanitizeSvg(hostile)).not.toContain('onload')
+
+        vi.doUnmock('dompurify')
+        vi.resetModules()
     })
 
     it('preserves a simple safe SVG', () => {

@@ -21,6 +21,40 @@ use Throwable;
 final class IchavaApiSecurity
 {
     /**
+     * Headers a route is allowed to own, overriding this middleware's default.
+     *
+     * Everything not listed here applies unconditionally: `X-Frame-Options`,
+     * `Referrer-Policy`, `Permissions-Policy`, CORS, CSP-report-only, HSTS and
+     * `nosniff` are site-wide policy and a route does not get to weaken them.
+     * These five are the ones a single response legitimately knows better
+     * about than the middleware does -- an immutable, content-addressed asset
+     * being the motivating case.
+     *
+     * Lower-case: header names are case-insensitive and this list is compared
+     * against `strtolower()`.
+     *
+     * @var list<string>
+     */
+    public const OVERRIDABLE_HEADERS = [
+        'cache-control',
+        'pragma',
+        'content-security-policy',
+        'etag',
+        'expires',
+    ];
+
+    /**
+     * Marker carrying the header names a route has claimed.
+     *
+     * A response header rather than a request attribute only because the
+     * controller actions that need it are not all handed the Request. It is
+     * removed unconditionally at the top of `addSecurityHeaders()`, so it never
+     * reaches a client through a route this middleware is applied to -- which
+     * is asserted by a test rather than assumed.
+     */
+    private const OWNERSHIP_HEADER = 'X-Ichava-Own-Headers';
+
+    /**
      * Suspicious SQL patterns to block
      */
     private const SQL_PATTERNS = [
@@ -285,9 +319,98 @@ final class IchavaApiSecurity
             $headers = array_merge($headers, $this->getCorsHeaders());
         }
 
+        /*
+         * Apply, but do not clobber a header the route deliberately set.
+         *
+         * This loop used to be an unconditional `set()` over every key, and it
+         * ran *after* the controller. The SVG endpoint's own
+         * `Cache-Control: public, max-age=31536000, immutable` and its tight
+         * `sandbox` CSP were both overwritten before the response left the
+         * application, so every one of 128,918 icons was served `no-store` and
+         * nothing cached -- not the browser, not a CDN. The endpoint's headers
+         * were correct all along and never reached a client. (`B4`, W1-7a.)
+         *
+         * A plain `has()` check is NOT sufficient here, and getting this wrong
+         * fails silently in the opposite direction. Symfony's ResponseHeaderBag
+         * synthesises `Cache-Control: no-cache, private` on construction, so
+         * `has('Cache-Control')` is true on *every* response and a `has()`-gated
+         * middleware would stop sending `no-store` on the JSON API entirely.
+         * Ownership therefore has to be declared, not inferred.
+         */
+        $owned = $this->claimedHeaders($response);
+
         foreach ($headers as $key => $value) {
+            if (in_array(mb_strtolower($key), $owned, true)) {
+                continue;
+            }
+
             $response->headers->set($key, $value);
         }
+
+        return $response;
+    }
+
+    /**
+     * Read and consume the ownership marker.
+     *
+     * Removed unconditionally, so the marker never survives into a response
+     * even when the route claimed nothing.
+     *
+     * @return list<string> lower-cased header names the route owns
+     */
+    private function claimedHeaders(Response $response): array
+    {
+        $raw = $response->headers->get(self::OWNERSHIP_HEADER);
+        $response->headers->remove(self::OWNERSHIP_HEADER);
+
+        if ($raw === null || $raw === '') {
+            return [];
+        }
+
+        return array_values(array_intersect(
+            array_map(
+                static fn (string $name): string => mb_strtolower(trim($name)),
+                explode(',', $raw)
+            ),
+            self::OVERRIDABLE_HEADERS
+        ));
+    }
+
+    /**
+     * Declare that this response owns the given headers.
+     *
+     * Call it from a controller alongside the headers themselves. Anything not
+     * in `OVERRIDABLE_HEADERS` is ignored rather than rejected: a route cannot
+     * opt out of `nosniff` or `X-Frame-Options` by asking to.
+     *
+     * Claiming a header the response does not set means the header is simply
+     * absent -- which is the point for `Pragma` on a cacheable asset, where the
+     * middleware's `no-cache` would otherwise fight an `immutable`
+     * `Cache-Control` in older intermediaries.
+     */
+    public static function claimHeaders(Response $response, string ...$names): Response
+    {
+        $claimed = array_values(array_intersect(
+            array_map(
+                static fn (string $name): string => mb_strtolower(trim($name)),
+                $names
+            ),
+            self::OVERRIDABLE_HEADERS
+        ));
+
+        if ($claimed === []) {
+            return $response;
+        }
+
+        $existing = $response->headers->get(self::OWNERSHIP_HEADER);
+        if ($existing !== null && $existing !== '') {
+            $claimed = array_values(array_unique(array_merge(
+                explode(',', $existing),
+                $claimed
+            )));
+        }
+
+        $response->headers->set(self::OWNERSHIP_HEADER, implode(',', $claimed));
 
         return $response;
     }

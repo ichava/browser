@@ -28,7 +28,7 @@
     ],
     "require": {
         "php": "^8.4.1 || ^8.5",
-        "ichava/core": "^0.1",
+        "ichava/core": "^0.1.1",
         "illuminate/support": "^13.0",
         "illuminate/view": "^13.0"
     },

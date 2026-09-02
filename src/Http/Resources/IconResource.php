@@ -45,7 +45,18 @@ class IconResource extends JsonResource
 
             // SVG Content & URL
             'svg_content' => $icon->svg_content,
-            'svg_url' => route('ichava.api.icons.svg', ['id' => $icon->id], false),
+            /*
+             * Content-addressed: `v` is the render version, so the URL changes
+             * whenever the served bytes would. That is what makes the endpoint's
+             * `immutable, max-age=31536000` honest -- without it the URL is keyed
+             * on id alone and a file changed under the same id serves stale for a
+             * year. Clients should use this URL as given rather than rebuilding
+             * it from the id. (W1-7b / `B0-b`.)
+             */
+            'svg_url' => route('ichava.api.icons.svg', [
+                'id' => $icon->id,
+                'v' => $icon->render_version,
+            ], false),
 
             // SVG Attributes (from JSON)
             'viewbox' => $icon->viewbox,
