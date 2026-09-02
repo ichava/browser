@@ -37,6 +37,36 @@ describe('sanitizeSvg', () => {
         vi.resetModules()
     })
 
+    /*
+     * The one test that cannot pass for the wrong reason.
+     *
+     * Every "strips X" assertion in this file is satisfied by returning an empty
+     * string, and every "preserves Y" assertion is satisfied by returning the
+     * input unchanged. Under happy-dom this suite did the first: DOMPurify
+     * stripped every element, so the file reported green while testing nothing
+     * (`V50`). Asserting removal AND survival of the same input in one test
+     * closes both escapes at once -- it fails if the sanitiser returns nothing,
+     * and it fails if the sanitiser is a passthrough.
+     */
+    it('removes the hostile part and keeps the legitimate part of one input', () => {
+        const mixed = '<svg viewBox="0 0 24 24" onload="alert(1)">'
+            + '<script>alert(2)</script>'
+            + '<path d="M0 0h24v24" fill="currentColor"/>'
+            + '</svg>'
+        const out = sanitizeSvg(mixed)
+
+        // Removed.
+        expect(out).not.toContain('onload')
+        expect(out.toLowerCase()).not.toContain('<script')
+        // Survived -- so the output is neither empty nor the input.
+        expect(out).toContain('<svg')
+        expect(out).toContain('viewBox="0 0 24 24"')
+        expect(out).toContain('d="M0 0h24v24"')
+        expect(out).toContain('currentColor')
+        expect(out).not.toBe(mixed)
+        expect(out).not.toBe('')
+    })
+
     it('preserves a simple safe SVG', () => {
         const safe = '<svg viewBox="0 0 24 24"><path d="M0 0h24v24"/></svg>'
         const out = sanitizeSvg(safe)

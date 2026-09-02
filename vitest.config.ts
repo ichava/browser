@@ -9,9 +9,12 @@ import { fileURLToPath, URL } from 'node:url'
  *
  * Tests live alongside their source under `resources/assets/scripts/`
  * with a `.test.ts` or `.spec.ts` suffix (or under any `__tests__/` dir).
- * happy-dom is used as the DOM environment so DOMPurify, Vue Test Utils,
- * and any code that touches `window`/`document` works without launching a
- * real browser.
+ * jsdom is the DOM environment. It is not interchangeable with happy-dom here:
+ * under happy-dom (tested at both 15 and 20) DOMPurify strips *every* element --
+ * `sanitize('<b>hi</b>')` returns `hi` -- so the sanitiser suite passed by
+ * returning nothing, and every "strips X" assertion was true for the wrong
+ * reason. `V50` in .claude/audits/AUDIT.md. If you change this line, run the
+ * positive assertions in sanitizeSvg.test.ts and check they still pass.
  */
 export default defineConfig({
     plugins: [vue()],
@@ -22,7 +25,7 @@ export default defineConfig({
     },
     test: {
         globals: true,
-        environment: 'happy-dom',
+        environment: 'jsdom',
         include: [
             'resources/assets/scripts/**/*.{test,spec}.{ts,vue}',
             'resources/assets/scripts/**/__tests__/**/*.{ts,vue}',

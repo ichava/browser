@@ -14,6 +14,12 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   `X-Frame-Options`, CORS or HSTS. A plain `has()` check could not implement this: Symfony
   synthesises `Cache-Control: no-cache, private` on every response, so a `has()`-gated
   middleware would have silently stopped sending `no-store` on the JSON API.
+- **The frontend test environment no longer hides sanitiser failures.** Under happy-dom
+  (tested at 15 and 20) DOMPurify strips every element — `sanitize('<b>hi</b>')` returns
+  `hi` — so the sanitiser suite passed by returning nothing and every "strips X" assertion
+  was true for the wrong reason. Switched to jsdom, and added an assertion that checks
+  removal and survival of the same input, which fails both for an empty return and for a
+  passthrough.
 - **The client SVG sanitiser fails closed.** It returned its raw input when DOMPurify was
   unavailable, emitting unsanitised markup exactly when it could not sanitise. It now returns
   an empty string.
