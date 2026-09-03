@@ -26,6 +26,15 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ### Changed
 
+- **Client SVG sanitisation derives from the shared policy.** The allow-lists were literals
+  in `sanitizeSvg.ts`, which is how this runtime and the server drifted apart: `W1-6` widened
+  the server and nothing widened the client, and a census then measured 3,507 icons rendering
+  correctly on the Blade path and wrong in the SPA — metronic worst at 266 of 501. Both now
+  read `security/svg-policy.json`.
+- **`SanitizeOptions.allowStyle` removed.** It had no callers and had stopped doing anything:
+  the policy lists the `style` element in `forbiddenTags`, and DOMPurify's `FORBID_TAGS` wins
+  over `ALLOWED_TAGS`, so it could only ever have appeared to work. The style *attribute* is
+  separate and is allowed.
 - **The SVG URL is content-addressed.** `IconResource::svg_url` publishes
   `?v=<render_version>`, and the endpoint serves `public, max-age=31536000, immutable` only
   when the request carries the current token; anything else gets

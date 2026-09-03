@@ -7,43 +7,48 @@
  * been poisoned with pre-sanitiser SVG, (b) future regressions on the server
  * side, and (c) any direct DOM manipulation that bypasses Vue's escaping.
  *
- * Falls back to a no-op when DOMPurify is unavailable so an unbundled / dev
- * environment still renders icons; production should always have DOMPurify
- * via `npm install`.
+ * Fails closed when DOMPurify is unavailable: an empty string, never the raw
+ * input. The allow-lists come from `security/svg-policy.json`, the single
+ * definition all four runtimes in this ecosystem read.
  */
 
 import DOMPurify from 'dompurify'
+import {
+    allowedAttributeNames,
+    fragmentPattern,
+    styleValueIsSafe,
+    svgPolicy,
+} from '../security/svgPolicy'
 
-interface SanitizeOptions {
-    /** Allow `<style>` tags (for icons that ship inline CSS) */
-    allowStyle?: boolean
-}
+/*
+ * `SanitizeOptions.allowStyle` was removed on 2026-09-02. It had no callers, and
+ * it had stopped doing anything: the policy lists the `style` ELEMENT in
+ * `forbiddenTags`, and DOMPurify's FORBID_TAGS wins over ALLOWED_TAGS, so the
+ * option could only ever have appeared to work. Blocking the element is a
+ * deliberate decision (OQ-011) -- 54 corpus files contain one and only 2 depend
+ * on it for paint, so it costs 2 known-degraded icons and removes the
+ * CSS-exfiltration surface. The style ATTRIBUTE is separate and is allowed.
+ */
 
-const SVG_TAG_ALLOWLIST = [
-    'svg', 'g', 'defs', 'symbol', 'use',
-    'path', 'circle', 'ellipse', 'line', 'polyline', 'polygon', 'rect',
-    'linearGradient', 'radialGradient', 'stop',
-    'clipPath', 'mask',
-    'text', 'tspan', 'textPath',
-    'title', 'desc',
-] as const
+/*
+ * The allow-lists come from the shared policy, not from literals here.
+ *
+ * They were literals until 2026-09-02, and that is how this runtime and the
+ * server drifted apart: W1-6 widened the server and nothing widened this file,
+ * so a census measured 3,507 icons rendering correctly on the Blade path and
+ * wrong in the SPA -- metronic worst at 266 of 501. Editing this file to "fix"
+ * an icon is how that happens again. Edit the canonical policy instead.
+ */
+const SVG_TAG_ALLOWLIST = svgPolicy.allowedTags
 
-const SVG_ATTR_ALLOWLIST = [
-    'viewBox', 'width', 'height', 'fill', 'stroke', 'stroke-width',
-    'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-opacity',
-    'fill-rule', 'clip-rule', 'fill-opacity',
-    'd', 'cx', 'cy', 'r', 'rx', 'ry', 'x', 'y', 'x1', 'x2', 'y1', 'y2',
-    'transform', 'opacity', 'points', 'offset', 'stop-color',
-    'id', 'class', 'aria-label', 'aria-hidden', 'role',
-    'preserveAspectRatio', 'xmlns', 'xmlns:xlink',
-] as const
+const SVG_ATTR_ALLOWLIST = allowedAttributeNames()
 
 /**
  * Sanitise SVG markup for v-html rendering. Returns an empty string when the
  * input is not a string or DOMPurify rejects the content; callers should
  * treat empty output as "do not render".
  */
-export function sanitizeSvg(input: unknown, opts: SanitizeOptions = {}): string {
+export function sanitizeSvg(input: unknown): string {
     if (typeof input !== 'string' || input.length === 0) {
         return ''
     }
@@ -71,18 +76,48 @@ export function sanitizeSvg(input: unknown, opts: SanitizeOptions = {}): string 
         return ''
     }
 
-    const allowedTags = opts.allowStyle
-        ? [...SVG_TAG_ALLOWLIST, 'style']
-        : [...SVG_TAG_ALLOWLIST]
+    /*
+     * Two rules DOMPurify has no vocabulary for are enforced in a hook, added and
+     * removed around this call so it never touches the shared instance (`S8` --
+     * a permanently installed hook silently strips non-fragment hrefs for every
+     * other consumer in the bundle).
+     *
+     * Fragment-only refs are deliberately NOT expressed as `ALLOWED_URI_REGEXP`:
+     * that regexp is tested against every attribute value not on DOMPurify's
+     * URI-safe list, so narrowing it to `^#` strips `viewBox` and `d` too, and
+     * every icon renders empty. Measured, not assumed.
+     */
+    const fragment = fragmentPattern()
+    const refAttributes = svgPolicy.fragmentOnlyRefs.attributes
 
-    return DOMPurify.sanitize(input, {
-        USE_PROFILES: { svg: true, svgFilters: false },
-        ALLOWED_TAGS: allowedTags as unknown as string[],
-        ALLOWED_ATTR: [...SVG_ATTR_ALLOWLIST],
-        FORBID_TAGS: ['script', 'foreignObject', 'iframe', 'object', 'embed'],
-        FORBID_ATTR: ['onload', 'onerror', 'onclick', 'href', 'xlink:href'],
-        KEEP_CONTENT: false,
-    })
+    const guard = (node: Node): void => {
+        const el = node as Element
+
+        for (const attr of refAttributes) {
+            const v = el.getAttribute?.(attr)
+            if (v != null && !fragment.test(v)) el.removeAttribute(attr)
+        }
+
+        const style = el.getAttribute?.('style')
+        if (style != null && !styleValueIsSafe(style)) el.removeAttribute('style')
+    }
+
+    DOMPurify.addHook('afterSanitizeAttributes', guard)
+
+    try {
+        return DOMPurify.sanitize(input, {
+            ALLOWED_TAGS: [...SVG_TAG_ALLOWLIST],
+            ALLOWED_ATTR: [...SVG_ATTR_ALLOWLIST],
+            FORBID_TAGS: [...svgPolicy.forbiddenTags],
+            ALLOW_ARIA_ATTR: true,
+            ALLOW_DATA_ATTR: false,
+            KEEP_CONTENT: false,
+        })
+    } finally {
+        // try/finally, not a trailing call: a throw inside sanitize() would
+        // otherwise leak the hook onto the shared instance permanently.
+        DOMPurify.removeHook('afterSanitizeAttributes')
+    }
 }
 
 /**
