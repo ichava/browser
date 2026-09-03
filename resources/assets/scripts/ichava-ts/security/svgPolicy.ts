@@ -30,8 +30,8 @@ export const svgPolicy = policy as unknown as SvgPolicyShape
 /**
  * The by-name allow-list, which is NOT simply `policy.allowedAttributes`.
  *
- * The policy keeps value-restricted attributes in their own blocks — `style`
- * under `styleAttribute`, `href`/`xlink:href` under `fragmentOnlyRefs` — so a
+ * The policy keeps value-restricted attributes in their own blocks -- `style`
+ * under `styleAttribute`, `href`/`xlink:href` under `fragmentOnlyRefs` -- so a
  * consumer reading only `allowedAttributes` strips `style`, the sole paint
  * source for 261 of 501 metronic icons. That is the mistake this file existed
  * to make: before it was wired to the policy, this runtime stripped `style` and

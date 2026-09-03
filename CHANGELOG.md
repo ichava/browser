@@ -10,13 +10,13 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   the controller and unconditionally `set()` every header, so the SVG endpoint's `immutable`
   cache header and its tight `sandbox` CSP never reached a client and every icon was served
   `no-store`. Routes now declare ownership through `IchavaApiSecurity::claimHeaders()`, limited
-  to an `OVERRIDABLE_HEADERS` allow-list — a route cannot opt out of `nosniff`,
+  to an `OVERRIDABLE_HEADERS` allow-list -- a route cannot opt out of `nosniff`,
   `X-Frame-Options`, CORS or HSTS. A plain `has()` check could not implement this: Symfony
   synthesises `Cache-Control: no-cache, private` on every response, so a `has()`-gated
   middleware would have silently stopped sending `no-store` on the JSON API.
 - **The frontend test environment no longer hides sanitiser failures.** Under happy-dom
-  (tested at 15 and 20) DOMPurify strips every element — `sanitize('<b>hi</b>')` returns
-  `hi` — so the sanitiser suite passed by returning nothing and every "strips X" assertion
+  (tested at 15 and 20) DOMPurify strips every element -- `sanitize('<b>hi</b>')` returns
+  `hi` -- so the sanitiser suite passed by returning nothing and every "strips X" assertion
   was true for the wrong reason. Switched to jsdom, and added an assertion that checks
   removal and survival of the same input, which fails both for an empty return and for a
   passthrough.
@@ -29,7 +29,7 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 - **Client SVG sanitisation derives from the shared policy.** The allow-lists were literals
   in `sanitizeSvg.ts`, which is how this runtime and the server drifted apart: `W1-6` widened
   the server and nothing widened the client, and a census then measured 3,507 icons rendering
-  correctly on the Blade path and wrong in the SPA — metronic worst at 266 of 501. Both now
+  correctly on the Blade path and wrong in the SPA -- metronic worst at 266 of 501. Both now
   read `security/svg-policy.json`.
 - **`SanitizeOptions.allowStyle` removed.** It had no callers and had stopped doing anything:
   the policy lists the `style` element in `forbiddenTags`, and DOMPurify's `FORBID_TAGS` wins
@@ -39,7 +39,7 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   `?v=<render_version>`, and the endpoint serves `public, max-age=31536000, immutable` only
   when the request carries the current token; anything else gets
   `public, max-age=300, must-revalidate` with the same ETag. Callers on the bare id URL keep
-  working and receive current bytes — they simply do not get a year of immutability on a URL
+  working and receive current bytes -- they simply do not get a year of immutability on a URL
   that cannot express which year. Requires `ichava/core` 0.1.1 for `Icon::render_version`.
 
 ## [0.1.0] - 2026-08-31
