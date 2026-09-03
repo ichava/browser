@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { sanitizeSvg, pickSanitizedSvg } from './sanitizeSvg'
 
 /**
@@ -16,6 +16,55 @@ describe('sanitizeSvg', () => {
 
     it('returns empty for the empty string', () => {
         expect(sanitizeSvg('')).toBe('')
+    })
+
+    // W1-7c / S4-c. This used to `return input` -- raw, unsanitised markup -- whenever
+    // DOMPurify was unavailable, on the reasoning that server-side sanitisation would
+    // cover it. That was false when written (the JSON API path sanitised nothing) and is
+    // still the wrong shape now that it is true: a sanitiser whose unavailable path emits
+    // its input opts out exactly when it cannot run. R4 -- fail closed.
+    it('returns an empty string, not the input, when DOMPurify is unavailable', async () => {
+        vi.resetModules()
+        vi.doMock('dompurify', () => ({ default: {} }))
+
+        const fresh = await import('./sanitizeSvg')
+        const hostile = '<svg onload="alert(1)"><script>alert(2)</script></svg>'
+
+        expect(fresh.sanitizeSvg(hostile)).toBe('')
+        expect(fresh.sanitizeSvg(hostile)).not.toContain('onload')
+
+        vi.doUnmock('dompurify')
+        vi.resetModules()
+    })
+
+    /*
+     * The one test that cannot pass for the wrong reason.
+     *
+     * Every "strips X" assertion in this file is satisfied by returning an empty
+     * string, and every "preserves Y" assertion is satisfied by returning the
+     * input unchanged. Under happy-dom this suite did the first: DOMPurify
+     * stripped every element, so the file reported green while testing nothing
+     * (`V50`). Asserting removal AND survival of the same input in one test
+     * closes both escapes at once -- it fails if the sanitiser returns nothing,
+     * and it fails if the sanitiser is a passthrough.
+     */
+    it('removes the hostile part and keeps the legitimate part of one input', () => {
+        const mixed = '<svg viewBox="0 0 24 24" onload="alert(1)">'
+            + '<script>alert(2)</script>'
+            + '<path d="M0 0h24v24" fill="currentColor"/>'
+            + '</svg>'
+        const out = sanitizeSvg(mixed)
+
+        // Removed.
+        expect(out).not.toContain('onload')
+        expect(out.toLowerCase()).not.toContain('<script')
+        // Survived -- so the output is neither empty nor the input.
+        expect(out).toContain('<svg')
+        expect(out).toContain('viewBox="0 0 24 24"')
+        expect(out).toContain('d="M0 0h24v24"')
+        expect(out).toContain('currentColor')
+        expect(out).not.toBe(mixed)
+        expect(out).not.toBe('')
     })
 
     it('preserves a simple safe SVG', () => {

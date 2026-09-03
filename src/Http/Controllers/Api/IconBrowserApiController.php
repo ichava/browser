@@ -6,6 +6,8 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceSearchRequest;
@@ -201,7 +203,7 @@ final class IconBrowserApiController extends BaseApiController
     /**
      * Serve SVG file with caching (returns JSON for API consistency)
      */
-    public function svg(int $id): Response
+    public function svg(Request $request, int $id): Response
     {
         try {
             $icon = Icon::select(['id', 'name', 'package', 'path', 'file_hash'])
@@ -230,13 +232,53 @@ final class IconBrowserApiController extends BaseApiController
             // header value (Content-Disposition header injection).
             $safeFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $icon->name) ?: 'icon';
 
-            return response($svg)
+            /*
+             * `immutable` is a promise that this URL's bytes will never change.
+             * It is only true when the URL identifies the content, so it is
+             * earned by the `v` token and withheld otherwise (W1-7b / `B0-b`).
+             *
+             * A caller arriving without `v`, or with a stale one, still gets the
+             * current bytes -- never a 404 and never a redirect, because the id
+             * URL is a published contract and half the ecosystem's copy-paste
+             * snippets contain it. What it does not get is a year of immutability
+             * on a URL that cannot express which year.
+             *
+             * The ETag covers both cases: a short max-age plus a strong validator
+             * means the revalidating path costs a 304, not a re-download.
+             */
+            $isVersioned = $request->query('v') === $icon->render_version;
+
+            $cacheControl = $isVersioned
+                ? 'public, max-age=31536000, immutable'
+                : 'public, max-age=300, must-revalidate';
+
+            $response = response($svg)
                 ->header('Content-Type', 'image/svg+xml; charset=utf-8')
                 ->header('X-Content-Type-Options', 'nosniff')
                 ->header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox")
                 ->header('Content-Disposition', "inline; filename=\"{$safeFilename}.svg\"")
-                ->header('Cache-Control', 'public, max-age=31536000, immutable')
+                ->header('Cache-Control', $cacheControl)
                 ->header('ETag', '"'.md5($svg).'"');
+
+            /*
+             * Claim the headers this action sets, or IchavaApiSecurity overwrites
+             * them on the way out and the client receives `no-store` plus the
+             * site-wide CSP instead (`B4`). `Pragma` is claimed without being set:
+             * the middleware's `no-cache` would otherwise contradict `immutable`
+             * for older intermediaries.
+             *
+             * The response is still not safely cacheable for a year -- the URL is
+             * keyed on id, not content, so a file changed under the same id serves
+             * stale. That is W1-7b and it is now unmasked rather than introduced:
+             * before this claim, nothing cached at all.
+             */
+            return IchavaApiSecurity::claimHeaders(
+                $response,
+                'Cache-Control',
+                'Pragma',
+                'Content-Security-Policy',
+                'ETag',
+            );
         } catch (ModelNotFoundException $e) {
             $this->logWarning('Icon not found for SVG', ['icon_id' => $id]);
 
