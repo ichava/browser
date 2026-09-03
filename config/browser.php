@@ -7,6 +7,21 @@ use Simtabi\Laranail\Ichava\Constants\IchavaConstants;
 return [
     /*
     |--------------------------------------------------------------------------
+    | React frontend (R-P16, parallel run)
+    |--------------------------------------------------------------------------
+    | Server-side kill switch for the React 19 rebuild, mounted behind BOTH this
+    | flag and the `?ui=react` query string -- neither alone is enough, so the
+    | URL parameter can never turn the feature on for a host that has not opted
+    | in, and this flag alone (with the query param absent) never changes what
+    | any existing user sees. Off by default: Vue is the reference until
+    | cutover (see PLAN.md R-P17, gated on W1 being complete -- it now is).
+    | Flip ICHAVA_REACT_UI=false at any time to fall back to Vue with no
+    | deploy.
+    */
+    'react_ui_enabled' => env('ICHAVA_REACT_UI', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Vite dev mode (HMR)
     |--------------------------------------------------------------------------
     | Enable Vite's hot-module-reload dev server during local development.
