@@ -14,7 +14,8 @@
     "types": ["vite/client"],
     "paths": {
       "@ichava/react-browser": ["../../../../../react-browser/src/index.ts"],
-      "@ichava/react-browser/styles.css": ["../../../../../react-browser/src/styles/theme.css"]
+      "@ichava/react-browser/styles.css": ["../../../../../react-browser/src/styles/theme.css"],
+      "@/*": ["../../../../../react-browser/src/*"]
     }
   },
   "include": ["."]

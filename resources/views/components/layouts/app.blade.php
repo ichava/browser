@@ -12,6 +12,16 @@
     $preferences = app(\Simtabi\Laranail\Ichava\Services\IconPreferenceService::class)->getAll();
     $isDark = $preferences['preferences']['is_dark'] ?? true;
     $themeClass = $isDark ? 'dark' : '';
+
+    // R-P16 kill switch. Both a config flag AND the query param are required, so
+    // ?ui=react alone never does anything on a host that has not opted in --
+    // ICHAVA_REACT_UI=false disables the whole feature without a deploy, and
+    // 'react_ui_enabled' cannot itself be flipped by a URL. Only meaningful when
+    // $vueApp is also true: a Blade-content page ($vueApp=false) has no app shell
+    // for either frontend to mount into.
+    $useReact = $vueApp
+        && config('ichava.browser.react_ui_enabled', false)
+        && request()->query('ui') === 'react';
 @endphp
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="{{ $themeClass }} h-full" data-theme="{{ $isDark ? 'dark' : 'light' }}">
@@ -100,14 +110,29 @@
             'ichava.api.cache.stats' => route('ichava.api.cache.stats'),
         ];
     @endphp
+    @php
+        // A PARTIAL AppConfig, merged over the React client's own CONFIG_DEFAULTS
+        // by `resolveConfig()` -- so an empty object here is a legitimate value,
+        // not a placeholder. Host-specific overrides (locale, theme, per_page)
+        // belong to a real `GET /config` endpoint (R-P4, not started) rather than
+        // an ad-hoc shape grown here; kept empty deliberately until that exists.
+        $ichavaConfig = [];
+    @endphp
     <script>
         window.ichavaRoutes = @json($ichavaRoutes);
+        window.ichavaConfig = @json($ichavaConfig);
     </script>
 </head>
 <body class="antialiased h-full bg-white text-gray-900 dark:bg-[#0a0d1a] dark:text-gray-100">
 
-    @if($vueApp)
-        {{-- 
+    @if($useReact)
+        {{--
+            REACT APP MODE (R-P16, behind ICHAVA_REACT_UI + ?ui=react)
+            React controls the entire UI. Vue is untouched at the default route.
+        --}}
+        <div id="ichava-app-react"></div>
+    @elseif($vueApp)
+        {{--
             VUE APP MODE
             Vue controls the entire UI (icon browser)
         --}}
@@ -183,7 +208,11 @@
         </script>
     @endif
 
-    @if($vueApp)
+    @if($useReact)
+        {{-- Ichava React Application (R-P16, only when the React mount node above is present) --}}
+        <link rel="stylesheet" href="{{ asset('vendor/ichava/assets/css/ichava-react.css') }}?v={{ \Simtabi\Laranail\Ichava\Support\Helpers::assetVersion('vendor/ichava/assets/css/ichava-react.css') }}">
+        <script src="{{ asset('vendor/ichava/assets/js/ichava-react.js') }}?v={{ \Simtabi\Laranail\Ichava\Support\Helpers::assetVersion('vendor/ichava/assets/js/ichava-react.js') }}" type="module"></script>
+    @elseif($vueApp)
         {{-- Ichava Vue.js Application (only for Vue mode) --}}
 <script src="{{ asset('vendor/ichava/assets/js/ichava.js') }}?v={{ \Simtabi\Laranail\Ichava\Support\Helpers::assetVersion('vendor/ichava/assets/js/ichava.js') }}" type="module"></script>
     @endif

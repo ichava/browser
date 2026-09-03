@@ -24,6 +24,12 @@ export default defineConfig({
     alias: {
       '@ichava/react-browser/styles.css': lib('src/styles/theme.css'),
       '@ichava/react-browser': lib('src/index.ts'),
+      // The library's own source imports itself via `@/...` (its vite.config.ts
+      // aliases `@` to its own `src/`); Vite resolves aliases per-file, so files
+      // pulled in through the alias above still need this to resolve their own
+      // internal imports -- without it, anything IchavaBrowser.tsx imports as
+      // `@/store`, `@/core/...` etc. fails to resolve in this build too.
+      '@': lib('src'),
     },
   },
   build: {
