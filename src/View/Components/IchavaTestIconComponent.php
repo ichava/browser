@@ -51,7 +51,7 @@ class IchavaTestIconComponent extends BaseIconComponent
      */
     protected function getIconSet(): string
     {
-        return IchavaTestIconsConstants::getName();
+        return IchavaTestIconsConstants::getPackageName();
     }
 
     /**

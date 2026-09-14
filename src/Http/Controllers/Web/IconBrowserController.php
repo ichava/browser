@@ -7,6 +7,7 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Simtabi\Laranail\Ichava\Models\IconTerm;
@@ -127,7 +128,7 @@ final class IconBrowserController extends Controller
 
             // Get top categories - use morph alias (registered as 'icon' in morphMap)
             $iconMorphAlias = (new Icon)->getMorphClass();
-            $topCategories = \DB::table('ichava_icon_termables')
+            $topCategories = DB::table('ichava_icon_termables')
                 ->join('ichava_icon_terms', 'ichava_icon_termables.term_id', '=', 'ichava_icon_terms.id')
                 ->join('ichava_icons', function ($join) use ($iconMorphAlias) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')

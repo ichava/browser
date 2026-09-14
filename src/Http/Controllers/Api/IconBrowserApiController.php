@@ -7,6 +7,7 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
@@ -356,7 +357,7 @@ final class IconBrowserApiController extends BaseApiController
             $iconMorphAlias = (new Icon)->getMorphClass();
 
             // OPTIMIZED: Single query to get all term icon counts for this package
-            $termIconCounts = \DB::table('ichava_icon_termables')
+            $termIconCounts = DB::table('ichava_icon_termables')
                 ->join('ichava_icons', function ($join) use ($package, $iconMorphAlias) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')
                         ->where('ichava_icon_termables.termable_type', '=', $iconMorphAlias)
@@ -368,7 +369,7 @@ final class IconBrowserApiController extends BaseApiController
                 ->pluck('icon_count', 'term_id');
 
             // Get categories for this package with counts
-            $categories = \DB::table('ichava_icon_terms')
+            $categories = DB::table('ichava_icon_terms')
                 ->where('type', 'category')
                 ->where('package', $package)
                 ->select('id', 'name', 'slug', 'parent_id')
@@ -385,7 +386,7 @@ final class IconBrowserApiController extends BaseApiController
                 });
 
             // Get variants for this package with counts
-            $variants = \DB::table('ichava_icon_terms')
+            $variants = DB::table('ichava_icon_terms')
                 ->where('type', 'variant')
                 ->where('package', $package)
                 ->select('id', 'name', 'slug')
@@ -435,7 +436,7 @@ final class IconBrowserApiController extends BaseApiController
             $iconMorphAlias = (new Icon)->getMorphClass();
 
             // Get ALL categories from terms table with icon counts
-            $iconCounts = \DB::table('ichava_icon_termables')
+            $iconCounts = DB::table('ichava_icon_termables')
                 ->join('ichava_icon_terms', 'ichava_icon_termables.term_id', '=', 'ichava_icon_terms.id')
                 ->where('ichava_icon_terms.type', 'category')
                 ->where('ichava_icon_termables.termable_type', $iconMorphAlias)
@@ -443,7 +444,7 @@ final class IconBrowserApiController extends BaseApiController
                 ->groupBy('ichava_icon_terms.id')
                 ->pluck('count', 'id');
 
-            $categories = \DB::table('ichava_icon_terms')
+            $categories = DB::table('ichava_icon_terms')
                 ->where('type', 'category')
                 ->select('id', 'slug', 'name', 'package')
                 ->orderBy('name')
@@ -487,7 +488,7 @@ final class IconBrowserApiController extends BaseApiController
             $iconMorphAlias = (new Icon)->getMorphClass();
 
             // Get ALL variants from terms table with icon counts
-            $iconCounts = \DB::table('ichava_icon_termables')
+            $iconCounts = DB::table('ichava_icon_termables')
                 ->join('ichava_icon_terms', 'ichava_icon_termables.term_id', '=', 'ichava_icon_terms.id')
                 ->where('ichava_icon_terms.type', 'variant')
                 ->where('ichava_icon_termables.termable_type', $iconMorphAlias)
@@ -495,7 +496,7 @@ final class IconBrowserApiController extends BaseApiController
                 ->groupBy('ichava_icon_terms.id')
                 ->pluck('count', 'id');
 
-            $variants = \DB::table('ichava_icon_terms')
+            $variants = DB::table('ichava_icon_terms')
                 ->where('type', 'variant')
                 ->select('id', 'slug', 'name', 'package')
                 ->orderBy('name')
@@ -537,7 +538,7 @@ final class IconBrowserApiController extends BaseApiController
             $iconMorphType = 'icon';
 
             // OPTIMIZED: Get all term icon counts in a single query
-            $termIconCounts = \DB::table('ichava_icon_termables')
+            $termIconCounts = DB::table('ichava_icon_termables')
                 ->join('ichava_icons', function ($join) use ($iconMorphType) {
                     $join->on('ichava_icon_termables.termable_id', '=', 'ichava_icons.id')
                         ->where('ichava_icon_termables.termable_type', '=', $iconMorphType);
@@ -548,7 +549,7 @@ final class IconBrowserApiController extends BaseApiController
                 ->pluck('icon_count', 'term_id');
 
             // Get all categories with hierarchy
-            $categories = \DB::table('ichava_icon_terms')
+            $categories = DB::table('ichava_icon_terms')
                 ->where('type', 'category')
                 ->select('id', 'name', 'slug', 'package', 'parent_id')
                 ->orderBy('package')
@@ -567,7 +568,7 @@ final class IconBrowserApiController extends BaseApiController
                 });
 
             // Get all variants
-            $variants = \DB::table('ichava_icon_terms')
+            $variants = DB::table('ichava_icon_terms')
                 ->where('type', 'variant')
                 ->select('id', 'name', 'slug', 'package')
                 ->orderBy('package')

@@ -53,7 +53,7 @@ class IchavaUiIconComponent extends BaseIconComponent
      */
     protected function getIconSet(): string
     {
-        return IchavaUiIconsConstants::getName();
+        return IchavaUiIconsConstants::getPackageName();
     }
 
     /**
