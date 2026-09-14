@@ -64,3 +64,112 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --coverage
+
+  # ---------------------------------------------------------------------------
+  # The same suite against every database the engine supports.
+  #
+  # The job above runs on in-memory SQLite. That is the fast lane and it cannot
+  # see a difference between drivers, which is how icon search shipped broken on
+  # PostgreSQL in `ichava/core` and stayed that way. These API tests refresh a
+  # real database and query through core's models and GROUP BY aggregates, so
+  # they are worth running against real servers.
+  #
+  # SQLite is not repeated here -- the job above is its lane.
+  # ---------------------------------------------------------------------------
+  test-databases:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: pgsql
+            image: postgres:17
+            port: 5432
+            health: >-
+              --health-cmd="pg_isready -U ichava -d ichava_test"
+              --health-interval=10s --health-timeout=5s --health-retries=10
+          - db: mysql
+            image: mysql:8.4
+            port: 3306
+            health: >-
+              --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -psecret"
+              --health-interval=10s --health-timeout=5s --health-retries=10
+          - db: mariadb
+            image: mariadb:11.4
+            port: 3306
+            health: >-
+              --health-cmd="healthcheck.sh --connect --innodb_initialized"
+              --health-interval=10s --health-timeout=5s --health-retries=10
+
+    name: DB ${{ matrix.db }} - P8.4 - L13.*
+
+    services:
+      database:
+        image: ${{ matrix.image }}
+        ports:
+          - ${{ matrix.port }}:${{ matrix.port }}
+        # One env block serves all three images; each reads only its own prefix
+        # and ignores the rest, which keeps this one service definition rather
+        # than three near-identical jobs.
+        env:
+          POSTGRES_DB: ichava_test
+          POSTGRES_USER: ichava
+          POSTGRES_PASSWORD: secret
+          MYSQL_DATABASE: ichava_test
+          MYSQL_USER: ichava
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: secret
+          MARIADB_DATABASE: ichava_test
+          MARIADB_USER: ichava
+          MARIADB_PASSWORD: secret
+          MARIADB_ROOT_PASSWORD: secret
+        options: ${{ matrix.health }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, intl
+          coverage: none
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Authenticate Composer for private GitHub deps
+        env:
+          GH_PACKAGES_PAT: ${{ secrets.GH_PACKAGES_PAT }}
+        if: env.GH_PACKAGES_PAT != ''
+        run: |
+          composer config --global --auth github-oauth.github.com "$GH_PACKAGES_PAT"
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:13.*" "orchestra/testbench:^11.0" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction
+
+      - name: Report the resolved core version
+        # This job tests browser against whatever `ichava/core: ^0.1.1` resolves
+        # to, which is a released tag rather than core's main branch. The
+        # PostgreSQL fix for the json/jsonb mismatch landed after v0.1.1, so
+        # until core ships 0.2.0 and this constraint is raised, a pgsql failure
+        # here may belong to core rather than to browser. Print it so the log
+        # answers that without a bisect.
+        run: composer show ichava/core | head -5
+
+      - name: Execute tests
+        env:
+          DB_CONNECTION: ${{ matrix.db }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ matrix.port }}
+          DB_DATABASE: ichava_test
+          DB_USERNAME: ichava
+          DB_PASSWORD: secret
+        run: vendor/bin/pest
