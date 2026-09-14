@@ -29,12 +29,12 @@ class PreferenceFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'packages' => 'sometimes|array',
-            'packages.*' => 'sometimes|string|max:100',
-            'categories' => 'sometimes|array',
+            'packages'     => 'sometimes|array',
+            'packages.*'   => 'sometimes|string|max:100',
+            'categories'   => 'sometimes|array',
             'categories.*' => 'sometimes|string|max:100',
-            'variants' => 'sometimes|array',
-            'variants.*' => 'sometimes|string|max:100',
+            'variants'     => 'sometimes|array',
+            'variants.*'   => 'sometimes|string|max:100',
         ];
     }
 
@@ -46,9 +46,9 @@ class PreferenceFilterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'packages.*.max' => 'Package name must not exceed 100 characters',
+            'packages.*.max'   => 'Package name must not exceed 100 characters',
             'categories.*.max' => 'Category name must not exceed 100 characters',
-            'variants.*.max' => 'Variant name must not exceed 100 characters',
+            'variants.*.max'   => 'Variant name must not exceed 100 characters',
         ];
     }
 }

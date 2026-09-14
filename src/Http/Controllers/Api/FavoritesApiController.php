@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
@@ -18,7 +19,7 @@ final class FavoritesApiController extends BaseApiController
 {
     public function __construct(
         IchavaLogger $logger,
-        protected IconPreferenceService $preferenceService
+        protected IconPreferenceService $preferenceService,
     ) {
         parent::__construct($logger);
     }
@@ -37,18 +38,18 @@ final class FavoritesApiController extends BaseApiController
                 ->select(['id', 'name', 'package', 'path'])
                 ->get()
                 ->map(fn ($icon) => [
-                    'id' => $icon->id,
-                    'name' => $icon->name,
+                    'id'      => $icon->id,
+                    'name'    => $icon->name,
                     'package' => $icon->package,
                     'svg_url' => route('ichava.api.icons.svg', ['id' => $icon->id], false),
                 ]);
 
             return $this->successResponse([
-                'ids' => $favoriteIds,
+                'ids'   => $favoriteIds,
                 'icons' => $icons,
                 'count' => count($favoriteIds),
             ], 'Favorites retrieved successfully');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to fetch favorites');
         }
     }
@@ -67,10 +68,10 @@ final class FavoritesApiController extends BaseApiController
             $this->logDebug('Icon added to favorites', ['icon_id' => $iconId]);
 
             return $this->createdResponse([
-                'icon_id' => $iconId,
+                'icon_id'     => $iconId,
                 'is_favorite' => true,
             ], 'Icon added to favorites');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to add favorite');
         }
     }
@@ -85,7 +86,7 @@ final class FavoritesApiController extends BaseApiController
             $this->logDebug('Icon removed from favorites', ['icon_id' => $iconId]);
 
             return $this->deletedResponse('Icon removed from favorites');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to remove favorite');
         }
     }
@@ -103,15 +104,15 @@ final class FavoritesApiController extends BaseApiController
             $isFavorite = $this->preferenceService->toggleFavorite($iconId);
 
             $this->logDebug('Favorite toggled', [
-                'icon_id' => $iconId,
+                'icon_id'     => $iconId,
                 'is_favorite' => $isFavorite,
             ]);
 
             return $this->successResponse([
-                'icon_id' => $iconId,
+                'icon_id'     => $iconId,
                 'is_favorite' => $isFavorite,
             ], $isFavorite ? 'Icon added to favorites' : 'Icon removed from favorites');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to toggle favorite');
         }
     }

@@ -21,9 +21,9 @@ use Illuminate\Support\Facades\Gate;
 function destructiveCacheRoutes(): array
 {
     return [
-        'api clear' => '/ichava/api/cache/clear',
+        'api clear'   => '/ichava/api/cache/clear',
         'api rebuild' => '/ichava/api/cache/rebuild',
-        'web clear' => '/ichava/cache/clear',
+        'web clear'   => '/ichava/cache/clear',
         'web rebuild' => '/ichava/cache/rebuild',
     ];
 }

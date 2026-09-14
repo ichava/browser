@@ -52,8 +52,8 @@
     ],
     "require-dev": {
         "orchestra/testbench": "^11.0",
-        "pestphp/pest": "^3.0",
-        "phpunit/phpunit": "^10.0|^11.0",
+        "pestphp/pest": "^4.6 || ^5.0",
+        "phpstan/phpstan": "^2.1",
         "laravel/pint": "^1.18"
     },
     "autoload": {
@@ -81,7 +81,8 @@
         "pint-fix": "@php vendor/bin/laranail-pint --parallel",
         "lint": "@pint",
         "format": "@pint-fix",
-        "test": "vendor/bin/pest --parallel"
+        "test": "vendor/bin/pest --parallel",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
     },
     "config": {
         "sort-packages": true,

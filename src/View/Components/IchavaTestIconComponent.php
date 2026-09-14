@@ -42,7 +42,7 @@ class IchavaTestIconComponent extends BaseIconComponent
             $size,
             $width,
             $height,
-            $lockAspectRatio
+            $lockAspectRatio,
         );
     }
 
@@ -51,7 +51,7 @@ class IchavaTestIconComponent extends BaseIconComponent
      */
     protected function getIconSet(): string
     {
-        return IchavaTestIconsConstants::getName();
+        return IchavaTestIconsConstants::getPackageName();
     }
 
     /**

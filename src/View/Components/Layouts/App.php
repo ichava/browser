@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\View\Components\Layouts;
 
-use Illuminate\View\Component;
 use Illuminate\View\View;
+use Illuminate\View\Component;
 
 /**
  * App Layout Component
@@ -18,12 +18,12 @@ class App extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $title  Page title
-     * @param  string|null  $description  Page meta description
+     * @param string $title Page title
+     * @param string|null $description Page meta description
      */
     public function __construct(
         public string $title = 'Ichava',
-        public ?string $description = null
+        public ?string $description = null,
     ) {}
 
     /**

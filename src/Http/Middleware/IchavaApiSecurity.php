@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Throwable;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Simtabi\Laranail\Ichava\Support\AuditLogger;
 use Simtabi\Laranail\Ichava\Support\SecurityNonce;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 /**
  * Hardens Ichava API responses: CORS, request-size limits, SQL/XSS/path-traversal
@@ -86,6 +86,45 @@ final class IchavaApiSecurity
     ];
 
     /**
+     * Declare that this response owns the given headers.
+     *
+     * Call it from a controller alongside the headers themselves. Anything not
+     * in `OVERRIDABLE_HEADERS` is ignored rather than rejected: a route cannot
+     * opt out of `nosniff` or `X-Frame-Options` by asking to.
+     *
+     * Claiming a header the response does not set means the header is simply
+     * absent -- which is the point for `Pragma` on a cacheable asset, where the
+     * middleware's `no-cache` would otherwise fight an `immutable`
+     * `Cache-Control` in older intermediaries.
+     */
+    public static function claimHeaders(Response $response, string ...$names): Response
+    {
+        $claimed = array_values(array_intersect(
+            array_map(
+                static fn (string $name): string => mb_strtolower(trim($name)),
+                $names,
+            ),
+            self::OVERRIDABLE_HEADERS,
+        ));
+
+        if ($claimed === []) {
+            return $response;
+        }
+
+        $existing = $response->headers->get(self::OWNERSHIP_HEADER);
+        if ($existing !== null && $existing !== '') {
+            $claimed = array_values(array_unique(array_merge(
+                explode(',', $existing),
+                $claimed,
+            )));
+        }
+
+        $response->headers->set(self::OWNERSHIP_HEADER, implode(',', $claimed));
+
+        return $response;
+    }
+
+    /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): Response
@@ -95,12 +134,12 @@ final class IchavaApiSecurity
             if (! $this->isValidContentType($request)) {
                 $this->audit('http.invalid_content_type', AuditLogger::SEVERITY_WARNING, [
                     'content_type' => $request->header('Content-Type'),
-                    'path' => $request->path(),
+                    'path'         => $request->path(),
                 ]);
 
                 return $this->errorResponse(
                     'Invalid Content-Type. Expected application/json.',
-                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
             }
         }
@@ -110,12 +149,12 @@ final class IchavaApiSecurity
         if ($request->header('Content-Length') && (int) $request->header('Content-Length') > $maxSize) {
             $this->audit('http.request_too_large', AuditLogger::SEVERITY_WARNING, [
                 'content_length' => (int) $request->header('Content-Length'),
-                'max_size' => $maxSize,
+                'max_size'       => $maxSize,
             ]);
 
             return $this->errorResponse(
                 'Request body too large.',
-                Response::HTTP_REQUEST_ENTITY_TOO_LARGE
+                Response::HTTP_REQUEST_ENTITY_TOO_LARGE,
             );
         }
 
@@ -127,7 +166,7 @@ final class IchavaApiSecurity
 
             return $this->errorResponse(
                 'Potentially malicious request detected.',
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_BAD_REQUEST,
             );
         }
 
@@ -139,7 +178,7 @@ final class IchavaApiSecurity
 
             return $this->errorResponse(
                 'Potentially malicious content detected.',
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_BAD_REQUEST,
             );
         }
 
@@ -151,7 +190,7 @@ final class IchavaApiSecurity
 
             return $this->errorResponse(
                 'Invalid path detected.',
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_BAD_REQUEST,
             );
         }
 
@@ -164,7 +203,7 @@ final class IchavaApiSecurity
         // 7. Pretty print JSON for browser requests
         if ($response instanceof JsonResponse && $this->shouldPrettyPrint($request)) {
             $response->setEncodingOptions(
-                $response->getEncodingOptions() | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+                $response->getEncodingOptions() | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
             );
         }
 
@@ -270,7 +309,7 @@ final class IchavaApiSecurity
         return array_merge(
             $request->query(),
             $request->post(),
-            $request->input() ?? []
+            $request->input() ?? [],
         );
     }
 
@@ -290,17 +329,17 @@ final class IchavaApiSecurity
         // some configurations. CSP supersedes it; see security-model.md.
         $headers = [
             'X-Content-Type-Options' => 'nosniff',
-            'X-Frame-Options' => (string) config('ichava.browser.security.frame_options', 'DENY'),
-            'Referrer-Policy' => (string) config(
+            'X-Frame-Options'        => (string) config('ichava.browser.security.frame_options', 'DENY'),
+            'Referrer-Policy'        => (string) config(
                 'ichava.browser.security.referrer_policy',
-                'strict-origin-when-cross-origin'
+                'strict-origin-when-cross-origin',
             ),
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
+            'Cache-Control'        => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma'               => 'no-cache',
             'X-Ichava-API-Version' => '1.0',
-            'Permissions-Policy' => (string) config(
+            'Permissions-Policy'   => (string) config(
                 'ichava.browser.security.permissions_policy',
-                'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
+                'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
             ),
         ];
 
@@ -370,49 +409,10 @@ final class IchavaApiSecurity
         return array_values(array_intersect(
             array_map(
                 static fn (string $name): string => mb_strtolower(trim($name)),
-                explode(',', $raw)
+                explode(',', $raw),
             ),
-            self::OVERRIDABLE_HEADERS
+            self::OVERRIDABLE_HEADERS,
         ));
-    }
-
-    /**
-     * Declare that this response owns the given headers.
-     *
-     * Call it from a controller alongside the headers themselves. Anything not
-     * in `OVERRIDABLE_HEADERS` is ignored rather than rejected: a route cannot
-     * opt out of `nosniff` or `X-Frame-Options` by asking to.
-     *
-     * Claiming a header the response does not set means the header is simply
-     * absent -- which is the point for `Pragma` on a cacheable asset, where the
-     * middleware's `no-cache` would otherwise fight an `immutable`
-     * `Cache-Control` in older intermediaries.
-     */
-    public static function claimHeaders(Response $response, string ...$names): Response
-    {
-        $claimed = array_values(array_intersect(
-            array_map(
-                static fn (string $name): string => mb_strtolower(trim($name)),
-                $names
-            ),
-            self::OVERRIDABLE_HEADERS
-        ));
-
-        if ($claimed === []) {
-            return $response;
-        }
-
-        $existing = $response->headers->get(self::OWNERSHIP_HEADER);
-        if ($existing !== null && $existing !== '') {
-            $claimed = array_values(array_unique(array_merge(
-                explode(',', $existing),
-                $claimed
-            )));
-        }
-
-        $response->headers->set(self::OWNERSHIP_HEADER, implode(',', $claimed));
-
-        return $response;
     }
 
     /**
@@ -427,9 +427,9 @@ final class IchavaApiSecurity
 
         $directives = match ($mode) {
             'nonce' => $this->cspNonceDirectives(),
-            'hash' => $this->cspHashDirectives(),
+            'hash'  => $this->cspHashDirectives(),
             default => [
-                'default-src' => "'none'",
+                'default-src'     => "'none'",
                 'frame-ancestors' => "'none'",
             ],
         };
@@ -444,7 +444,7 @@ final class IchavaApiSecurity
 
         $value = '';
         foreach ($directives as $name => $directive) {
-            $value .= $name.' '.$directive.'; ';
+            $value .= $name . ' ' . $directive . '; ';
         }
         $value = rtrim($value, '; ');
 
@@ -464,16 +464,16 @@ final class IchavaApiSecurity
         $token = $nonce !== null ? "'nonce-{$nonce}'" : "'self'";
 
         return [
-            'default-src' => "'self'",
-            'script-src' => "'self' {$token}",
-            'style-src' => "'self' {$token}",
-            'img-src' => "'self' data:",
-            'font-src' => "'self' data:",
-            'connect-src' => "'self'",
+            'default-src'     => "'self'",
+            'script-src'      => "'self' {$token}",
+            'style-src'       => "'self' {$token}",
+            'img-src'         => "'self' data:",
+            'font-src'        => "'self' data:",
+            'connect-src'     => "'self'",
             'frame-ancestors' => "'none'",
-            'base-uri' => "'self'",
-            'form-action' => "'self'",
-            'object-src' => "'none'",
+            'base-uri'        => "'self'",
+            'form-action'     => "'self'",
+            'object-src'      => "'none'",
         ];
     }
 
@@ -487,15 +487,15 @@ final class IchavaApiSecurity
         $style = isset($hashes['style-src']) ? implode(' ', (array) $hashes['style-src']) : '';
 
         return [
-            'default-src' => "'self'",
-            'script-src' => trim("'self' {$script}"),
-            'style-src' => trim("'self' {$style}"),
-            'img-src' => "'self' data:",
-            'connect-src' => "'self'",
+            'default-src'     => "'self'",
+            'script-src'      => trim("'self' {$script}"),
+            'style-src'       => trim("'self' {$style}"),
+            'img-src'         => "'self' data:",
+            'connect-src'     => "'self'",
             'frame-ancestors' => "'none'",
-            'base-uri' => "'self'",
-            'form-action' => "'self'",
-            'object-src' => "'none'",
+            'base-uri'        => "'self'",
+            'form-action'     => "'self'",
+            'object-src'      => "'none'",
         ];
     }
 
@@ -550,10 +550,10 @@ final class IchavaApiSecurity
         $allowedHeaders = config('ichava.browser.api.cors.allowed_headers', 'Content-Type, Authorization, X-Requested-With, Accept');
 
         return [
-            'Access-Control-Allow-Origin' => is_array($allowedOrigins) ? implode(', ', $allowedOrigins) : $allowedOrigins,
+            'Access-Control-Allow-Origin'  => is_array($allowedOrigins) ? implode(', ', $allowedOrigins) : $allowedOrigins,
             'Access-Control-Allow-Methods' => $allowedMethods,
             'Access-Control-Allow-Headers' => $allowedHeaders,
-            'Access-Control-Max-Age' => '86400',
+            'Access-Control-Max-Age'       => '86400',
         ];
     }
 
@@ -586,13 +586,13 @@ final class IchavaApiSecurity
     {
         return new JsonResponse([
             'success' => false,
-            'error' => [
+            'error'   => [
                 'message' => $message,
-                'code' => $status,
+                'code'    => $status,
             ],
         ], $status, [
             'X-Content-Type-Options' => 'nosniff',
-            'X-Frame-Options' => 'DENY',
+            'X-Frame-Options'        => 'DENY',
         ]);
     }
 }

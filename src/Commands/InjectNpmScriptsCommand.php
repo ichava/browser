@@ -12,18 +12,18 @@ use Illuminate\Support\Facades\File;
  */
 class InjectNpmScriptsCommand extends Command
 {
+    private const SCRIPTS = [
+        '// Package: Ichava' => '',
+        'ichava:build'       => 'cd vendor/ichava/ichava && npm run build --silent',
+        'ichava:build:prod'  => 'cd vendor/ichava/ichava && npm run build:prod --silent',
+        'ichava:watch'       => 'cd vendor/ichava/ichava && npm run watch --silent',
+    ];
+
     protected $signature = 'ichava:inject-scripts
                             {--path= : Absolute path to the host package.json (default: base_path)}
                             {--force : Re-inject scripts even if they already exist}';
 
     protected $description = 'Inject Ichava npm build/watch scripts into the host application package.json';
-
-    private const SCRIPTS = [
-        '// Package: Ichava' => '',
-        'ichava:build' => 'cd vendor/ichava/ichava && npm run build --silent',
-        'ichava:build:prod' => 'cd vendor/ichava/ichava && npm run build:prod --silent',
-        'ichava:watch' => 'cd vendor/ichava/ichava && npm run watch --silent',
-    ];
 
     public function handle(): int
     {
@@ -39,7 +39,7 @@ class InjectNpmScriptsCommand extends Command
         $data = json_decode($contents, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('Could not parse package.json: '.json_last_error_msg());
+            $this->error('Could not parse package.json: ' . json_last_error_msg());
 
             return self::FAILURE;
         }
@@ -66,7 +66,7 @@ class InjectNpmScriptsCommand extends Command
 
         File::put(
             $path,
-            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n"
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
         );
 
         $this->info('Ichava npm scripts injected into package.json:');

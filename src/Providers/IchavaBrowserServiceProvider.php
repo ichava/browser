@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Providers;
 
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
-use Simtabi\Laranail\Ichava\Browser\Commands\InjectNpmScriptsCommand;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\AuthorizeCacheAdmin;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\EnsureSession;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ForceJsonResponse;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaStatefulGuard;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\LogRequests;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ValidateIchavaRoute;
-use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaTestIconComponent;
-use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaUiIconComponent;
-use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\App as AppLayout;
-use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\Browser as BrowserLayout;
-use Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset;
+use Simtabi\Laranail\Package\Tools\Package;
+use Illuminate\Session\Middleware\StartSession;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconRegistry;
 use Simtabi\Laranail\Ichava\Support\HostCapabilities;
-use Simtabi\Laranail\Package\Tools\Package;
+use Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\LogRequests;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\EnsureSession;
 use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
+use Simtabi\Laranail\Ichava\Browser\Commands\InjectNpmScriptsCommand;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ForceJsonResponse;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\AuthorizeCacheAdmin;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaStatefulGuard;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ValidateIchavaRoute;
+use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaUiIconComponent;
+use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaTestIconComponent;
+use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\App as AppLayout;
+use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\Browser as BrowserLayout;
 
 /**
  * Visual icon browser for the Ichava ecosystem.
@@ -88,14 +88,14 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         // the public-path file at render time.
         Blade::component(
             'ichava::sri-asset',
-            SriAsset::class
+            SriAsset::class,
         );
 
         // Anonymous Blade components (views without PHP classes) under the
         // shared `ichava::` namespace.
         Blade::anonymousComponentPath(
             $this->package->basePath('resources/views/components'),
-            'ichava'
+            'ichava',
         );
 
         // Class-based layout components.
@@ -117,7 +117,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         $registry = $this->app->make(IconRegistry::class);
         $registry->fromDirectory(
             $this->package->basePath('resources/assets/svg/ui-icons'),
-            self::class
+            self::class,
         );
     }
 
@@ -174,7 +174,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             'ichava.security',
             'ichava.json',
             'ichava.log',
-            'throttle:'.(int) config('ichava.browser.rate_limiting.api_floor', 300).',1',
+            'throttle:' . (int) config('ichava.browser.rate_limiting.api_floor', 300) . ',1',
         ]);
 
         $router->middlewareGroup('ichava.api', $apiMiddleware);

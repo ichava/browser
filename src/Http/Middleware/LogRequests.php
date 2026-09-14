@@ -6,8 +6,8 @@ namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Symfony\Component\HttpFoundation\Response;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 
 /**
  * Log Ichava Requests Middleware
@@ -37,13 +37,13 @@ final class LogRequests
             $duration = round((microtime(true) - $startTime) * 1000, 2);
 
             $this->logger->debug('API request', [
-                'method' => $request->method(),
-                'uri' => $request->path(),
-                'status' => $response->getStatusCode(),
+                'method'      => $request->method(),
+                'uri'         => $request->path(),
+                'status'      => $response->getStatusCode(),
                 'duration_ms' => $duration,
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'session_id' => $request->session()?->getId(),
+                'ip'          => $request->ip(),
+                'user_agent'  => $request->userAgent(),
+                'session_id'  => $request->session()?->getId(),
             ]);
         }
 

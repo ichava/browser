@@ -42,13 +42,13 @@ class PreferenceUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sorting.sort_by.in' => 'Invalid sort field. Must be: name, package, category, created_at, or updated_at',
-            'sorting.sort_direction.in' => 'Invalid sort direction. Must be: asc or desc',
-            'preferences.view_mode.in' => 'Invalid view mode. Must be: grid or list',
-            'preferences.icon_size.min' => 'Icon size must be at least 24px',
-            'preferences.icon_size.max' => 'Icon size must not exceed 640px',
-            'preferences.per_page.min' => 'Per page must be at least 12',
-            'preferences.per_page.max' => 'Per page must not exceed 120',
+            'sorting.sort_by.in'          => 'Invalid sort field. Must be: name, package, category, created_at, or updated_at',
+            'sorting.sort_direction.in'   => 'Invalid sort direction. Must be: asc or desc',
+            'preferences.view_mode.in'    => 'Invalid view mode. Must be: grid or list',
+            'preferences.icon_size.min'   => 'Icon size must be at least 24px',
+            'preferences.icon_size.max'   => 'Icon size must not exceed 640px',
+            'preferences.per_page.min'    => 'Per page must be at least 12',
+            'preferences.per_page.max'    => 'Per page must not exceed 120',
             'preferences.is_dark.boolean' => 'Theme preference must be a boolean',
         ];
     }

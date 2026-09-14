@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\deleteJson;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -66,7 +66,7 @@ describe('Preferences API - Update Preferences', function () {
             'preferences' => [
                 'view_mode' => 'list',
                 'icon_size' => 48,
-                'per_page' => 24,
+                'per_page'  => 24,
             ],
         ];
 
@@ -203,9 +203,9 @@ describe('Preferences API - Update Filters', function () {
 
     it('updates filter preferences successfully', function () {
         $response = postJson(route('ichava.api.preferences.filters'), [
-            'packages' => ['ichava/test-icons'],
+            'packages'   => ['ichava/test-icons'],
             'categories' => ['ui', 'system'],
-            'variants' => ['outline'],
+            'variants'   => ['outline'],
         ]);
 
         $response->assertOk()
@@ -225,9 +225,9 @@ describe('Preferences API - Update Filters', function () {
 
     it('accepts empty filter arrays', function () {
         $response = postJson(route('ichava.api.preferences.filters'), [
-            'packages' => [],
+            'packages'   => [],
             'categories' => [],
-            'variants' => [],
+            'variants'   => [],
         ]);
 
         $response->assertOk();

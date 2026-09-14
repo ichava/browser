@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Resources;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Simtabi\Laranail\Ichava\Models\Icon;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * IconResource - Transform Icon model to API response
@@ -30,16 +30,16 @@ class IconResource extends JsonResource
         $icon = $this->resource;
 
         return [
-            'id' => $icon->id,
+            'id'      => $icon->id,
             'package' => $icon->package,
-            'name' => $icon->name,
+            'name'    => $icon->name,
 
             // Category & Variant (from relationships)
             'category' => $icon->primary_category?->slug,
-            'variant' => $icon->primary_variant?->slug,
+            'variant'  => $icon->primary_variant?->slug,
 
             // Paths
-            'path' => $icon->icon_path,
+            'path'      => $icon->icon_path,
             'icon_path' => $icon->icon_path,
             'file_path' => $icon->path ?? '',
 
@@ -55,22 +55,22 @@ class IconResource extends JsonResource
              */
             'svg_url' => route('ichava.api.icons.svg', [
                 'id' => $icon->id,
-                'v' => $icon->render_version,
+                'v'  => $icon->render_version,
             ], false),
 
             // SVG Attributes (from JSON)
             'viewbox' => $icon->viewbox,
-            'width' => $icon->width,
-            'height' => $icon->height,
+            'width'   => $icon->width,
+            'height'  => $icon->height,
 
             // Blade Component Helpers
-            'blade_clean' => $this->generateBladeClean($icon),
+            'blade_clean'   => $this->generateBladeClean($icon),
             'blade_generic' => $this->generateBladeGeneric($icon),
-            'helper' => $this->generateHelper($icon),
+            'helper'        => $this->generateHelper($icon),
 
             // Metadata
-            'set' => $icon->package,
-            'tags' => $icon->tags ?? [],
+            'set'      => $icon->package,
+            'tags'     => $icon->tags ?? [],
             'keywords' => $icon->keywords ?? [],
 
             // Timestamps
@@ -95,7 +95,7 @@ class IconResource extends JsonResource
         $packagePart = Str::after($packageName, '/');
 
         if ($vendor === 'ichava' && $packagePart) {
-            $componentName = 'ichava-'.str_replace('-icons', '', $packagePart);
+            $componentName = 'ichava-' . str_replace('-icons', '', $packagePart);
             $attrs = "name=\"{$icon->name}\"";
 
             if ($category) {

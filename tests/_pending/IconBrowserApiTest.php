@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\Ichava\Models\Icon;
-use Simtabi\Laranail\Ichava\Models\IconTerm;
-
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
+
+use Simtabi\Laranail\Ichava\Models\Icon;
+use Simtabi\Laranail\Ichava\Models\IconTerm;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -18,27 +18,27 @@ describe('Icon Management API - List Icons', function () {
         $this->package = 'ichava/test-icons';
 
         $category = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'ui',
-            'name' => 'UI Icons',
+            'type'    => 'category',
+            'slug'    => 'ui',
+            'name'    => 'UI Icons',
             'package' => $this->package,
         ]);
 
         $variant = IconTerm::create([
-            'type' => 'variant',
-            'slug' => 'outline',
-            'name' => 'Outline',
+            'type'    => 'variant',
+            'slug'    => 'outline',
+            'name'    => 'Outline',
             'package' => $this->package,
         ]);
 
         for ($i = 1; $i <= 25; $i++) {
             $icon = Icon::create([
-                'package' => $this->package,
-                'name' => "icon-{$i}",
-                'path' => "/fake/path/icon-{$i}.svg",
+                'package'   => $this->package,
+                'name'      => "icon-{$i}",
+                'path'      => "/fake/path/icon-{$i}.svg",
                 'file_hash' => md5("icon-{$i}"),
-                'tags' => ['test', 'icon'],
-                'keywords' => ['search', 'test'],
+                'tags'      => ['test', 'icon'],
+                'keywords'  => ['search', 'test'],
             ]);
 
             $icon->terms()->attach([$category->id, $variant->id]);
@@ -140,7 +140,7 @@ describe('Icon Management API - List Icons', function () {
 
     it('supports pagination parameters', function () {
         $response = getJson(route('ichava.api.icons.index', [
-            'page' => 2,
+            'page'     => 2,
             'per_page' => 10,
         ]));
 
@@ -148,7 +148,7 @@ describe('Icon Management API - List Icons', function () {
             ->assertJson([
                 'meta' => [
                     'current_page' => 2,
-                    'per_page' => 10,
+                    'per_page'     => 10,
                 ],
             ]);
 
@@ -158,7 +158,7 @@ describe('Icon Management API - List Icons', function () {
 
     it('supports sorting by name', function () {
         $response = getJson(route('ichava.api.icons.index', [
-            'sort_by' => 'name',
+            'sort_by'        => 'name',
             'sort_direction' => 'asc',
         ]));
 
@@ -212,23 +212,23 @@ describe('Icon Management API - Filters Endpoint', function () {
         $this->package = 'ichava/test-icons';
 
         $category = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'ui',
-            'name' => 'UI Icons',
+            'type'    => 'category',
+            'slug'    => 'ui',
+            'name'    => 'UI Icons',
             'package' => $this->package,
         ]);
 
         $variant = IconTerm::create([
-            'type' => 'variant',
-            'slug' => 'solid',
-            'name' => 'Solid',
+            'type'    => 'variant',
+            'slug'    => 'solid',
+            'name'    => 'Solid',
             'package' => $this->package,
         ]);
 
         $icon = Icon::create([
             'package' => $this->package,
-            'name' => 'test-icon',
-            'path' => '/fake/path/test.svg',
+            'name'    => 'test-icon',
+            'path'    => '/fake/path/test.svg',
         ]);
 
         $icon->terms()->attach([$category->id, $variant->id]);
@@ -283,14 +283,14 @@ describe('Icon Management API - Statistics', function () {
     beforeEach(function () {
         Icon::create([
             'package' => 'ichava/test',
-            'name' => 'icon-1',
-            'path' => '/fake/path/icon-1.svg',
+            'name'    => 'icon-1',
+            'path'    => '/fake/path/icon-1.svg',
         ]);
 
         Icon::create([
             'package' => 'ichava/test-2',
-            'name' => 'icon-2',
-            'path' => '/fake/path/icon-2.svg',
+            'name'    => 'icon-2',
+            'path'    => '/fake/path/icon-2.svg',
         ]);
     });
 
@@ -316,10 +316,10 @@ describe('Icon Management API - Statistics', function () {
 
         $response->assertOk()
             ->assertJson([
-                'total_icons' => 0,
-                'total_packages' => 0,
+                'total_icons'      => 0,
+                'total_packages'   => 0,
                 'total_categories' => 0,
-                'total_variants' => 0,
+                'total_variants'   => 0,
             ]);
     });
 });
@@ -329,8 +329,8 @@ describe('Icon Management API - Tree Structure', function () {
     it('returns hierarchical icon tree', function () {
         Icon::create([
             'package' => 'ichava/test',
-            'name' => 'icon-1',
-            'path' => '/fake/path/icon-1.svg',
+            'name'    => 'icon-1',
+            'path'    => '/fake/path/icon-1.svg',
         ]);
 
         $response = getJson(route('ichava.api.icons.tree'));
@@ -347,16 +347,16 @@ describe('Icon Management API - Single Icon', function () {
 
     beforeEach(function () {
         $category = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'ui',
-            'name' => 'UI',
+            'type'    => 'category',
+            'slug'    => 'ui',
+            'name'    => 'UI',
             'package' => 'ichava/test',
         ]);
 
         $this->icon = Icon::create([
             'package' => 'ichava/test',
-            'name' => 'test-icon',
-            'path' => '/fake/path/test.svg',
+            'name'    => 'test-icon',
+            'path'    => '/fake/path/test.svg',
         ]);
 
         $this->icon->terms()->attach($category->id);
@@ -394,7 +394,7 @@ describe('Icon Management API - Single Icon', function () {
         $response->assertNotFound()
             ->assertJson([
                 'success' => false,
-                'error' => 'Icon not found',
+                'error'   => 'Icon not found',
             ]);
     });
 
@@ -409,13 +409,13 @@ describe('Icon Management API - SVG Content', function () {
 
     beforeEach(function () {
         // Create a temporary SVG file for testing
-        $this->testPath = sys_get_temp_dir().'/test-icon.svg';
+        $this->testPath = sys_get_temp_dir() . '/test-icon.svg';
         file_put_contents($this->testPath, '<svg><circle r="10"/></svg>');
 
         $this->icon = Icon::create([
-            'package' => 'ichava/test',
-            'name' => 'test-icon',
-            'path' => $this->testPath,
+            'package'   => 'ichava/test',
+            'name'      => 'test-icon',
+            'path'      => $this->testPath,
             'file_hash' => md5_file($this->testPath),
         ]);
     });
@@ -445,8 +445,8 @@ describe('Icon Management API - SVG Content', function () {
     it('returns 404 when SVG file does not exist', function () {
         $icon = Icon::create([
             'package' => 'ichava/test',
-            'name' => 'missing-icon',
-            'path' => '/non/existent/path.svg',
+            'name'    => 'missing-icon',
+            'path'    => '/non/existent/path.svg',
         ]);
 
         $response = get(route('ichava.api.icons.svg', ['id' => $icon->id]));

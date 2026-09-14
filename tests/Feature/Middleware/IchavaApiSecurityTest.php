@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Simtabi\Laranail\Ichava\Models\Icon;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 
 /**
  * IchavaApiSecurity middleware coverage.
@@ -28,7 +28,7 @@ describe('IchavaApiSecurity::handle', function () {
 
     it('rejects requests with SQL-injection patterns in query input', function () {
         $response = test()->getJson(
-            route('ichava.api.icons.index').'?'.http_build_query(['search' => "' UNION SELECT * FROM users --"])
+            route('ichava.api.icons.index') . '?' . http_build_query(['search' => "' UNION SELECT * FROM users --"]),
         );
 
         $response->assertStatus(400);
@@ -36,7 +36,7 @@ describe('IchavaApiSecurity::handle', function () {
 
     it('rejects requests with XSS patterns in query input', function () {
         $response = test()->getJson(
-            route('ichava.api.icons.index').'?'.http_build_query(['search' => '<script>alert(1)</script>'])
+            route('ichava.api.icons.index') . '?' . http_build_query(['search' => '<script>alert(1)</script>']),
         );
 
         $response->assertStatus(400);
@@ -44,7 +44,7 @@ describe('IchavaApiSecurity::handle', function () {
 
     it('rejects requests carrying path-traversal patterns in inputs', function () {
         $response = test()->getJson(
-            route('ichava.api.icons.index').'?'.http_build_query(['search' => '../../etc/passwd'])
+            route('ichava.api.icons.index') . '?' . http_build_query(['search' => '../../etc/passwd']),
         );
 
         $response->assertStatus(400);
@@ -68,14 +68,14 @@ describe('IchavaApiSecurity::handle', function () {
          * stayed green throughout the entire period the middleware was clobbering these
          * headers. A conditional assertion on a condition that never holds is not a test.
          */
-        $file = tempnam(sys_get_temp_dir(), 'ichava-hdr').'.svg';
+        $file = tempnam(sys_get_temp_dir(), 'ichava-hdr') . '.svg';
         file_put_contents($file, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24"/></svg>');
 
         try {
             $icon = Icon::create([
                 'package' => 'ichava/header-claim-test',
-                'name' => 'square',
-                'path' => $file,
+                'name'    => 'square',
+                'path'    => $file,
             ]);
 
             /*
@@ -86,7 +86,7 @@ describe('IchavaApiSecurity::handle', function () {
              */
             $response = test()->get(route('ichava.api.icons.svg', [
                 'id' => $icon->id,
-                'v' => $icon->render_version,
+                'v'  => $icon->render_version,
             ]));
 
             expect($response->status())->toBe(200);

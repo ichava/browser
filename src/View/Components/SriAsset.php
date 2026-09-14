@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\View\Components;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use Illuminate\View\Component;
-use Illuminate\View\View;
 use Throwable;
+use RuntimeException;
+use Illuminate\View\View;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
+use Illuminate\View\Component;
+use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /**
  * Emit a `<script>` or `<link>` tag with a Subresource Integrity hash so the
@@ -44,7 +46,7 @@ final class SriAsset extends Component
     ) {
         $path = $src ?? $href;
         if ($path === null || $path === '') {
-            throw new \InvalidArgumentException('SriAsset requires either src or href.');
+            throw new InvalidArgumentException('SriAsset requires either src or href.');
         }
 
         $this->tag = $src !== null ? 'script' : 'link';
@@ -118,7 +120,7 @@ final class SriAsset extends Component
         // or symlinks. This stops SRI from doubling as an existence/contents
         // oracle for arbitrary filesystem paths.
         if ($resolved === false
-            || ! Str::startsWith($resolved, $publicRoot.DIRECTORY_SEPARATOR)
+            || ! Str::startsWith($resolved, $publicRoot . DIRECTORY_SEPARATOR)
             || is_link($candidate)
         ) {
             throw new FileNotFoundException("SRI asset is outside the public/ root: {$path}");
@@ -132,9 +134,9 @@ final class SriAsset extends Component
         // requires raw bytes; File::hash() only exposes hex output.
         $digest = hash_file($algo, $resolved, binary: true);
         if ($digest === false) {
-            throw new \RuntimeException("Unable to hash SRI asset {$resolved} with algorithm {$algo}.");
+            throw new RuntimeException("Unable to hash SRI asset {$resolved} with algorithm {$algo}.");
         }
 
-        return $algo.'-'.base64_encode($digest);
+        return $algo . '-' . base64_encode($digest);
     }
 }

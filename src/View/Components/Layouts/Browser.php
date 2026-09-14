@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\View\Components\Layouts;
 
-use Illuminate\View\Component;
 use Illuminate\View\View;
+use Illuminate\View\Component;
 
 /**
  * Browser Layout Component
@@ -18,12 +18,12 @@ class Browser extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $title  Page title
-     * @param  array|null  $statistics  Icon statistics data
+     * @param string $title Page title
+     * @param array|null $statistics Icon statistics data
      */
     public function __construct(
         public string $title = 'Icon Browser',
-        public ?array $statistics = null
+        public ?array $statistics = null,
     ) {}
 
     /**

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconPackUpdateChecker;
 
@@ -43,23 +43,23 @@ final class UpdateStatusApiController extends BaseApiController
 
         $stale = array_values(array_filter(
             $rows,
-            static fn (array $r): bool => $r['status'] === 'update-available'
+            static fn (array $r): bool => $r['status'] === 'update-available',
         ));
         $unreachable = array_values(array_filter(
             $rows,
-            static fn (array $r): bool => in_array($r['status'], ['unreachable', 'error'], true)
+            static fn (array $r): bool => in_array($r['status'], ['unreachable', 'error'], true),
         ));
 
         return $this->successResponse([
-            'rows' => $rows,
+            'rows'    => $rows,
             'summary' => [
-                'total' => count($rows),
+                'total'      => count($rows),
                 'up_to_date' => count(array_filter(
                     $rows,
-                    static fn (array $r): bool => $r['status'] === 'up-to-date'
+                    static fn (array $r): bool => $r['status'] === 'up-to-date',
                 )),
                 'update_available' => count($stale),
-                'unreachable' => count($unreachable),
+                'unreachable'      => count($unreachable),
             ],
         ]);
     }
