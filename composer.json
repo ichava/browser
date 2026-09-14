@@ -76,6 +76,13 @@
             "dev-main": "0.1.x-dev"
         }
     },
+    "scripts": {
+        "pint": "@php vendor/bin/laranail-pint --test",
+        "pint-fix": "@php vendor/bin/laranail-pint --parallel",
+        "lint": "@pint",
+        "format": "@pint-fix",
+        "test": "vendor/bin/pest --parallel"
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
