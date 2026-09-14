@@ -24,7 +24,7 @@ Route::prefix(config('ichava.core.prefix', 'ichava'))
     ->group(function () {
 
         // Redirect bare /{prefix} to the canonical browser URL.
-        Route::redirect('/', '/'.config('ichava.core.prefix', 'ichava').'/icons')
+        Route::redirect('/', '/' . config('ichava.core.prefix', 'ichava') . '/icons')
             ->name('home');
 
         // Browser UI. Route name kept as `browser` so views/layouts that call

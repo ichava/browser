@@ -42,7 +42,7 @@ class IchavaTestIconComponent extends BaseIconComponent
             $size,
             $width,
             $height,
-            $lockAspectRatio
+            $lockAspectRatio,
         );
     }
 

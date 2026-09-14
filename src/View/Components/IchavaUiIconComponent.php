@@ -44,7 +44,7 @@ class IchavaUiIconComponent extends BaseIconComponent
             $size,
             $width,
             $height,
-            $lockAspectRatio
+            $lockAspectRatio,
         );
     }
 

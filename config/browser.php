@@ -38,10 +38,10 @@ return [
     | the SPA and the REST API share a unified URL space.
     */
     'browser' => [
-        'per_page' => env('ICHAVA_BROWSER_PER_PAGE', IchavaConstants::BROWSER_PER_PAGE),
+        'per_page'       => env('ICHAVA_BROWSER_PER_PAGE', IchavaConstants::BROWSER_PER_PAGE),
         'cache_duration' => env('ICHAVA_BROWSER_CACHE', IchavaConstants::DEFAULT_CACHE_TTL),
-        'theme_toggle' => true,
-        'default_theme' => 'light', // 'light' | 'dark'
+        'theme_toggle'   => true,
+        'default_theme'  => 'light', // 'light' | 'dark'
     ],
 
     /*
@@ -101,7 +101,7 @@ return [
     'rate_limiting' => [
         'enabled' => env('ICHAVA_RATE_LIMITING_ENABLED', false),
         'browser' => env('ICHAVA_BROWSER_RATE_LIMIT', 300),
-        'api' => env('ICHAVA_API_RATE_LIMIT', 600),
+        'api'     => env('ICHAVA_API_RATE_LIMIT', 600),
         // Global floor applied to the `ichava.api` middleware group on top of
         // per-endpoint limits. Acts as a safety net regardless of `enabled`.
         'api_floor' => env('ICHAVA_API_FLOOR', 300),
@@ -143,14 +143,14 @@ return [
         |
         */
         'cache_admin' => [
-            'ability' => env('ICHAVA_CACHE_ADMIN_ABILITY', 'ichava.manage-cache'),
+            'ability'            => env('ICHAVA_CACHE_ADMIN_ABILITY', 'ichava.manage-cache'),
             'allow_without_gate' => (bool) env('ICHAVA_CACHE_ADMIN_OPEN', false),
         ],
 
         'csp' => [
-            'mode' => env('ICHAVA_CSP_MODE', 'strict'),
-            'report_uri' => env('ICHAVA_CSP_REPORT_URI'),
-            'report_only' => (bool) env('ICHAVA_CSP_REPORT_ONLY', false),
+            'mode'             => env('ICHAVA_CSP_MODE', 'strict'),
+            'report_uri'       => env('ICHAVA_CSP_REPORT_URI'),
+            'report_only'      => (bool) env('ICHAVA_CSP_REPORT_ONLY', false),
             'extra_directives' => [
                 // 'connect-src' => "'self' https://api.example.test",
             ],
@@ -161,23 +161,23 @@ return [
         ],
 
         'hsts' => [
-            'enabled' => (bool) env('ICHAVA_HSTS_ENABLED', true),
-            'max_age' => (int) env('ICHAVA_HSTS_MAX_AGE', 31536000),
+            'enabled'            => (bool) env('ICHAVA_HSTS_ENABLED', true),
+            'max_age'            => (int) env('ICHAVA_HSTS_MAX_AGE', 31536000),
             'include_subdomains' => (bool) env('ICHAVA_HSTS_INCLUDE_SUBDOMAINS', true),
-            'preload' => (bool) env('ICHAVA_HSTS_PRELOAD', false),
+            'preload'            => (bool) env('ICHAVA_HSTS_PRELOAD', false),
         ],
 
-        'frame_options' => env('ICHAVA_FRAME_OPTIONS', 'DENY'),
-        'referrer_policy' => env('ICHAVA_REFERRER_POLICY', 'strict-origin-when-cross-origin'),
+        'frame_options'      => env('ICHAVA_FRAME_OPTIONS', 'DENY'),
+        'referrer_policy'    => env('ICHAVA_REFERRER_POLICY', 'strict-origin-when-cross-origin'),
         'permissions_policy' => env(
             'ICHAVA_PERMISSIONS_POLICY',
-            'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
+            'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
         ),
 
         'sri' => [
-            'enabled' => (bool) env('ICHAVA_SRI_ENABLED', true),
+            'enabled'   => (bool) env('ICHAVA_SRI_ENABLED', true),
             'algorithm' => env('ICHAVA_SRI_ALGORITHM', 'sha384'),
-            'manifest' => env('ICHAVA_SRI_MANIFEST'), // path to JSON map; null => compute on demand
+            'manifest'  => env('ICHAVA_SRI_MANIFEST'), // path to JSON map; null => compute on demand
         ],
     ],
 ];

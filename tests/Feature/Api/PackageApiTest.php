@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Simtabi\Laranail\Ichava\Models\IconTerm;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -14,14 +14,14 @@ describe('Packages API - List Packages', function () {
         // Create icons from multiple packages
         Icon::create([
             'package' => 'ichava/test-icons',
-            'name' => 'icon-1',
-            'path' => '/fake/path/icon-1.svg',
+            'name'    => 'icon-1',
+            'path'    => '/fake/path/icon-1.svg',
         ]);
 
         Icon::create([
             'package' => 'ichava/other-icons',
-            'name' => 'icon-2',
-            'path' => '/fake/path/icon-2.svg',
+            'name'    => 'icon-2',
+            'path'    => '/fake/path/icon-2.svg',
         ]);
     });
 
@@ -66,24 +66,24 @@ describe('Packages API - Single Package', function () {
         $this->package = 'ichava/test-icons';
 
         $this->category = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'ui',
-            'name' => 'UI Icons',
+            'type'    => 'category',
+            'slug'    => 'ui',
+            'name'    => 'UI Icons',
             'package' => $this->package,
         ]);
 
         $this->variant = IconTerm::create([
-            'type' => 'variant',
-            'slug' => 'outline',
-            'name' => 'Outline',
+            'type'    => 'variant',
+            'slug'    => 'outline',
+            'name'    => 'Outline',
             'package' => $this->package,
         ]);
 
         for ($i = 1; $i <= 5; $i++) {
             $icon = Icon::create([
                 'package' => $this->package,
-                'name' => "icon-{$i}",
-                'path' => "/fake/path/icon-{$i}.svg",
+                'name'    => "icon-{$i}",
+                'path'    => "/fake/path/icon-{$i}.svg",
             ]);
 
             $icon->terms()->attach([$this->category->id, $this->variant->id]);
@@ -170,16 +170,16 @@ describe('Terms API - Categories', function () {
 
     beforeEach(function () {
         $category = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'ui',
-            'name' => 'UI Icons',
+            'type'    => 'category',
+            'slug'    => 'ui',
+            'name'    => 'UI Icons',
             'package' => 'ichava/test',
         ]);
 
         $icon = Icon::create([
             'package' => 'ichava/test',
-            'name' => 'icon-1',
-            'path' => '/fake/path/icon-1.svg',
+            'name'    => 'icon-1',
+            'path'    => '/fake/path/icon-1.svg',
         ]);
 
         $icon->terms()->attach($category->id);
@@ -223,16 +223,16 @@ describe('Terms API - Variants', function () {
 
     beforeEach(function () {
         $variant = IconTerm::create([
-            'type' => 'variant',
-            'slug' => 'solid',
-            'name' => 'Solid',
+            'type'    => 'variant',
+            'slug'    => 'solid',
+            'name'    => 'Solid',
             'package' => 'ichava/test',
         ]);
 
         $icon = Icon::create([
             'package' => 'ichava/test',
-            'name' => 'icon-1',
-            'path' => '/fake/path/icon-1.svg',
+            'name'    => 'icon-1',
+            'path'    => '/fake/path/icon-1.svg',
         ]);
 
         $icon->terms()->attach($variant->id);
@@ -279,35 +279,35 @@ describe('Terms API - Hierarchy', function () {
 
         // Create parent category
         $parentCategory = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'parent',
-            'name' => 'Parent Category',
-            'package' => $package,
+            'type'      => 'category',
+            'slug'      => 'parent',
+            'name'      => 'Parent Category',
+            'package'   => $package,
             'parent_id' => null,
         ]);
 
         // Create child category
         $childCategory = IconTerm::create([
-            'type' => 'category',
-            'slug' => 'child',
-            'name' => 'Child Category',
-            'package' => $package,
+            'type'      => 'category',
+            'slug'      => 'child',
+            'name'      => 'Child Category',
+            'package'   => $package,
             'parent_id' => $parentCategory->id,
         ]);
 
         // Create variant
         $variant = IconTerm::create([
-            'type' => 'variant',
-            'slug' => 'outline',
-            'name' => 'Outline',
+            'type'    => 'variant',
+            'slug'    => 'outline',
+            'name'    => 'Outline',
             'package' => $package,
         ]);
 
         // Create icon and attach terms
         $icon = Icon::create([
             'package' => $package,
-            'name' => 'test-icon',
-            'path' => '/fake/path/test.svg',
+            'name'    => 'test-icon',
+            'path'    => '/fake/path/test.svg',
         ]);
 
         $icon->terms()->attach([$childCategory->id, $variant->id]);

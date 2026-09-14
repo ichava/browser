@@ -55,8 +55,8 @@ final class AuthorizeCacheAdmin
         if (! Gate::has($ability)) {
             abort(403, sprintf(
                 'Ichava cache administration is not configured. Define the "%s" ability, '
-                .'or set ichava-browser.security.cache_admin.allow_without_gate to true.',
-                $ability
+                . 'or set ichava-browser.security.cache_admin.allow_without_gate to true.',
+                $ability,
             ));
         }
 

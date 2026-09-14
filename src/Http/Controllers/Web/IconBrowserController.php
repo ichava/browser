@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Exception;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Simtabi\Laranail\Ichava\Models\IconTerm;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
-use Simtabi\Laranail\Ichava\Services\IconBrowserService;
-use Simtabi\Laranail\Ichava\Services\IconCacheService;
-use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 use Simtabi\Laranail\Ichava\Services\IconRegistry;
+use Simtabi\Laranail\Ichava\Services\IconCacheService;
+use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
+use Simtabi\Laranail\Ichava\Services\IconBrowserService;
+use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 
 /**
  * IconBrowserController - Web Controller for Icon Browser UI
@@ -33,7 +34,7 @@ final class IconBrowserController extends Controller
         protected IconCacheService $cacheService,
         protected IconPreferenceService $preferenceService,
         protected IconRegistry $registry,
-        protected IchavaLogger $logger
+        protected IchavaLogger $logger,
     ) {}
 
     /**
@@ -48,7 +49,7 @@ final class IconBrowserController extends Controller
         // don't carry per-request identifiers; promote to audit channel if you
         // need traceability.
         $this->logger->debug('Icon browser page accessed', [
-            'ip' => request()->ip(),
+            'ip'         => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
 
@@ -63,12 +64,12 @@ final class IconBrowserController extends Controller
             $statistics = $this->browserService->getStatistics();
 
             return view('ichava::browser.index', [
-                'packages' => $filters['packages'] ?? [],
-                'categories' => $filters['categories'] ?? [],
+                'packages'    => $filters['packages'] ?? [],
+                'categories'  => $filters['categories'] ?? [],
                 'preferences' => $preferences,
-                'statistics' => $statistics,
+                'statistics'  => $statistics,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log full exception (with trace) but return a generic message to
             // the view so internal details aren't leaked to end users.
             $this->logger->error('Failed to load browser data', [
@@ -76,11 +77,11 @@ final class IconBrowserController extends Controller
             ]);
 
             return view('ichava::browser.index', [
-                'packages' => [],
-                'categories' => [],
+                'packages'    => [],
+                'categories'  => [],
                 'preferences' => $this->preferenceService->getAll(),
-                'statistics' => null,
-                'error' => 'Unable to load icon browser. Please try again later.',
+                'statistics'  => null,
+                'error'       => 'Unable to load icon browser. Please try again later.',
             ]);
         }
     }
@@ -116,13 +117,13 @@ final class IconBrowserController extends Controller
             foreach ($packages as $packageKey => $packageData) {
                 $terms = $termCounts->get($packageKey, collect());
                 $packageStats[] = [
-                    'name' => $packageKey,
-                    'label' => $packageData['browser_metadata']['name'] ?? $packageKey,
-                    'description' => $packageData['browser_metadata']['description'] ?? '',
-                    'vendor' => $packageData['browser_metadata']['vendor'] ?? '',
-                    'icon_count' => (int) ($iconCounts[$packageKey] ?? 0),
+                    'name'           => $packageKey,
+                    'label'          => $packageData['browser_metadata']['name'] ?? $packageKey,
+                    'description'    => $packageData['browser_metadata']['description'] ?? '',
+                    'vendor'         => $packageData['browser_metadata']['vendor'] ?? '',
+                    'icon_count'     => (int) ($iconCounts[$packageKey] ?? 0),
                     'category_count' => (int) ($terms->firstWhere('type', 'category')->count ?? 0),
-                    'variant_count' => (int) ($terms->firstWhere('type', 'variant')->count ?? 0),
+                    'variant_count'  => (int) ($terms->firstWhere('type', 'variant')->count ?? 0),
                 ];
             }
 
@@ -147,30 +148,30 @@ final class IconBrowserController extends Controller
             $cacheHealthy = $this->cacheService->isHealthy();
 
             return view('ichava::stats.index', [
-                'statistics' => $statistics,
-                'packageStats' => $packageStats,
+                'statistics'    => $statistics,
+                'packageStats'  => $packageStats,
                 'topCategories' => $topCategories,
-                'cacheStats' => $cacheStats,
-                'cacheHealthy' => $cacheHealthy,
+                'cacheStats'    => $cacheStats,
+                'cacheHealthy'  => $cacheHealthy,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to load statistics', [
                 'exception' => $e,
             ]);
 
             return view('ichava::stats.index', [
                 'statistics' => [
-                    'total_icons' => 0,
-                    'total_packages' => 0,
+                    'total_icons'      => 0,
+                    'total_packages'   => 0,
                     'total_categories' => 0,
-                    'total_variants' => 0,
-                    'empty' => true,
+                    'total_variants'   => 0,
+                    'empty'            => true,
                 ],
-                'packageStats' => [],
+                'packageStats'  => [],
                 'topCategories' => [],
-                'cacheStats' => [],
-                'cacheHealthy' => false,
-                'error' => 'Unable to load statistics. Please try again later.',
+                'cacheStats'    => [],
+                'cacheHealthy'  => false,
+                'error'         => 'Unable to load statistics. Please try again later.',
             ]);
         }
     }

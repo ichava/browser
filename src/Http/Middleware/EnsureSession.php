@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Support\HostCapabilities;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Best-effort session bootstrap that degrades to browser storage when no
@@ -54,7 +55,7 @@ final class EnsureSession
                     ]);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Session start failed - that's okay, continue without it
             $this->logger->debug('⚠️ Failed to start session (using browser storage fallback)', [
                 'error' => $e->getMessage(),

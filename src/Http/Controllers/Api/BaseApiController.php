@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use DateTime;
+use Exception;
+use Throwable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Validation\ValidationException;
-use Simtabi\Laranail\Ichava\Browser\Http\Traits\ApiResponseTrait;
 use Simtabi\Laranail\Ichava\Models\Icon;
+use Illuminate\Validation\ValidationException;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Simtabi\Laranail\Ichava\Browser\Http\Traits\ApiResponseTrait;
 
 /**
  * BaseApiController - Base class for all Ichava API controllers
@@ -46,28 +49,28 @@ abstract class BaseApiController extends Controller
     protected function formatTimeAgo(string $timestamp): string
     {
         try {
-            $date = new \DateTime($timestamp);
-            $now = new \DateTime;
+            $date = new DateTime($timestamp);
+            $now = new DateTime;
             $diff = $now->diff($date);
 
             if ($diff->y > 0) {
-                return $diff->y.'y ago';
+                return $diff->y . 'y ago';
             }
             if ($diff->m > 0) {
-                return $diff->m.'mo ago';
+                return $diff->m . 'mo ago';
             }
             if ($diff->d > 0) {
-                return $diff->d.'d ago';
+                return $diff->d . 'd ago';
             }
             if ($diff->h > 0) {
-                return $diff->h.'h ago';
+                return $diff->h . 'h ago';
             }
             if ($diff->i > 0) {
-                return $diff->i.'m ago';
+                return $diff->i . 'm ago';
             }
 
             return 'Just now';
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $timestamp;
         }
     }
@@ -109,7 +112,7 @@ abstract class BaseApiController extends Controller
     /**
      * Log error with exception
      */
-    protected function logError(string $message, \Throwable $exception, array $context = []): void
+    protected function logError(string $message, Throwable $exception, array $context = []): void
     {
         $this->logger->error($message, $exception, $context);
     }
@@ -145,7 +148,7 @@ abstract class BaseApiController extends Controller
     /**
      * Handle generic exceptions
      */
-    protected function handleException(\Exception $e, string $message = 'An error occurred'): JsonResponse
+    protected function handleException(Exception $e, string $message = 'An error occurred'): JsonResponse
     {
         $this->logError($message, $e);
 

@@ -21,11 +21,11 @@ trait ApiResponseTrait
         mixed $data = null,
         string $message = 'Success',
         int $status = Response::HTTP_OK,
-        array $meta = []
+        array $meta = [],
     ): JsonResponse {
         $response = [
             'success' => true,
-            'data' => $data,
+            'data'    => $data,
             'message' => $message,
         ];
 
@@ -43,11 +43,11 @@ trait ApiResponseTrait
         string $error,
         int $status = Response::HTTP_BAD_REQUEST,
         array $errors = [],
-        array $meta = []
+        array $meta = [],
     ): JsonResponse {
         $response = [
             'success' => false,
-            'error' => $error,
+            'error'   => $error,
         ];
 
         if (! empty($errors)) {
@@ -66,12 +66,12 @@ trait ApiResponseTrait
      */
     protected function validationErrorResponse(
         array $errors,
-        string $message = 'Validation failed'
+        string $message = 'Validation failed',
     ): JsonResponse {
         return $this->errorResponse(
             $message,
             Response::HTTP_UNPROCESSABLE_ENTITY,
-            $errors
+            $errors,
         );
     }
 
@@ -80,7 +80,7 @@ trait ApiResponseTrait
      */
     protected function notFoundResponse(
         string $resource = 'Resource',
-        mixed $identifier = null
+        mixed $identifier = null,
     ): JsonResponse {
         $message = $identifier
             ? "{$resource} '{$identifier}' not found"
@@ -88,7 +88,7 @@ trait ApiResponseTrait
 
         return $this->errorResponse(
             $message,
-            Response::HTTP_NOT_FOUND
+            Response::HTTP_NOT_FOUND,
         );
     }
 
@@ -96,11 +96,11 @@ trait ApiResponseTrait
      * Return unauthorized response
      */
     protected function unauthorizedResponse(
-        string $message = 'Unauthorized'
+        string $message = 'Unauthorized',
     ): JsonResponse {
         return $this->errorResponse(
             $message,
-            Response::HTTP_UNAUTHORIZED
+            Response::HTTP_UNAUTHORIZED,
         );
     }
 
@@ -108,11 +108,11 @@ trait ApiResponseTrait
      * Return forbidden response
      */
     protected function forbiddenResponse(
-        string $message = 'Forbidden'
+        string $message = 'Forbidden',
     ): JsonResponse {
         return $this->errorResponse(
             $message,
-            Response::HTTP_FORBIDDEN
+            Response::HTTP_FORBIDDEN,
         );
     }
 
@@ -122,23 +122,23 @@ trait ApiResponseTrait
     protected function paginatedResponse(
         $paginator,
         string $message = 'Success',
-        array $additionalMeta = []
+        array $additionalMeta = [],
     ): JsonResponse {
         $meta = array_merge([
             'current_page' => $paginator->currentPage(),
-            'from' => $paginator->firstItem(),
-            'last_page' => $paginator->lastPage(),
-            'path' => $paginator->path(),
-            'per_page' => $paginator->perPage(),
-            'to' => $paginator->lastItem(),
-            'total' => $paginator->total(),
+            'from'         => $paginator->firstItem(),
+            'last_page'    => $paginator->lastPage(),
+            'path'         => $paginator->path(),
+            'per_page'     => $paginator->perPage(),
+            'to'           => $paginator->lastItem(),
+            'total'        => $paginator->total(),
         ], $additionalMeta);
 
         return $this->successResponse(
             $paginator->items(),
             $message,
             Response::HTTP_OK,
-            $meta
+            $meta,
         );
     }
 
@@ -147,12 +147,12 @@ trait ApiResponseTrait
      */
     protected function createdResponse(
         mixed $data = null,
-        string $message = 'Resource created successfully'
+        string $message = 'Resource created successfully',
     ): JsonResponse {
         return $this->successResponse(
             $data,
             $message,
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
         );
     }
 
@@ -161,12 +161,12 @@ trait ApiResponseTrait
      */
     protected function updatedResponse(
         mixed $data = null,
-        string $message = 'Resource updated successfully'
+        string $message = 'Resource updated successfully',
     ): JsonResponse {
         return $this->successResponse(
             $data,
             $message,
-            Response::HTTP_OK
+            Response::HTTP_OK,
         );
     }
 
@@ -174,12 +174,12 @@ trait ApiResponseTrait
      * Return deleted response
      */
     protected function deletedResponse(
-        string $message = 'Resource deleted successfully'
+        string $message = 'Resource deleted successfully',
     ): JsonResponse {
         return $this->successResponse(
             null,
             $message,
-            Response::HTTP_OK
+            Response::HTTP_OK,
         );
     }
 

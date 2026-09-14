@@ -66,9 +66,9 @@ class IconCollection extends ResourceCollection
             }
 
             $key = match ($groupBy) {
-                'package' => $icon['package'] ?? 'Unknown',
+                'package'  => $icon['package'] ?? 'Unknown',
                 'category' => $icon['category'] ?? 'Uncategorized',
-                default => $icon['package'] ?? 'Unknown',
+                default    => $icon['package'] ?? 'Unknown',
             };
 
             $grouped[$key][] = $icon;

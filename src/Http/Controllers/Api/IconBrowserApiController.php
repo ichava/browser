@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
+use Simtabi\Laranail\Ichava\Models\Icon;
+use Symfony\Component\HttpFoundation\Response;
+use Simtabi\Laranail\Ichava\Services\IchavaLogger;
+use Simtabi\Laranail\Ichava\Services\IconRegistry;
+use Simtabi\Laranail\Ichava\Services\IconCacheService;
+use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Simtabi\Laranail\Ichava\Services\IconBrowserService;
+use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
+use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconResource;
+use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconCollection;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceSearchRequest;
 use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceUpdateRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconCollection;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconResource;
-use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
-use Simtabi\Laranail\Ichava\Models\Icon;
-use Simtabi\Laranail\Ichava\Services\IchavaLogger;
-use Simtabi\Laranail\Ichava\Services\IconBrowserService;
-use Simtabi\Laranail\Ichava\Services\IconCacheService;
-use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
-use Simtabi\Laranail\Ichava\Services\IconRegistry;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * IconBrowserApiController - RESTful API for Icon Browser
@@ -36,7 +37,7 @@ final class IconBrowserApiController extends BaseApiController
         IchavaLogger $logger,
         protected IconBrowserService $browserService,
         protected IconCacheService $cacheService,
-        protected IconPreferenceService $preferenceService
+        protected IconPreferenceService $preferenceService,
     ) {
         parent::__construct($logger);
     }
@@ -49,25 +50,25 @@ final class IconBrowserApiController extends BaseApiController
         try {
             $this->logInfo('Icon API request', [
                 'filters' => $request->validated(),
-                'ip' => $request->ip(),
+                'ip'      => $request->ip(),
             ]);
 
             $paginator = $this->browserService->getIcons(
                 filters: [
-                    'search' => $request->getSearch(),
-                    'packages' => $request->getPackages(),
+                    'search'     => $request->getSearch(),
+                    'packages'   => $request->getPackages(),
                     'categories' => $request->getCategories(),
-                    'variants' => $request->getVariants(),
+                    'variants'   => $request->getVariants(),
                 ],
                 page: $request->getPage(),
                 perPage: $request->getPerPage(),
                 sortBy: $request->getSortBy(),
-                sortDirection: $request->getSortDirection()
+                sortDirection: $request->getSortDirection(),
             );
 
             $this->logDebug('Icon API response', [
-                'total' => $paginator->total(),
-                'page' => $paginator->currentPage(),
+                'total'    => $paginator->total(),
+                'page'     => $paginator->currentPage(),
                 'per_page' => $paginator->perPage(),
             ]);
 
@@ -81,13 +82,13 @@ final class IconBrowserApiController extends BaseApiController
 
             return $collection->additional([
                 'meta' => [
-                    'total' => $paginator->total(),
-                    'per_page' => $paginator->perPage(),
+                    'total'        => $paginator->total(),
+                    'per_page'     => $paginator->perPage(),
                     'current_page' => $paginator->currentPage(),
-                    'last_page' => $paginator->lastPage(),
-                    'from' => $paginator->firstItem(),
-                    'to' => $paginator->lastItem(),
-                    'group_by' => $groupBy,
+                    'last_page'    => $paginator->lastPage(),
+                    'from'         => $paginator->firstItem(),
+                    'to'           => $paginator->lastItem(),
+                    'group_by'     => $groupBy,
                 ],
             ])->response();
         } catch (IchavaException $e) {
@@ -110,9 +111,9 @@ final class IconBrowserApiController extends BaseApiController
             $filters = $this->browserService->getFilters();
 
             $this->logDebug('Filter options retrieved', [
-                'packages_count' => count($filters['packages'] ?? []),
+                'packages_count'   => count($filters['packages'] ?? []),
                 'categories_count' => count($filters['categories'] ?? []),
-                'variants_count' => count($filters['variants'] ?? []),
+                'variants_count'   => count($filters['variants'] ?? []),
             ]);
 
             return response()->json($filters);
@@ -181,20 +182,20 @@ final class IconBrowserApiController extends BaseApiController
             ])->findOrFail($id);
 
             $this->logDebug('Icon details retrieved', [
-                'icon_id' => $id,
+                'icon_id'   => $id,
                 'icon_name' => $icon->name,
-                'package' => $icon->package,
+                'package'   => $icon->package,
             ]);
 
             return response()->json([
                 'success' => true,
-                'data' => new IconResource($icon),
+                'data'    => new IconResource($icon),
             ]);
         } catch (ModelNotFoundException $e) {
             $this->logWarning('Icon not found', ['icon_id' => $id]);
 
             return $this->notFoundResponse('Icon', $id);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Error retrieving icon', $e, ['icon_id' => $id]);
 
             return $this->handleException($e, 'An error occurred while retrieving the icon');
@@ -211,9 +212,9 @@ final class IconBrowserApiController extends BaseApiController
                 ->findOrFail($id);
 
             $this->logDebug('Serving SVG', [
-                'icon_id' => $id,
+                'icon_id'   => $id,
                 'icon_name' => $icon->name,
-                'package' => $icon->package,
+                'package'   => $icon->package,
             ]);
 
             $svg = $icon->svg_content;
@@ -259,7 +260,7 @@ final class IconBrowserApiController extends BaseApiController
                 ->header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox")
                 ->header('Content-Disposition', "inline; filename=\"{$safeFilename}.svg\"")
                 ->header('Cache-Control', $cacheControl)
-                ->header('ETag', '"'.md5($svg).'"');
+                ->header('ETag', '"' . md5($svg) . '"');
 
             /*
              * Claim the headers this action sets, or IchavaApiSecurity overwrites
@@ -288,7 +289,7 @@ final class IconBrowserApiController extends BaseApiController
             $this->logWarning('SVG not accessible', ['icon_id' => $id, 'error' => $e->getMessage()]);
 
             return $this->notFoundResponse('SVG content');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Error serving SVG', $e, ['icon_id' => $id]);
 
             return $this->errorResponse('Error retrieving SVG content');
@@ -309,7 +310,7 @@ final class IconBrowserApiController extends BaseApiController
                 $packages,
                 'Packages retrieved successfully',
                 Response::HTTP_OK,
-                ['total' => count($packages)]
+                ['total' => count($packages)],
             );
         } catch (IchavaException $e) {
             $this->logError('Failed to fetch packages', $e);
@@ -330,7 +331,7 @@ final class IconBrowserApiController extends BaseApiController
             if (! preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/i', $package)) {
                 return $this->validationErrorResponse(
                     ['package' => ['Invalid package name format. Expected: vendor/package-name']],
-                    'Invalid package name format'
+                    'Invalid package name format',
                 );
             }
 
@@ -377,10 +378,10 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($term) use ($termIconCounts) {
                     return [
-                        'id' => $term->id,
-                        'name' => $term->name,
-                        'slug' => $term->slug,
-                        'parent_id' => $term->parent_id,
+                        'id'         => $term->id,
+                        'name'       => $term->name,
+                        'slug'       => $term->slug,
+                        'parent_id'  => $term->parent_id,
                         'icon_count' => $termIconCounts[$term->id] ?? 0,
                     ];
                 });
@@ -394,27 +395,27 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($term) use ($termIconCounts) {
                     return [
-                        'id' => $term->id,
-                        'name' => $term->name,
-                        'slug' => $term->slug,
+                        'id'         => $term->id,
+                        'name'       => $term->name,
+                        'slug'       => $term->slug,
                         'icon_count' => $termIconCounts[$term->id] ?? 0,
                     ];
                 });
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'name' => $package,
-                    'label' => $packageData['browser_metadata']['name'] ?? $package,
+                'data'    => [
+                    'name'        => $package,
+                    'label'       => $packageData['browser_metadata']['name'] ?? $package,
                     'description' => $packageData['browser_metadata']['description'] ?? '',
-                    'vendor' => $packageData['browser_metadata']['vendor'] ?? '',
-                    'icon_count' => $iconCount,
-                    'categories' => $categories,
-                    'variants' => $variants,
-                    'metadata' => $packageData['browser_metadata'] ?? [],
+                    'vendor'      => $packageData['browser_metadata']['vendor'] ?? '',
+                    'icon_count'  => $iconCount,
+                    'categories'  => $categories,
+                    'variants'    => $variants,
+                    'metadata'    => $packageData['browser_metadata'] ?? [],
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to fetch package details', $e, ['package' => $package]);
 
             return $this->handleException($e, 'An error occurred while retrieving package details');
@@ -451,22 +452,22 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($category) use ($iconCounts) {
                     return [
-                        'id' => $category->id,
-                        'name' => $category->slug,
-                        'label' => $category->name,
+                        'id'      => $category->id,
+                        'name'    => $category->slug,
+                        'label'   => $category->name,
                         'package' => $category->package,
-                        'count' => $iconCounts[$category->id] ?? 0,
+                        'count'   => $iconCounts[$category->id] ?? 0,
                     ];
                 });
 
             return response()->json([
                 'success' => true,
-                'data' => $categories,
-                'meta' => [
+                'data'    => $categories,
+                'meta'    => [
                     'total' => $categories->count(),
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to fetch categories', $e);
 
             return $this->handleException($e, 'Failed to fetch categories');
@@ -503,22 +504,22 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($variant) use ($iconCounts) {
                     return [
-                        'id' => $variant->id,
-                        'name' => $variant->slug,
-                        'label' => $variant->name,
+                        'id'      => $variant->id,
+                        'name'    => $variant->slug,
+                        'label'   => $variant->name,
                         'package' => $variant->package,
-                        'count' => $iconCounts[$variant->id] ?? 0,
+                        'count'   => $iconCounts[$variant->id] ?? 0,
                     ];
                 });
 
             return response()->json([
                 'success' => true,
-                'data' => $variants,
-                'meta' => [
+                'data'    => $variants,
+                'meta'    => [
                     'total' => $variants->count(),
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to fetch variants', $e);
 
             return $this->handleException($e, 'Failed to fetch variants');
@@ -557,13 +558,13 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($term) use ($termIconCounts) {
                     return [
-                        'id' => $term->id,
-                        'name' => $term->name,
-                        'slug' => $term->slug,
-                        'package' => $term->package,
-                        'parent_id' => $term->parent_id,
+                        'id'         => $term->id,
+                        'name'       => $term->name,
+                        'slug'       => $term->slug,
+                        'package'    => $term->package,
+                        'parent_id'  => $term->parent_id,
                         'icon_count' => $termIconCounts[$term->id] ?? 0,
-                        'type' => 'category',
+                        'type'       => 'category',
                     ];
                 });
 
@@ -576,12 +577,12 @@ final class IconBrowserApiController extends BaseApiController
                 ->get()
                 ->map(function ($term) use ($termIconCounts) {
                     return [
-                        'id' => $term->id,
-                        'name' => $term->name,
-                        'slug' => $term->slug,
-                        'package' => $term->package,
+                        'id'         => $term->id,
+                        'name'       => $term->name,
+                        'slug'       => $term->slug,
+                        'package'    => $term->package,
                         'icon_count' => $termIconCounts[$term->id] ?? 0,
-                        'type' => 'variant',
+                        'type'       => 'variant',
                     ];
                 });
 
@@ -590,16 +591,16 @@ final class IconBrowserApiController extends BaseApiController
 
             return response()->json([
                 'success' => true,
-                'data' => [
+                'data'    => [
                     'categories' => $categoryTree,
-                    'variants' => $variants,
+                    'variants'   => $variants,
                 ],
                 'meta' => [
                     'total_categories' => $categories->count(),
-                    'total_variants' => $variants->count(),
+                    'total_variants'   => $variants->count(),
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to build terms hierarchy', $e);
 
             return $this->handleException($e, 'Failed to build terms hierarchy');
@@ -624,7 +625,7 @@ final class IconBrowserApiController extends BaseApiController
 
             return response()->json([
                 'success' => true,
-                'data' => $validated,
+                'data'    => $validated,
             ]);
         } catch (IchavaException $e) {
             $this->logError('Failed to fetch preferences', $e);
@@ -675,12 +676,12 @@ final class IconBrowserApiController extends BaseApiController
 
             return response()->json([
                 'success' => true,
-                'data' => [
+                'data'    => [
                     'search' => $this->preferenceService->getSearch(),
                 ],
                 'message' => 'Search query updated successfully',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to update search', $e);
 
             return $this->handleException($e, 'An error occurred while updating search query');
@@ -705,9 +706,9 @@ final class IconBrowserApiController extends BaseApiController
 
             return $this->updatedResponse(
                 $this->preferenceService->getFilters(),
-                'Filters updated successfully'
+                'Filters updated successfully',
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to update filters', $e);
 
             return $this->handleException($e, 'An error occurred while updating filters');
@@ -750,9 +751,9 @@ final class IconBrowserApiController extends BaseApiController
             return response()->json([
                 'success' => true,
                 'message' => 'Ichava icon cache cleared successfully',
-                'stats' => $stats,
+                'stats'   => $stats,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to clear cache', $e);
 
             return $this->handleException($e, 'An error occurred while clearing cache');
@@ -774,7 +775,7 @@ final class IconBrowserApiController extends BaseApiController
             $this->logInfo('Cache rebuilt successfully', $stats);
 
             return $this->successResponse($stats, 'Icon cache rebuilt successfully. Preferences reset.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logError('Failed to rebuild cache', $e);
 
             return $this->handleException($e, 'An error occurred while rebuilding cache');
@@ -795,7 +796,7 @@ final class IconBrowserApiController extends BaseApiController
             return response()->json([
                 'success' => true,
                 'healthy' => $healthy,
-                'stats' => $stats,
+                'stats'   => $stats,
             ]);
         } catch (IchavaException $e) {
             $this->logError('Failed to fetch cache stats', $e);
@@ -810,16 +811,16 @@ final class IconBrowserApiController extends BaseApiController
     protected function emptyIconResponse(IconFilterRequest $request, string $error): array
     {
         return [
-            'data' => [],
+            'data'    => [],
             'grouped' => [],
-            'meta' => [
-                'total' => 0,
-                'per_page' => $request->getPerPage(),
+            'meta'    => [
+                'total'        => 0,
+                'per_page'     => $request->getPerPage(),
                 'current_page' => 1,
-                'last_page' => 1,
-                'from' => null,
-                'to' => null,
-                'group_by' => $request->getSortBy(),
+                'last_page'    => 1,
+                'from'         => null,
+                'to'           => null,
+                'group_by'     => $request->getSortBy(),
             ],
             'error' => $error,
         ];

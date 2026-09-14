@@ -6,7 +6,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset;
 
 beforeEach(function (): void {
-    $this->fixturesDir = sys_get_temp_dir().'/ichava-sri-'.bin2hex(random_bytes(4));
+    $this->fixturesDir = sys_get_temp_dir() . '/ichava-sri-' . bin2hex(random_bytes(4));
     mkdir($this->fixturesDir, 0700, true);
 });
 

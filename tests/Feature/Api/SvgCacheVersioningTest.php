@@ -23,13 +23,13 @@ use Simtabi\Laranail\Ichava\Services\SvgProcessingService;
  */
 function makeIconWithFile(string $body = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24"/></svg>'): array
 {
-    $file = tempnam(sys_get_temp_dir(), 'ichava-ver').'.svg';
+    $file = tempnam(sys_get_temp_dir(), 'ichava-ver') . '.svg';
     file_put_contents($file, $body);
 
     $icon = Icon::create([
-        'package' => 'ichava/version-test',
-        'name' => 'square',
-        'path' => $file,
+        'package'   => 'ichava/version-test',
+        'name'      => 'square',
+        'path'      => $file,
         'file_hash' => md5($body),
     ]);
 
@@ -43,7 +43,7 @@ describe('SVG cache versioning', function () {
         try {
             $response = test()->get(route('ichava.api.icons.svg', [
                 'id' => $icon->id,
-                'v' => $icon->render_version,
+                'v'  => $icon->render_version,
             ]));
 
             $response->assertOk();
@@ -74,7 +74,7 @@ describe('SVG cache versioning', function () {
         try {
             $response = test()->get(route('ichava.api.icons.svg', [
                 'id' => $icon->id,
-                'v' => 'deadbeefdeadbeef',
+                'v'  => 'deadbeefdeadbeef',
             ]));
 
             // Still the current bytes, never a 404 and never a redirect: the id
@@ -108,7 +108,7 @@ describe('SVG cache versioning', function () {
             $response->assertOk();
             $url = $response->json('data.svg_url');
 
-            expect($url)->toContain('v='.$icon->render_version);
+            expect($url)->toContain('v=' . $icon->render_version);
 
             // And that published URL must be the one that earns immutable.
             $followed = test()->get($url);

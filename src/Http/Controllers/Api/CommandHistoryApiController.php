@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
@@ -17,7 +18,7 @@ final class CommandHistoryApiController extends BaseApiController
 {
     public function __construct(
         IchavaLogger $logger,
-        protected IconPreferenceService $preferenceService
+        protected IconPreferenceService $preferenceService,
     ) {
         parent::__construct($logger);
     }
@@ -42,9 +43,9 @@ final class CommandHistoryApiController extends BaseApiController
                 $history,
                 'Command history retrieved successfully',
                 200,
-                ['count' => count($history)]
+                ['count' => count($history)],
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to fetch command history');
         }
     }
@@ -56,29 +57,29 @@ final class CommandHistoryApiController extends BaseApiController
     {
         try {
             $validated = $request->validate([
-                'command' => 'required|string|max:255',
-                'type' => 'required|string|in:action,search,navigation',
+                'command'  => 'required|string|max:255',
+                'type'     => 'required|string|in:action,search,navigation',
                 'metadata' => 'sometimes|array',
             ]);
 
             $this->preferenceService->addCommandHistory(
                 $validated['command'],
                 $validated['type'],
-                $validated['metadata'] ?? []
+                $validated['metadata'] ?? [],
             );
 
             $this->logDebug('Command history entry added', [
                 'command' => $validated['command'],
-                'type' => $validated['type'],
+                'type'    => $validated['type'],
             ]);
 
             return $this->createdResponse(
                 ['command' => $validated['command'], 'type' => $validated['type']],
-                'Command logged successfully'
+                'Command logged successfully',
             );
         } catch (ValidationException $e) {
             return $this->handleValidationException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to log command');
         }
     }
@@ -94,7 +95,7 @@ final class CommandHistoryApiController extends BaseApiController
             $this->logDebug('Command history cleared');
 
             return $this->deletedResponse('Command history cleared successfully');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e, 'Failed to clear command history');
         }
     }

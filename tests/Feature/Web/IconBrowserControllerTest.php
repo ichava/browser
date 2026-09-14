@@ -40,8 +40,8 @@ describe('IconBrowserController::stats', function () {
     it('shows per-package counts when icons exist in the database', function () {
         Icon::create([
             'package' => 'ichava/test-pack',
-            'name' => 'star',
-            'path' => '/fake/star.svg',
+            'name'    => 'star',
+            'path'    => '/fake/star.svg',
         ]);
 
         $response = test()->get(route('ichava.stats'));

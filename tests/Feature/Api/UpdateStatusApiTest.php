@@ -23,37 +23,37 @@ beforeEach(function () {
             {
                 $base = [
                     [
-                        'package' => 'ichava/twemoji-icons',
-                        'source' => 'primary',
-                        'status' => 'update-available',
-                        'current' => '17.0.0',
-                        'latest' => '17.1.0',
+                        'package'     => 'ichava/twemoji-icons',
+                        'source'      => 'primary',
+                        'status'      => 'update-available',
+                        'current'     => '17.0.0',
+                        'latest'      => '17.1.0',
                         'release_url' => 'https://www.npmjs.com/package/@twemoji/svg/v/17.1.0',
-                        'reason' => null,
+                        'reason'      => null,
                     ],
                     [
-                        'package' => 'ichava/flag-icons',
-                        'source' => 'primary',
-                        'status' => 'up-to-date',
-                        'current' => '7.5.0',
-                        'latest' => '7.5.0',
+                        'package'     => 'ichava/flag-icons',
+                        'source'      => 'primary',
+                        'status'      => 'up-to-date',
+                        'current'     => '7.5.0',
+                        'latest'      => '7.5.0',
                         'release_url' => 'https://www.npmjs.com/package/flag-icons/v/7.5.0',
-                        'reason' => null,
+                        'reason'      => null,
                     ],
                     [
-                        'package' => 'ichava/metronic-icons',
-                        'source' => 'primary',
-                        'status' => 'no-upstream',
-                        'current' => null,
-                        'latest' => null,
+                        'package'     => 'ichava/metronic-icons',
+                        'source'      => 'primary',
+                        'status'      => 'no-upstream',
+                        'current'     => null,
+                        'latest'      => null,
                         'release_url' => null,
-                        'reason' => 'Pack does not declare an upstream block in config.json',
+                        'reason'      => 'Pack does not declare an upstream block in config.json',
                     ],
                 ];
                 if ($packageFilter !== null) {
                     return array_values(array_filter(
                         $base,
-                        static fn (array $r): bool => $r['package'] === $packageFilter
+                        static fn (array $r): bool => $r['package'] === $packageFilter,
                     ));
                 }
 
