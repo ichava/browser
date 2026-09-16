@@ -28,30 +28,11 @@ class InjectNpmScriptsCommand extends Command
         'ichava:watch'       => 'cd vendor/ichava/ichava && npm run watch --silent',
     ];
 
-    /**
-     * Retained so the previous name keeps working.
-     *
-     * laranail/console's command base applies this property for you. This command
-     * extends Laravel's base, so it has to be applied by hand -- leaving it
-     * declared but unapplied registers nothing and fails silently, which is why
-     * CommandNamingTest reads the live registry rather than this property.
-     *
-     * @var list<string>
-     */
-    protected array $commandAliases = ['ichava:inject-scripts'];
-
     protected $signature = 'ichava::browser.inject-scripts
                             {--path= : Absolute path to the host package.json (default: base_path)}
                             {--force : Re-inject scripts even if they already exist}';
 
     protected $description = 'Inject Ichava npm build/watch scripts into the host application package.json';
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->setAliases($this->commandAliases);
-    }
 
     public function handle(): int
     {
