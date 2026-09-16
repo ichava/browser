@@ -4,9 +4,14 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ## [0.2.0] - Unreleased
 
-### Added
 
-- PHPStan static analysis (level 0) with `composer analyse` and a code-quality CI workflow.
+### Breaking
+
+- **`ichava:inject-scripts` is now `ichava::browser.inject-scripts`, and the bare name is gone.**
+  Artisan's command table is a flat map keyed by name, so a bare slug is a key any sibling
+  package could also claim, and the second claimant replaces the first silently. It is not
+  retained as an alias: an alias that reintroduces the bare name hands back the same collision.
+
 
 ### Fixed
 

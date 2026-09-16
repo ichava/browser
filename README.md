@@ -17,7 +17,7 @@ The HTTP layer for the [Ichava ecosystem](https://github.com/ichava/documentatio
 | Blade views | `<x-ichava::layouts.app>`, `<x-ichava::layouts.browser>`, plus `<x-ichava::ichava-test-icons>` and `<x-ichava::ichava-ui-icons>` demo components. |
 | `ui-icons` pack | Bundled icon set used by the SPA. |
 | Asset publish | `vendor:publish --tag=ichava-assets` copies the pre-built Vite output into `public/vendor/ichava/`. |
-| `ichava:inject-npm-scripts` | Adds `ichava:dev`, `ichava:build`, `ichava:watch` scripts to your host app's `package.json`. |
+| `ichava:inject-npm-scripts` | Adds `ichava:dev`, `ichava:build`, `ichava::ichava-core.watch` scripts to your host app's `package.json`. |
 
 ## Requirements
 
