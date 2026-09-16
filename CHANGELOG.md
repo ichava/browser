@@ -4,6 +4,16 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ## [0.2.0] - Unreleased
 
+
+### Breaking
+
+- **`ichava:inject-scripts` is now `ichava::browser.inject-scripts`.** The old name is retained
+  as an alias. Artisan's command table is a flat map keyed by name, so a bare slug is a key any
+  sibling package could also claim, and the second claimant replaces the first silently.
+
+  The alias had to be wired by hand: `$commandAliases` is applied by `laranail/console`'s
+  command base, and this command extends Laravel's, so declaring the property registered
+  nothing. Caught by asserting against the live console registry rather than the property.
 ### Added
 
 - PHPStan static analysis (level 0) with `composer analyse` and a code-quality CI workflow.

@@ -6,12 +6,21 @@ namespace Simtabi\Laranail\Ichava\Browser\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
  * Injects Ichava npm build scripts into the host application's package.json.
  */
 class InjectNpmScriptsCommand extends Command
 {
+    /*
+     * Symfony's validateName() rejects the empty segment in `::`, so the
+     * namespaced name cannot be registered through the normal path. This trait
+     * writes it past that validator; dispatch still works because Symfony
+     * resolves an exact name before its `:`-splitting namespace lookup.
+     */
+    use SupportsNamespacedNames;
+
     private const SCRIPTS = [
         '// Package: Ichava' => '',
         'ichava:build'       => 'cd vendor/ichava/ichava && npm run build --silent',
@@ -19,11 +28,30 @@ class InjectNpmScriptsCommand extends Command
         'ichava:watch'       => 'cd vendor/ichava/ichava && npm run watch --silent',
     ];
 
-    protected $signature = 'ichava:inject-scripts
+    /**
+     * Retained so the previous name keeps working.
+     *
+     * laranail/console's command base applies this property for you. This command
+     * extends Laravel's base, so it has to be applied by hand -- leaving it
+     * declared but unapplied registers nothing and fails silently, which is why
+     * CommandNamingTest reads the live registry rather than this property.
+     *
+     * @var list<string>
+     */
+    protected array $commandAliases = ['ichava:inject-scripts'];
+
+    protected $signature = 'ichava::browser.inject-scripts
                             {--path= : Absolute path to the host package.json (default: base_path)}
                             {--force : Re-inject scripts even if they already exist}';
 
     protected $description = 'Inject Ichava npm build/watch scripts into the host application package.json';
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setAliases($this->commandAliases);
+    }
 
     public function handle(): int
     {
