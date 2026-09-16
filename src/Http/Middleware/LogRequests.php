@@ -25,7 +25,7 @@ final class LogRequests
     public function handle(Request $request, Closure $next): Response
     {
         // Only log if debug mode is enabled and logging is configured
-        $shouldLog = config('app.debug') && config('ichava.core.logging.requests', false);
+        $shouldLog = config('app.debug') && config('ichava.ichava-core.logging.requests', false);
 
         if ($shouldLog) {
             $startTime = microtime(true);
