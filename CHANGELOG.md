@@ -2,11 +2,14 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-09-16
 
 
 ### Breaking
 
+- **Requires `ichava/core: ^0.2`.** Core `0.2.0` moved its config key to `ichava.ichava-core.*`
+  and renamed every Artisan command with no bare aliases, so a host application upgrading this
+  package has to upgrade core with it.
 - **`ichava:inject-scripts` is now `ichava::browser.inject-scripts`, and the bare name is gone.**
   Artisan's command table is a flat map keyed by name, so a bare slug is a key any sibling
   package could also claim, and the second claimant replaces the first silently. It is not
@@ -15,13 +18,29 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ### Fixed
 
+- Four `config('ichava.core.*')` reads left orphaned by core's config rename — CORS, request
+  logging, auth debug and the route prefix were silently returning defaults.
 - Icon components called non-existent `::getName()`; now use `::getPackageName()`.
 - Facade imports (`DB`) made explicit in both controllers.
 
 ### Changed
 
+- Third-party GitHub Actions pinned to the commit SHA of their latest release; `actions/*` keep
+  floating on a major tag. A tag is mutable, so `@v4` is a promise the action's owner can
+  rewrite; pinning GitHub's own actions inside GitHub's own runner buys nothing.
+- The test harness reads `DB_CONNECTION`, so the suite targets SQLite, PostgreSQL, MySQL or
+  MariaDB. SQLite runs enable `foreign_key_constraints`, which Laravel applies only when the key
+  is present.
 - Hardened CI workflows: concurrency groups, job timeouts, problem matchers, docs-only skip paths, test coverage, and tidy composer scripts.
 - Aligned Pest to `^4.6 || ^5.0` and CI branch triggers on `main` only.
+
+### Added
+
+- `release.yml` — a `v*.*.*` tag now publishes a release whose body is that version's CHANGELOG
+  section, and fails closed when the tagged version has no section.
+- The database matrix: CI runs the suite against PostgreSQL 17, MySQL 8.4 and MariaDB 11.4 as
+  service containers alongside the SQLite lane. These API tests refresh real tables and query
+  through core's models, so SQLite alone proved nothing about the other three.
 
 ## [0.1.1] - 2026-09-02
 
