@@ -22,7 +22,7 @@ final class ValidateIchavaRoute
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $prefix = config('ichava.core.prefix', 'ichava');
+        $prefix = config('ichava.ichava-core.prefix', 'ichava');
         $path = $request->path();
 
         // Ensure request is for an Ichava route

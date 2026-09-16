@@ -84,7 +84,7 @@ final class IchavaStatefulGuard
         $this->addSessionContext($request);
 
         // Debug logging if enabled
-        if (config('app.debug') && config('ichava.core.logging.auth_debug', false)) {
+        if (config('app.debug') && config('ichava.ichava-core.logging.auth_debug', false)) {
             $this->logger->debug('Request context', [
                 'tier'          => $request->attributes->get('ichava_tier'),
                 'authenticated' => $request->attributes->get('ichava_authenticated', false),
@@ -122,7 +122,7 @@ final class IchavaStatefulGuard
                 $request->attributes->set('ichava_user_id', $user->id ?? $user->getAuthIdentifier());
                 $request->attributes->set('ichava_user', $user);
 
-                if (config('app.debug') && config('ichava.core.logging.auth_debug', false)) {
+                if (config('app.debug') && config('ichava.ichava-core.logging.auth_debug', false)) {
                     $this->logger->debug('Authenticated user detected', [
                         'user_id' => $user->id ?? null,
                         'email'   => $user->email ?? null,
