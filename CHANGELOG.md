@@ -2,6 +2,16 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-09-16
+
+### Changed
+
+- **Requires `ichava/core: ^0.2.2`.** The floor is raised rather than the range widened: `0.2.0`
+  invoked six of its own Artisan commands by names it had just retired, and `0.2.1` still passed
+  `migrate` a `--path` that resolved nowhere, so `database migrate` reported success and created
+  no tables. `^0.2` admitted both. Raising a floor to exclude a known-broken release is not a
+  pin — the range still tracks every `0.2.x` from `0.2.2` on.
+
 ## [0.2.0] - 2026-09-16
 
 
