@@ -32,14 +32,15 @@ it('registers the command under the vendor and slug', function (): void {
         ->toBe('ichava::browser.inject-scripts');
 });
 
-it('keeps the previous name working as an alias', function (): void {
-    // `$commandAliases` is honoured by laranail/console's command base. This
-    // command extends Laravel's, so the alias has to be wired explicitly --
-    // and that is precisely the kind of thing that fails silently, hence the
-    // check against the live registry rather than the property.
-    $found = browserCommands();
-
-    expect($found)->toHaveKey('ichava:inject-scripts');
-    expect($found['ichava:inject-scripts']->getName())
-        ->toBe('ichava::browser.inject-scripts');
+it('registers no bare name at all, not even as an alias', function (): void {
+    // The global standard is explicit: "No convenience alias may reintroduce the
+    // bare name ... and makes the convention decorative." `ichava:inject-scripts`
+    // is still a generic key in Artisan's flat command map, so retaining it would
+    // hand back the very collision the namespaced name prevents.
+    foreach (browserCommands() as $key => $command) {
+        expect($key)->toMatch(
+            '/^ichava::[a-z0-9-]+\./',
+            sprintf('%s answers to the bare name %s', $command::class, $key),
+        );
+    }
 });
