@@ -2,6 +2,15 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2026-09-16
+
+### Changed
+
+- **Requires `ichava/core: ^0.2.3`.** `0.2.2` decided readiness against columns the schema has
+  never had, so `ichava::ichava-core.info status` reported `UNINITIALIZED` on a fully seeded
+  database and both auto-seed listeners, which gate on the same check, never fired. The floor is
+  raised rather than the range widened; it still tracks every `0.2.x` from `0.2.3` on.
+
 ## [0.2.1] - 2026-09-16
 
 ### Changed
