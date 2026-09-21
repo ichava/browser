@@ -22,7 +22,7 @@
  * @see https://vitejs.dev/config/
  */
 
-import { ViteConfigGenerator } from '../../../.scripts/vite/vite-configurator.js';
+import { ViteConfigGenerator } from '../../../../.scripts/vite/vite-configurator.js';
 import vue from '@vitejs/plugin-vue';
 
 const generator = new ViteConfigGenerator('ichava', 'package', import.meta.url);
