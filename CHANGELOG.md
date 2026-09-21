@@ -2,7 +2,30 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.7] - 2026-09-21
+
+### Changed
+
+- **`ichava/core` floor raised to `^0.2.8 || ^0.3.1`.** The `labels` payload
+  below arrives from core and was written to degrade to an absent key, so this
+  is not a correctness fix -- it is the difference between localised taxonomy
+  labels being guaranteed and being best-effort. `0.3.1` is the first core
+  release that carries them.
+
+  The `^0.2.8` arm is kept deliberately. Dropping it to require `^0.3.1` alone
+  would cut off the 0.2 line for no benefit; raising the floor of the 0.3 arm
+  excludes the releases without `labels` and nothing else.
+
+### Added
+
+- **Localised taxonomy labels in the package payloads.** `labels` carries a
+  pack's `variants` / `categories` / `sets` display names, which `config.json`
+  has no equivalent for, and follows the application locale because
+  `ichava/core` applies its translation overlay on read.
+
+  Degrades cleanly: against a core that does not supply `labels`, the key is
+  simply absent. The composer floor is unchanged for that reason -- it moves
+  when core next tags a release carrying the overlay.
 
 ### Fixed
 
@@ -29,7 +52,6 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   > restructure. That fix is right; this is about what happens when the file at
   > that path does not exist.
 
-### Fixed
 
 - **Package titles and descriptions were read under a key nothing ever wrote.**
   Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
@@ -59,17 +81,6 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   > Not an exploitable regression in any released version: the key never
   > existed, so the response was always empty. It would have become one in this
   > change.
-
-### Added
-
-- **Localised taxonomy labels in the package payloads.** `labels` carries a
-  pack's `variants` / `categories` / `sets` display names, which `config.json`
-  has no equivalent for, and follows the application locale because
-  `ichava/core` applies its translation overlay on read.
-
-  Degrades cleanly: against a core that does not supply `labels`, the key is
-  simply absent. The composer floor is unchanged for that reason -- it moves
-  when core next tags a release carrying the overlay.
 
 ## [0.2.6] - 2026-09-21
 
