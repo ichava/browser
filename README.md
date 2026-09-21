@@ -64,23 +64,23 @@ $icons = Http::get('https://example.com/ichava/api/icons', [
 ])->json();
 ```
 
-## Documentation
+## <a name="documentation"></a>Documentation
 
 Full docs at [`ichava/documentation`](https://github.com/ichava/documentation).
 
 Per-topic shortcuts:
 
-- [Installation](https://github.com/ichava/documentation/blob/main/browser/installation.md)
-- [Configuration](https://github.com/ichava/documentation/blob/main/browser/configuration.md)
-- [Environment variables](https://github.com/ichava/documentation/blob/main/browser/environment.md)
-- [API endpoints](https://github.com/ichava/documentation/blob/main/browser/api-endpoints.md)
-- [shadcn-vue installer](https://github.com/ichava/documentation/blob/main/browser/shadcn-installer.md)
+- [Installation](docs/installation.md)
+- [Configuration](docs/configuration.md)
+- [Environment variables](docs/environment.md)
+- [API endpoints](docs/tools/api-endpoints.md)
+- [shadcn-vue installer](docs/tools/shadcn-installer.md)
 
 Cross-cutting:
 
-- [Architecture](https://github.com/ichava/documentation/blob/main/architecture.md)
+- [Architecture](https://opensource.simtabi.com/documentation/ichava/core/architecture)
 - [Security model](https://github.com/ichava/documentation/blob/main/security-model.md)
-- [Troubleshooting](https://github.com/ichava/documentation/blob/main/troubleshooting.md)
+- [Troubleshooting](https://opensource.simtabi.com/documentation/ichava/core/troubleshooting)
 
 ## Contributing
 
