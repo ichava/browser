@@ -1,3 +1,5 @@
+[← Docs index](../README.md#documentation)
+
 # Architecture
 
 *Explanation.* What `ichava/browser` ships, how it attaches to `ichava/core`, and how its middleware stack adapts to whatever the host application provides.
