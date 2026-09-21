@@ -52,7 +52,11 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             ->setPathFrom(source: $this, levelsUp: 2)
             ->setName('ichava/browser')
             ->hasConfigFile('browser')
-            ->hasViews('ichava')
+            // No argument: package-tools resolves the vendor-scoped default,
+            // `ichava/browser`. A bare slug like `ichava` is a flat-map key any
+            // sibling package or the host application could also claim, and the
+            // loser is replaced silently.
+            ->hasViews()
             ->hasTranslations()
             ->hasRoutes(['web', 'api'])
             ->hasCommands([
@@ -93,6 +97,18 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
 
         // Anonymous Blade components (views without PHP classes) under the
         // shared `ichava::` namespace.
+        //
+        // DEFERRED, not overlooked: `ichava` is a bare generic slug here, the
+        // same class of claim the view namespace above was corrected away from.
+        // It is left in place because Blade component tags are the ecosystem's
+        // documented public API -- `<x-ichava::icon>` appears ~85 times across
+        // source, resources and docs and 24 more in `ichava/documentation` --
+        // so renaming it is a breaking change for every consumer and belongs in
+        // its own release with its own migration note, not folded into a
+        // namespace fix. Four flat maps are keyed `ichava`: this one, core's
+        // `Blade::componentNamespace()`, core's and this package's
+        // `Blade::component('ichava::…')` aliases, and -- until the commit
+        // before this one -- the view hints.
         Blade::anonymousComponentPath(
             $this->package->basePath('resources/views/components'),
             'ichava',

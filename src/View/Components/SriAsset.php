@@ -59,7 +59,7 @@ final class SriAsset extends Component
 
     public function render(): View
     {
-        return view('ichava::components.sri-asset');
+        return view('ichava/browser::components.sri-asset');
     }
 
     private function resolveUrl(string $path): string

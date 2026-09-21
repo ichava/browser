@@ -31,6 +31,6 @@ class App extends Component
      */
     public function render(): View
     {
-        return view('ichava::components.layouts.app');
+        return view('ichava/browser::components.layouts.app');
     }
 }
