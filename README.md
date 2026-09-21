@@ -51,7 +51,7 @@ The `ichava` prefix comes from `ICHAVA_BROWSER_PREFIX` in core's config (the pre
 After installing an icon pack, every installed pack is searchable in the SPA. To call the REST API instead:
 
 ```bash
-curl "https://example.com/ichava/api/icons?search=home&package=ichava/tabler-icons"
+curl "https://example.com/ichava/api/icons?search=home&package=ichava/icon-sets-tabler"
 ```
 
 ```php
@@ -60,7 +60,7 @@ use Illuminate\Support\Facades\Http;
 
 $icons = Http::get('https://example.com/ichava/api/icons', [
     'search'  => 'home',
-    'package' => 'ichava/tabler-icons',
+    'package' => 'ichava/icon-sets-tabler',
 ])->json();
 ```
 

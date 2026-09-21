@@ -30,7 +30,7 @@ use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiControlle
 function registry_metadata_sample(): array
 {
     return [
-        'package_name' => 'ichava/tabler-icons',
+        'package_name' => 'ichava/icon-sets-tabler',
         'name'         => 'Tabler Icons',
         'description'  => 'Over 5,200 pixel-perfect icons',
         'vendor'       => 'ichava',
@@ -44,9 +44,9 @@ function registry_metadata_sample(): array
         'labels'       => ['variants' => ['outline' => 'Outline', 'filled' => 'Filled']],
 
         // Must never leave the server.
-        'base_path'      => '/var/www/vendor/ichava/tabler-icons/resources/assets/svg',
+        'base_path'      => '/var/www/vendor/ichava/icon-sets-tabler/resources/assets/svg',
         'provider_class' => 'Simtabi\\Laranail\\Ichava\\TablerIcons\\Providers\\IconsServiceProvider',
-        'icon_set_name'  => 'ichava/tabler-icons',
+        'icon_set_name'  => 'ichava/icon-sets-tabler',
     ];
 }
 
