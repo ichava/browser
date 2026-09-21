@@ -6,6 +6,17 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ### Changed
 
+- **`ichava/core` `^0.4` is accepted.** The constraint read
+  `^0.2.8 || ^0.3.1`, and a caret on a `0.x` version pins the *minor*, so
+  `0.4.0` did not satisfy it at all. An application that wanted core `0.4`
+  could not install this package beside it, and Composer reported that as a
+  conflict on `ichava/core` rather than on the package holding it back.
+
+  The branch is **added, not substituted**. `^0.2.8` and `^0.3.1` keep
+  resolving, because nothing here calls an API that `0.4` introduced -- the
+  suite is green on both `v0.3.1` and `v0.4.0` -- so widening is the whole
+  change and raising the floor would strand consumers for no gain.
+
 - **The view namespace is now `ichava/browser`, not the bare `ichava`.**
   `hasViews()` was being passed an explicit `'ichava'`, overriding the
   vendor-scoped default that `hasTranslations()` in the same provider already
