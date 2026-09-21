@@ -2,6 +2,37 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **The view namespace is now `ichava/browser`, not the bare `ichava`.**
+  `hasViews()` was being passed an explicit `'ichava'`, overriding the
+  vendor-scoped default that `hasTranslations()` in the same provider already
+  took. Laravel keeps view namespaces in a flat hint map, so a bare generic slug
+  is a key any sibling package, third-party package or the consuming application
+  could also claim -- and the second claimant replaces the first with **no
+  error**, surfacing much later as a missing view.
+
+  Seven internal `view('ichava::...')` call sites moved with it. None was
+  documented as public API.
+
+  Registering the vendor-scoped name also makes package-tools add the tag-safe
+  alias `ichava-browser` over the same paths, because Blade's component-tag
+  pattern admits no forward slash. Both spellings resolve the same files.
+
+  **If you published this package's views, your overrides will stop being
+  found.** The directory moves from `resources/views/vendor/ichava/` to
+  `resources/views/vendor/ichava/browser/`. Move it, or re-publish with
+  `php artisan vendor:publish --tag=ichava::browser-views`. Nothing errors if
+  you do neither -- the package's own templates simply render instead of yours.
+  The publish tag is derived from the package name and is unchanged.
+
+  `<x-ichava::icon>` and every other `<x-ichava::...>` tag are **unaffected**.
+  Those are Blade component registries, not the view-hint map; renaming them is
+  a separate, deferred decision recorded in the provider alongside the
+  registration.
+
 ## [0.2.8] - 2026-09-21
 
 ### Fixed
