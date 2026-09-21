@@ -406,13 +406,14 @@ final class IconBrowserApiController extends BaseApiController
                 'success' => true,
                 'data'    => [
                     'name'        => $package,
-                    'label'       => $packageData['browser_metadata']['name'] ?? $package,
-                    'description' => $packageData['browser_metadata']['description'] ?? '',
-                    'vendor'      => $packageData['browser_metadata']['vendor'] ?? '',
+                    'label'       => $packageData['name'] ?? $package,
+                    'description' => $packageData['description'] ?? '',
+                    'vendor'      => $packageData['vendor'] ?? '',
                     'icon_count'  => $iconCount,
                     'categories'  => $categories,
                     'variants'    => $variants,
-                    'metadata'    => $packageData['browser_metadata'] ?? [],
+                    'labels'      => $packageData['labels'] ?? [],
+                    'metadata'    => $this->publicMetadata($packageData),
                 ],
             ]);
         } catch (Exception $e) {
@@ -844,5 +845,40 @@ final class IconBrowserApiController extends BaseApiController
         }
 
         return $tree;
+    }
+
+    /**
+     * The subset of a pack's registry metadata that may leave the server.
+     *
+     * An allow-list, not a blocklist. `IconRegistry` metadata carries
+     * `base_path` and `provider_class`, and this endpoint is reachable by
+     * anyone who can reach the browser -- handing back absolute filesystem
+     * paths and internal class names is not something to opt out of one key at
+     * a time as the registry grows.
+     *
+     * Until now the key read here did not exist, so this response always
+     * carried an empty array. Pointing it at the real metadata without
+     * filtering would have turned a dormant bug into a disclosure.
+     *
+     * @param array<string, mixed> $packageData
+     *
+     * @return array<string, mixed>
+     */
+    private function publicMetadata(array $packageData): array
+    {
+        return array_intersect_key($packageData, array_flip([
+            'package_name',
+            'name',
+            'description',
+            'vendor',
+            'version',
+            'license',
+            'homepage',
+            'repository',
+            'keywords',
+            'total',
+            'prefix',
+            'labels',
+        ]));
     }
 }

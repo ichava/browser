@@ -118,9 +118,10 @@ final class IconBrowserController extends Controller
                 $terms = $termCounts->get($packageKey, collect());
                 $packageStats[] = [
                     'name'           => $packageKey,
-                    'label'          => $packageData['browser_metadata']['name'] ?? $packageKey,
-                    'description'    => $packageData['browser_metadata']['description'] ?? '',
-                    'vendor'         => $packageData['browser_metadata']['vendor'] ?? '',
+                    'label'          => $packageData['name'] ?? $packageKey,
+                    'description'    => $packageData['description'] ?? '',
+                    'vendor'         => $packageData['vendor'] ?? '',
+                    'labels'         => $packageData['labels'] ?? [],
                     'icon_count'     => (int) ($iconCounts[$packageKey] ?? 0),
                     'category_count' => (int) ($terms->firstWhere('type', 'category')->count ?? 0),
                     'variant_count'  => (int) ($terms->firstWhere('type', 'variant')->count ?? 0),

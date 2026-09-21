@@ -2,6 +2,50 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Package titles and descriptions were read under a key nothing ever wrote.**
+  Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
+  has never written that key -- 16 reads across `ichava/core` and this package,
+  **zero writes** -- so every one fell through its `??` default. The SPA showed
+  the package slug where a title belonged and an empty string where a
+  description belonged.
+
+  Nothing failed, because each fallback looked plausible. A fallback is only a
+  safety net if something notices you are standing in it. The values were there
+  the whole time, one level up.
+
+### Security
+
+- **The package endpoint no longer risks publishing filesystem paths.** One of
+  those reads passed the whole array through as
+  `'metadata' => $packageData['browser_metadata'] ?? []`, which returned an
+  empty array for its entire life. Repointing it at the real metadata without
+  filtering would have started serving `base_path` and `provider_class` --
+  absolute paths and internal class names -- from an endpoint anyone who can
+  reach the browser can call.
+
+  It now goes through an **allow-list**, not a blocklist, so a key the registry
+  grows later is withheld until someone chooses to publish it. A test adds an
+  unknown key and asserts it does not escape.
+
+  > Not an exploitable regression in any released version: the key never
+  > existed, so the response was always empty. It would have become one in this
+  > change.
+
+### Added
+
+- **Localised taxonomy labels in the package payloads.** `labels` carries a
+  pack's `variants` / `categories` / `sets` display names, which `config.json`
+  has no equivalent for, and follows the application locale because
+  `ichava/core` applies its translation overlay on read.
+
+  Degrades cleanly: against a core that does not supply `labels`, the key is
+  simply absent. The composer floor is unchanged for that reason -- it moves
+  when core next tags a release carrying the overlay.
+
 ## [0.2.6] - 2026-09-21
 
 ### Added
