@@ -17,6 +17,34 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   safety net if something notices you are standing in it. The values were there
   the whole time, one level up.
 
+- **A missing shared Vite generator now says so.** `vite.config.js` imports
+  `ViteConfigGenerator` from `<workspace>/.scripts/vite/vite-configurator.js`,
+  which lives outside every repository by design. A bare `import` of a path that
+  is not there fails with `ERR_MODULE_NOT_FOUND` naming a resolved absolute
+  path, which reads like a broken install rather than a workspace this package
+  was never checked out into.
+
+  Since the file is outside every repo, its absence is the *normal* case for
+  anyone who cloned this package on its own -- a contributor, CI, a consumer
+  rebuilding assets. The config now checks for it first and explains what is
+  missing, where it was expected, and that prebuilt assets are committed under
+  `public/assets` so no build is needed to use the package.
+
+  **Deliberately not falling back to a locally-reconstructed config.** The
+  generator owns asset naming and the CSS-only-entry stub; a fallback producing
+  subtly different output than the committed assets would be worse than one that
+  refuses, because the build would succeed and ship the wrong files.
+
+  > The import depth itself was corrected separately in #22 -- four levels up
+  > from `packages/browser` reaches the workspace root, three did before the
+  > restructure. That fix is right; this is about what happens when the file at
+  > that path does not exist.
+
+- **`public/assets/js/ichava-react.js` was 18 days stale and shipped five package names that no
+  longer exist.** It is build output, checked in, last built 2026-09-03 — before the react
+  sources moved to the `icon-sets-` names on 2026-09-21. Rebuilt rather than edited; the
+  `ichava-react.css` beside it was stale for the same reason and moved with it.
+
 ### Security
 
 - **The package endpoint no longer risks publishing filesystem paths.** One of
@@ -59,36 +87,6 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   Degrades cleanly: against a core that does not supply `labels`, the key is
   simply absent. The composer floor is unchanged for that reason -- it moves
   when core next tags a release carrying the overlay.
-
-### Fixed
-
-- **A missing shared Vite generator now says so.** `vite.config.js` imports
-  `ViteConfigGenerator` from `<workspace>/.scripts/vite/vite-configurator.js`,
-  which lives outside every repository by design. A bare `import` of a path that
-  is not there fails with `ERR_MODULE_NOT_FOUND` naming a resolved absolute
-  path, which reads like a broken install rather than a workspace this package
-  was never checked out into.
-
-  Since the file is outside every repo, its absence is the *normal* case for
-  anyone who cloned this package on its own -- a contributor, CI, a consumer
-  rebuilding assets. The config now checks for it first and explains what is
-  missing, where it was expected, and that prebuilt assets are committed under
-  `public/assets` so no build is needed to use the package.
-
-  **Deliberately not falling back to a locally-reconstructed config.** The
-  generator owns asset naming and the CSS-only-entry stub; a fallback producing
-  subtly different output than the committed assets would be worse than one that
-  refuses, because the build would succeed and ship the wrong files.
-
-  > The import depth itself was corrected separately in #22 -- four levels up
-  > from `packages/browser` reaches the workspace root, three did before the
-  > restructure. That fix is right; this is about what happens when the file at
-  > that path does not exist.
-
-- **`public/assets/js/ichava-react.js` was 18 days stale and shipped five package names that no
-  longer exist.** It is build output, checked in, last built 2026-09-03 — before the react
-  sources moved to the `icon-sets-` names on 2026-09-21. Rebuilt rather than edited; the
-  `ichava-react.css` beside it was stale for the same reason and moved with it.
 
 ## [0.2.6] - 2026-09-21
 
