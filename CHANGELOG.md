@@ -2,6 +2,20 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.4] - 2026-09-21
+
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.5`.** Core `0.2.5` closes an address-notation gap in the
+  pack update-check guard: `isPublicIp()` judged addresses by how they were written, so
+  `::7f00:1` and `::a9fe:a9fe` — IPv4-compatible IPv6 spellings of `127.0.0.1` and of the
+  `169.254.169.254` cloud-metadata address — were accepted while the same addresses in dotted
+  form were refused. `^0.2.4` still permitted resolving to `0.2.4`, which has it.
+
+  Weaker than the containment fixes in `0.2.4`: the notation was deprecated in 2006 and most
+  stacks will not route it. The floor moves anyway, because a constraint that can resolve to a
+  release with a known gap is the thing this rule exists to prevent.
+
 ## [0.2.3] - 2026-09-21
 
 ### Security
