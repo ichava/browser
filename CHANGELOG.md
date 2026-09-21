@@ -6,6 +6,31 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
 
 ### Fixed
 
+- **A missing shared Vite generator now says so.** `vite.config.js` imports
+  `ViteConfigGenerator` from `<workspace>/.scripts/vite/vite-configurator.js`,
+  which lives outside every repository by design. A bare `import` of a path that
+  is not there fails with `ERR_MODULE_NOT_FOUND` naming a resolved absolute
+  path, which reads like a broken install rather than a workspace this package
+  was never checked out into.
+
+  Since the file is outside every repo, its absence is the *normal* case for
+  anyone who cloned this package on its own -- a contributor, CI, a consumer
+  rebuilding assets. The config now checks for it first and explains what is
+  missing, where it was expected, and that prebuilt assets are committed under
+  `public/assets` so no build is needed to use the package.
+
+  **Deliberately not falling back to a locally-reconstructed config.** The
+  generator owns asset naming and the CSS-only-entry stub; a fallback producing
+  subtly different output than the committed assets would be worse than one that
+  refuses, because the build would succeed and ship the wrong files.
+
+  > The import depth itself was corrected separately in #22 -- four levels up
+  > from `packages/browser` reaches the workspace root, three did before the
+  > restructure. That fix is right; this is about what happens when the file at
+  > that path does not exist.
+
+### Fixed
+
 - **Package titles and descriptions were read under a key nothing ever wrote.**
   Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
   has never written that key -- 16 reads across `ichava/core` and this package,
