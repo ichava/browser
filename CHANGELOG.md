@@ -2,6 +2,39 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.8] - 2026-09-21
+
+### Fixed
+
+- **Package titles and descriptions were read under a key nothing ever wrote.**
+  Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
+  has never written that key -- 16 reads across `ichava/core` and this package,
+  **zero writes** -- so every one fell through its `??` default. The SPA showed
+  the package slug where a title belonged and an empty string where a
+  description belonged.
+
+  Nothing failed, because each fallback looked plausible. A fallback is only a
+  safety net if something notices you are standing in it. The values were there
+  the whole time, one level up.
+
+### Security
+
+- **The package endpoint no longer risks publishing filesystem paths.** One of
+  those reads passed the whole array through as
+  `'metadata' => $packageData['browser_metadata'] ?? []`, which returned an
+  empty array for its entire life. Repointing it at the real metadata without
+  filtering would have started serving `base_path` and `provider_class` --
+  absolute paths and internal class names -- from an endpoint anyone who can
+  reach the browser can call.
+
+  It now goes through an **allow-list**, not a blocklist, so a key the registry
+  grows later is withheld until someone chooses to publish it. A test adds an
+  unknown key and asserts it does not escape.
+
+  > Not an exploitable regression in any released version: the key never
+  > existed, so the response was always empty. It would have become one in this
+  > change.
+
 ## [0.2.7] - 2026-09-21
 
 ### Changed
@@ -56,39 +89,6 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   longer exist.** It is build output, checked in, last built 2026-09-03 — before the react
   sources moved to the `icon-sets-` names on 2026-09-21. Rebuilt rather than edited; the
   `ichava-react.css` beside it was stale for the same reason and moved with it.
-
-## [Unreleased]
-
-### Fixed
-
-- **Package titles and descriptions were read under a key nothing ever wrote.**
-  Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
-  has never written that key -- 16 reads across `ichava/core` and this package,
-  **zero writes** -- so every one fell through its `??` default. The SPA showed
-  the package slug where a title belonged and an empty string where a
-  description belonged.
-
-  Nothing failed, because each fallback looked plausible. A fallback is only a
-  safety net if something notices you are standing in it. The values were there
-  the whole time, one level up.
-
-### Security
-
-- **The package endpoint no longer risks publishing filesystem paths.** One of
-  those reads passed the whole array through as
-  `'metadata' => $packageData['browser_metadata'] ?? []`, which returned an
-  empty array for its entire life. Repointing it at the real metadata without
-  filtering would have started serving `base_path` and `provider_class` --
-  absolute paths and internal class names -- from an endpoint anyone who can
-  reach the browser can call.
-
-  It now goes through an **allow-list**, not a blocklist, so a key the registry
-  grows later is withheld until someone chooses to publish it. A test adds an
-  unknown key and asserts it does not escape.
-
-  > Not an exploitable regression in any released version: the key never
-  > existed, so the response was always empty. It would have become one in this
-  > change.
 
 ## [0.2.6] - 2026-09-21
 
