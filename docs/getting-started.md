@@ -1,3 +1,5 @@
+[← Docs index](../README.md#documentation)
+
 # Getting started
 
 *How-to guide.* Reaching the icon browser and making your first REST call, once [Installation](installation.md) is done.
