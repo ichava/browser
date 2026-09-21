@@ -40,8 +40,22 @@ it('leaves the Blade component registries alone', function () {
     // Decision B, deferred: <x-ichava::icon> is the ecosystem's documented
     // public API across ~109 references. It is a different registry from the
     // view hints and must not move with them.
+    //
+    // All five this package registers, not a representative one: a guard
+    // naming a single alias passes while the other four are renamed, which is
+    // most of what it exists to prevent.
+    //
+    // `ichava::icon` is core's registration, so it is not listed here. Core
+    // covers it by rendering the tag -- Blade::render('<x-ichava::icon ... />')
+    // in IconComponentAttributesTest -- rather than by asserting the alias key.
     expect(array_keys(app('blade.compiler')->getClassComponentAliases()))
-        ->toContain('ichava::layouts.app');
+        ->toContain(
+            'ichava::layouts.app',
+            'ichava::layouts.browser',
+            'ichava::ichava-test-icons',
+            'ichava::ichava-ui-icons',
+            'ichava::sri-asset',
+        );
 });
 
 it('aliases the tag-safe hyphen form over the same paths', function () {
