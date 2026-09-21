@@ -2,7 +2,7 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.3.0] - 2026-09-21
 
 ### Changed
 
@@ -43,6 +43,12 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   Those are Blade component registries, not the view-hint map; renaming them is
   a separate, deferred decision recorded in the provider alongside the
   registration.
+
+- **`branch-alias` moves to `0.3.x-dev`, because `0.3.0` starts a series.** It
+  read `0.2.x-dev` while this release opens the 0.3 line, and a path or VCS
+  consumer tracking `dev-main` takes that alias as the version -- so a `^0.3`
+  constraint would not have matched the branch it points at. Tagged installs
+  were never affected, which is why nothing surfaced it.
 
 ## [0.2.8] - 2026-09-21
 
