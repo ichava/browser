@@ -25,6 +25,17 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   default, but the point of this change is that a missing SBOM must not fail the publish, so it
   should not rest on a default a future reader has to know.
 
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.8`.** Core `0.2.8` fixes two issues a pack inherits
+  through the engine: `%` and `_` in a search query acted as `LIKE` wildcards, widening results
+  and forcing full-table scans; and the icon watcher followed symlinks and read files of
+  unbounded size, so a link inside a watched directory pointed the reader anywhere on disk.
+
+  `^0.2.5` still permitted resolving to `0.2.5`, `0.2.6` or `0.2.7`, all of which carry both.
+  The `|| ^0.3` arm is unchanged — core `0.3.0` moved the scaffolder out but left the engine,
+  registry, seeder and SVG pipeline untouched, so an installed pack is unaffected by it.
+
 ## [0.2.5] - 2026-09-21
 
 ### Changed
