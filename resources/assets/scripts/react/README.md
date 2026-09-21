@@ -21,7 +21,7 @@ react/
 
 ## Data source: REST, not a preloaded catalog
 
-`ichava/bundled-icons` alone ships 121,314 icons -- there is no "load everything
+`ichava/icon-sets-bundled` alone ships 121,314 icons -- there is no "load everything
 into a window global" step here the way the standalone demo's fixture catalog has.
 `main.tsx` mounts `<IchavaBrowser client={createCatalog('rest', {base: apiBase})}>`
 instead of the static `catalog` prop; the library's `RestCatalog` drives every

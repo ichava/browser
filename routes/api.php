@@ -94,7 +94,7 @@ Route::prefix(config('ichava.core.prefix', 'ichava') . '/api')
                     ->name('index');
 
                 // Get single package details
-                // Package names use vendor/package format (e.g., ichava/tabler-icons)
+                // Package names use vendor/package format (e.g., ichava/icon-sets-tabler)
                 Route::get('/{package}', [IconBrowserApiController::class, 'package'])
                     ->middleware(Helpers::getRateLimit('api', 60))
                     ->name('show')

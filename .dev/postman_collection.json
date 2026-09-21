@@ -19,7 +19,7 @@
     },
     {
       "key": "package_name",
-      "value": "ichava/tabler-icons",
+      "value": "ichava/icon-sets-tabler",
       "type": "string"
     }
   ],
@@ -640,7 +640,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"packages\": [\"ichava/tabler-icons\"],\n  \"categories\": [\"ui\"],\n  \"variants\": [\"outline\"]\n}"
+              "raw": "{\n  \"packages\": [\"ichava/icon-sets-tabler\"],\n  \"categories\": [\"ui\"],\n  \"variants\": [\"outline\"]\n}"
             },
             "url": {
               "raw": "{{base_url}}/ichava/api/preferences/filters",
