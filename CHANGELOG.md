@@ -2,6 +2,20 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.5] - 2026-09-21
+
+### Changed
+
+- **`ichava/core` widened to `^0.2.5 || ^0.3`.** Core `0.3.0` removes the icon-package
+  scaffolder and its stub tree, which moved to `ichava/icon-package-scaffolder`. This package
+  never used either, so it works unchanged on both series.
+
+  Widened rather than raised on purpose. A caret on a `0.x` version pins the minor, so plain
+  `^0.2.5` cannot resolve `0.3.0` and this package would have held every consumer back on the
+  0.2 series for a removal that does not affect it. Raising it to `^0.3` instead would have
+  forced a core upgrade on anyone deliberately staying on 0.2.x, for the same non-reason.
+  Both series genuinely work, so the constraint says so.
+
 ## [0.2.4] - 2026-09-21
 
 ### Security
