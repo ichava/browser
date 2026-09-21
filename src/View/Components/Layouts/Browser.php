@@ -31,6 +31,6 @@ class Browser extends Component
      */
     public function render(): View
     {
-        return view('ichava::components.layouts.browser');
+        return view('ichava/browser::components.layouts.browser');
     }
 }

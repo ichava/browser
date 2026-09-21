@@ -52,7 +52,11 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             ->setPathFrom(source: $this, levelsUp: 2)
             ->setName('ichava/browser')
             ->hasConfigFile('browser')
-            ->hasViews('ichava')
+            // No argument: package-tools resolves the vendor-scoped default,
+            // `ichava/browser`. A bare slug like `ichava` is a flat-map key any
+            // sibling package or the host application could also claim, and the
+            // loser is replaced silently.
+            ->hasViews()
             ->hasTranslations()
             ->hasRoutes(['web', 'api'])
             ->hasCommands([
