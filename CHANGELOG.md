@@ -52,6 +52,14 @@ All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepac
   > restructure. That fix is right; this is about what happens when the file at
   > that path does not exist.
 
+- **`public/assets/js/ichava-react.js` was 18 days stale and shipped five package names that no
+  longer exist.** It is build output, checked in, last built 2026-09-03 — before the react
+  sources moved to the `icon-sets-` names on 2026-09-21. Rebuilt rather than edited; the
+  `ichava-react.css` beside it was stale for the same reason and moved with it.
+
+## [Unreleased]
+
+### Fixed
 
 - **Package titles and descriptions were read under a key nothing ever wrote.**
   Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
