@@ -2,6 +2,16 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.3] - 2026-09-21
+
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.4`.** Core `0.2.4` carries seven security fixes — post-
+  sanitizer attribute gating, icon-path containment, off-document paint URLs, sanitizer policy
+  flag enforcement, SVG driver containment, debug path leakage and pack update-check URL
+  restriction. `^0.2.3` still permitted resolving to `0.2.3`, which has all seven. Raising a
+  floor to exclude a known-broken release is not a pin; the constraint stays a range.
+
 ## [0.2.2] - 2026-09-16
 
 ### Changed
