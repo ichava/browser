@@ -1,5 +1,3 @@
-[← Docs](../../README.md#documentation)
-
 # API endpoints
 
 *Reference.*
