@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\View\Components\Layouts;
+namespace Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts;
 
 use Illuminate\View\View;
 use Illuminate\View\Component;
@@ -31,6 +31,6 @@ class App extends Component
      */
     public function render(): View
     {
-        return view('ichava::components.layouts.app');
+        return view('ichava/icon-browser::components.layouts.app');
     }
 }

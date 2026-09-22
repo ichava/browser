@@ -67,13 +67,13 @@ it('explains a missing ability differently from a denied one', function () {
 it('honours the deliberate escape hatch for trusted deployments', function () {
     // Some internal installs genuinely want the old behaviour. It has to be switched on
     // explicitly rather than being what happens when nobody decided.
-    config()->set('ichava.browser.security.cache_admin.allow_without_gate', true);
+    config()->set('ichava.icon-browser.security.cache_admin.allow_without_gate', true);
 
     expect($this->postJson('/ichava/api/cache/clear')->status())->not->toBe(403);
 });
 
 it('uses the configured ability name rather than a hardcoded one', function () {
-    config()->set('ichava.browser.security.cache_admin.ability', 'my-app.icons');
+    config()->set('ichava.icon-browser.security.cache_admin.ability', 'my-app.icons');
     Gate::define('my-app.icons', fn (?object $user) => true);
 
     expect($this->postJson('/ichava/api/cache/clear')->status())->not->toBe(403);

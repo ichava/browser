@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Simtabi\Laranail\Ichava\Models\Icon;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaApiSecurity;
 
 /**
  * IchavaApiSecurity middleware coverage.

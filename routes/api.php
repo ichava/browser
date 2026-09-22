@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Simtabi\Laranail\Ichava\Browser\Support\Helpers;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\HistoryApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\FavoritesApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\CollectionsApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\UpdateStatusApiController;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\CommandHistoryApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Support\Helpers;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\HistoryApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\FavoritesApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\CollectionsApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\IconBrowserApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\UpdateStatusApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\CommandHistoryApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,7 +94,7 @@ Route::prefix(config('ichava.core.prefix', 'ichava') . '/api')
                     ->name('index');
 
                 // Get single package details
-                // Package names use vendor/package format (e.g., ichava/tabler-icons)
+                // Package names use vendor/package format (e.g., ichava/icon-sets-tabler)
                 Route::get('/{package}', [IconBrowserApiController::class, 'package'])
                     ->middleware(Helpers::getRateLimit('api', 60))
                     ->name('show')

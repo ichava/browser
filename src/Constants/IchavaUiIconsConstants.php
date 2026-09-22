@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Constants;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Constants;
 
 use Simtabi\Laranail\Ichava\Support\PathResolver;
 use Simtabi\Laranail\Ichava\Constants\JsonConfigConstants;
@@ -10,7 +10,7 @@ use Simtabi\Laranail\Ichava\Constants\JsonConfigConstants;
 /**
  * IchavaUiIconsConstants
  *
- * Constants for the ichava/browser-ui icon set.
+ * Constants for the ichava/icon-browser-ui icon set.
  * All values automatically extracted from config.json via base class.
  *
  * @see JsonConfigConstants

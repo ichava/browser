@@ -22,8 +22,51 @@
  * @see https://vitejs.dev/config/
  */
 
-import { ViteConfigGenerator } from '../../../.scripts/vite/vite-configurator.js';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import vue from '@vitejs/plugin-vue';
+
+/*
+ * The shared generator lives outside every repository, at the workspace root:
+ *
+ *     <workspace>/.scripts/vite/vite-configurator.js
+ *
+ * Four levels up from `packages/browser` -- browser, packages, ichava,
+ * opensource -- which lands on the workspace root. It was three before the
+ * 2026-09-21 restructure moved this repo a level deeper.
+ *
+ * A bare `import` of a path that is not there fails with an ERR_MODULE_NOT_FOUND
+ * naming a resolved absolute path, which reads like a broken install rather than
+ * a workspace this package was never checked out into. Since the file is outside
+ * every repo by design, its absence is the normal case for anyone who cloned
+ * this package on its own -- a contributor, CI, a consumer building assets --
+ * and it deserves an error that says so.
+ *
+ * Deliberately not falling back to a locally-reconstructed config. The generator
+ * owns asset naming and the CSS-only-entry stub, and a fallback that produced
+ * subtly different output than the committed assets would be worse than one that
+ * refuses: the build would succeed and ship the wrong files.
+ */
+const GENERATOR_URL = new URL('../../../../.scripts/vite/vite-configurator.js', import.meta.url);
+
+if (! existsSync(fileURLToPath(GENERATOR_URL))) {
+    throw new Error(
+        [
+            'Cannot build: the shared Vite generator was not found.',
+            '',
+            `  expected: ${fileURLToPath(GENERATOR_URL)}`,
+            '',
+            'It lives at <workspace>/.scripts/vite/vite-configurator.js, outside every',
+            'repository, so it is present only in the host workspace this package is',
+            'developed in. Building assets from a standalone clone is not supported.',
+            '',
+            'Prebuilt assets are committed under public/assets, so no build is needed to',
+            'use this package -- only to change its frontend.',
+        ].join('\n'),
+    );
+}
+
+const { ViteConfigGenerator } = await import(GENERATOR_URL.href);
 
 const generator = new ViteConfigGenerator('ichava', 'package', import.meta.url);
 

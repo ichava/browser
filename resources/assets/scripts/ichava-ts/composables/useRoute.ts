@@ -53,7 +53,7 @@ export function useRoute() {
    * @returns The full URL
    * 
    * @example
-   * route('ichava.browser') // '/ichava/browser'
+   * route('ichava.browser') // '/ichava/icon-browser'
    * route('ichava.api.icons.show', { id: 123 }) // '/ichava/api/icons/123'
    */
   const route = (name: string, params?: RouteParams): string => {

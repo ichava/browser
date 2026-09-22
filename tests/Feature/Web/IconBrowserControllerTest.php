@@ -16,7 +16,7 @@ describe('IconBrowserController::index', function () {
         $response = test()->get(route('ichava.browser'));
 
         $response->assertOk()
-            ->assertViewIs('ichava::browser.index')
+            ->assertViewIs('ichava/icon-browser::browser.index')
             ->assertViewHas('packages')
             ->assertViewHas('categories')
             ->assertViewHas('preferences')
@@ -30,7 +30,7 @@ describe('IconBrowserController::stats', function () {
         $response = test()->get(route('ichava.stats'));
 
         $response->assertOk()
-            ->assertViewIs('ichava::stats.index')
+            ->assertViewIs('ichava/icon-browser::stats.index')
             ->assertViewHas('statistics')
             ->assertViewHas('packageStats')
             ->assertViewHas('topCategories')

@@ -1,6 +1,317 @@
 # Changelog
 
-All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
+All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Changed
+
+- **`SECURITY.md` removed; the organization policy serves this repository now.**
+  The file was byte-identical across six ichava repositories and held nothing
+  specific to any of them. It was promoted into `ichava/.github` first, so the
+  policy improved before any copy was removed rather than after, and GitHub
+  serves that default on `/security/policy` for every repository without its
+  own. The two channels and the 48-hour acknowledgement are unchanged.
+
+- **The README's security link moved with it.** A relative
+  `[SECURITY.md](SECURITY.md)` is a path into this repository's file tree, and
+  the cascade does not put a file there -- it answers the policy page and
+  nothing else. Left alone the link would have become a 404 the moment the file
+  went, so it now points at `/security/policy` directly. `composer.json` and the
+  issue-template link already did.
+
+## [0.4.0] - 2026-09-22
+
+### Added
+
+- **`ConfigKeyResolutionTest` asserts the shipped config actually merges at
+  `ichava.icon-browser`**, and that the doubled key V39 produces does not exist. Nothing
+  asserted this before, which is why V39 shipped: a test calling `config()->set()` writes the
+  key it then reads, so only the shipped *file* resolving proves the merge.
+
+### Changed
+
+- **Renamed: `ichava/browser` is now `ichava/icon-browser`.** The repository, the composer
+  package, the npm package and the PHP namespace all move together, so `local dir = GitHub
+  repo = composer name` continues to hold. **This is a breaking change and no version number
+  expresses it** -- a consumer has to change the name it requires.
+
+  | Surface | Before | After |
+  |---|---|---|
+  | composer / GitHub | `ichava/browser` | `ichava/icon-browser` |
+  | npm | `@ichava/browser` | `@ichava/icon-browser` |
+  | PSR-4 root | `Simtabi\Laranail\Ichava\Browser\` | `…\Ichava\IconBrowser\` |
+  | provider | `IchavaBrowserServiceProvider` | `IconBrowserServiceProvider` |
+  | config file | `config/browser.php` | `config/icon-browser.php` |
+  | config key | `ichava.browser.*` | `ichava.icon-browser.*` |
+  | view namespace | `ichava/browser` | `ichava/icon-browser` |
+  | Blade alias | `ichava-browser` | `ichava-icon-browser` |
+  | Artisan | `ichava::browser.inject-scripts` | `ichava::icon-browser.inject-scripts` |
+  | publish tags | `--tag=ichava::browser-*` | `--tag=ichava::icon-browser-*` |
+
+  **If you published this package's views**, the override directory moves from
+  `resources/views/vendor/ichava/browser/` to `resources/views/vendor/ichava/icon-browser/`.
+
+  **Four surfaces deliberately did not move**, because each names something other than the
+  package and each fails silently if renamed:
+
+  - **Route names.** `route('ichava.browser')` and its 13 call sites stay, along with the
+    `ichava.api.*` family. These are an `ichava.*` namespace naming *features*, not the
+    package; renaming one of them and not the others would be inconsistent as well as
+    breaking. Same reasoning that defers `<x-ichava::icon>` to 1.0.
+  - **The `ichava.browser()` JavaScript API**, 18 call sites, which is this package's public
+    JS surface.
+  - **`ICHAVA_BROWSER_PREFIX`, `_RATE_LIMIT`, `_PER_PAGE`, `_CACHE`.** A renamed environment
+    variable reads as unset and the default applies with nothing reported -- the quietest
+    failure available -- and renaming buys nothing.
+  - **Historical CHANGELOG entries.** Past entries describe what shipped at the time; only
+    the repository URLs were updated. Rewriting them would make this file lie about its own
+    history.
+
+- **The markdown path filter now matches markdown at any depth.**
+  `code-quality.yml` and `tests.yml` carried `paths-ignore: '*.md'`. In GitHub's
+  filter syntax a single `*` does not cross a `/`, so that pattern matched a
+  root-level `README.md` and nothing else -- every edit under `docs/` ran the
+  full PHP suite and the static-analysis job, which is precisely what the filter
+  existed to skip. `'**.md'` matches at any depth.
+
+  Worth stating which direction this failed in, because it decides how urgent it
+  was: a broken `paths-ignore` runs **more** than it should, never less. The cost
+  was CI minutes on a free-plan allowance, not a gate that stopped firing.
+
+- **Dead links to the deleted `ichava/documentation` repository removed.** That repository no
+  longer exists, so every cross-reference to it resolved to a 404. The reporting channels in
+  `SECURITY.md` were already stated inline and are unchanged; the Code of Conduct now cites the
+  Contributor Covenant directly. Historical mentions in this changelog are left as written.
+
+### Fixed
+
+- **Per-route rate limits were silently ignored.** `Helpers::getRateLimit()` read its master
+  switch from the correct key but the actual limit from `config("ichava-browser.rate_limiting.
+  {$type}")` -- the pre-V39 key form, which has never resolved -- so every call fell through to
+  the hardcoded `$default` and the configured `rate_limiting` block did nothing. Found by the
+  rename sweep rather than by a test, because the fallback made the wrong value look right.
+
+## [0.3.0] - 2026-09-21
+
+### Changed
+
+- **`ichava/core` `^0.4` is accepted.** The constraint read
+  `^0.2.8 || ^0.3.1`, and a caret on a `0.x` version pins the *minor*, so
+  `0.4.0` did not satisfy it at all. An application that wanted core `0.4`
+  could not install this package beside it, and Composer reported that as a
+  conflict on `ichava/core` rather than on the package holding it back.
+
+  The branch is **added, not substituted**. `^0.2.8` and `^0.3.1` keep
+  resolving, because nothing here calls an API that `0.4` introduced -- the
+  suite is green on both `v0.3.1` and `v0.4.0` -- so widening is the whole
+  change and raising the floor would strand consumers for no gain.
+
+- **The view namespace is now `ichava/browser`, not the bare `ichava`.**
+  `hasViews()` was being passed an explicit `'ichava'`, overriding the
+  vendor-scoped default that `hasTranslations()` in the same provider already
+  took. Laravel keeps view namespaces in a flat hint map, so a bare generic slug
+  is a key any sibling package, third-party package or the consuming application
+  could also claim -- and the second claimant replaces the first with **no
+  error**, surfacing much later as a missing view.
+
+  Seven internal `view('ichava::...')` call sites moved with it. None was
+  documented as public API.
+
+  Registering the vendor-scoped name also makes package-tools add the tag-safe
+  alias `ichava-browser` over the same paths, because Blade's component-tag
+  pattern admits no forward slash. Both spellings resolve the same files.
+
+  **If you published this package's views, your overrides will stop being
+  found.** The directory moves from `resources/views/vendor/ichava/` to
+  `resources/views/vendor/ichava/browser/`. Move it, or re-publish with
+  `php artisan vendor:publish --tag=ichava::browser-views`. Nothing errors if
+  you do neither -- the package's own templates simply render instead of yours.
+  The publish tag is derived from the package name and is unchanged.
+
+  `<x-ichava::icon>` and every other `<x-ichava::...>` tag are **unaffected**.
+  Those are Blade component registries, not the view-hint map; renaming them is
+  a separate, deferred decision recorded in the provider alongside the
+  registration.
+
+- **`branch-alias` moves to `0.3.x-dev`, because `0.3.0` starts a series.** It
+  read `0.2.x-dev` while this release opens the 0.3 line, and a path or VCS
+  consumer tracking `dev-main` takes that alias as the version -- so a `^0.3`
+  constraint would not have matched the branch it points at. Tagged installs
+  were never affected, which is why nothing surfaced it.
+
+## [0.2.8] - 2026-09-21
+
+### Fixed
+
+- **Package titles and descriptions were read under a key nothing ever wrote.**
+  Seven call sites read `$packageData['browser_metadata'][...]`. `IconRegistry`
+  has never written that key -- 16 reads across `ichava/core` and this package,
+  **zero writes** -- so every one fell through its `??` default. The SPA showed
+  the package slug where a title belonged and an empty string where a
+  description belonged.
+
+  Nothing failed, because each fallback looked plausible. A fallback is only a
+  safety net if something notices you are standing in it. The values were there
+  the whole time, one level up.
+
+- **A missing shared Vite generator now says so.** `vite.config.js` imports
+  `ViteConfigGenerator` from `<workspace>/.scripts/vite/vite-configurator.js`,
+  which lives outside every repository by design. A bare `import` of a path that
+  is not there fails with `ERR_MODULE_NOT_FOUND` naming a resolved absolute
+  path, which reads like a broken install rather than a workspace this package
+  was never checked out into.
+
+  Since the file is outside every repo, its absence is the *normal* case for
+  anyone who cloned this package on its own -- a contributor, CI, a consumer
+  rebuilding assets. The config now checks for it first and explains what is
+  missing, where it was expected, and that prebuilt assets are committed under
+  `public/assets` so no build is needed to use the package.
+
+  **Deliberately not falling back to a locally-reconstructed config.** The
+  generator owns asset naming and the CSS-only-entry stub; a fallback producing
+  subtly different output than the committed assets would be worse than one that
+  refuses, because the build would succeed and ship the wrong files.
+
+  > The import depth itself was corrected separately in #22 -- four levels up
+  > from `packages/browser` reaches the workspace root, three did before the
+  > restructure. That fix is right; this is about what happens when the file at
+  > that path does not exist.
+
+- **`public/assets/js/ichava-react.js` was 18 days stale and shipped five package names that no
+  longer exist.** It is build output, checked in, last built 2026-09-03 — before the react
+  sources moved to the `icon-sets-` names on 2026-09-21. Rebuilt rather than edited; the
+  `ichava-react.css` beside it was stale for the same reason and moved with it.
+
+### Security
+
+- **The package endpoint no longer risks publishing filesystem paths.** One of
+  those reads passed the whole array through as
+  `'metadata' => $packageData['browser_metadata'] ?? []`, which returned an
+  empty array for its entire life. Repointing it at the real metadata without
+  filtering would have started serving `base_path` and `provider_class` --
+  absolute paths and internal class names -- from an endpoint anyone who can
+  reach the browser can call.
+
+  It now goes through an **allow-list**, not a blocklist, so a key the registry
+  grows later is withheld until someone chooses to publish it. A test adds an
+  unknown key and asserts it does not escape.
+
+  > Not an exploitable regression in any released version: the key never
+  > existed, so the response was always empty. It would have become one in this
+  > change.
+
+## [0.2.7] - 2026-09-21
+
+### Changed
+
+- **`ichava/core` floor raised to `^0.2.8 || ^0.3.1`.** The `labels` payload
+  below arrives from core and was written to degrade to an absent key, so this
+  is not a correctness fix -- it is the difference between localised taxonomy
+  labels being guaranteed and being best-effort. `0.3.1` is the first core
+  release that carries them.
+
+  The `^0.2.8` arm is kept deliberately. Dropping it to require `^0.3.1` alone
+  would cut off the 0.2 line for no benefit; raising the floor of the 0.3 arm
+  excludes the releases without `labels` and nothing else.
+
+### Added
+
+- **Localised taxonomy labels in the package payloads.** `labels` carries a
+  pack's `variants` / `categories` / `sets` display names, which `config.json`
+  has no equivalent for, and follows the application locale because
+  `ichava/core` applies its translation overlay on read.
+
+  Degrades cleanly: against a core that does not supply `labels`, the key is
+  simply absent. The composer floor is unchanged for that reason -- it moves
+  when core next tags a release carrying the overlay.
+
+## [0.2.6] - 2026-09-21
+
+### Added
+
+- **`actionlint` runs on every pull request.** Nothing validated the workflow files at all:
+  `release.yml` triggers only on `push: tags`, so a broken workflow was first observed as a
+  release that refused to start — after the decision to release had been made.
+
+  A YAML parse is not a substitute, and that is the sharp part. `yaml.safe_load` accepts a
+  duplicate key and silently keeps the last one, so a double-applied patch that left
+  `continue-on-error:` twice on a single step validated clean and would have failed only at tag
+  time. `actionlint` rejects what Actions rejects.
+
+  Checked against the defect rather than assumed: injecting that duplicate key, a typo'd step
+  key, and an `if:` referencing a property that does not exist are all caught, while
+  `yaml.safe_load` still parses the first of them without complaint.
+
+### Fixed
+
+- **A failed SBOM download no longer takes the whole release down.** `release.yml` generates the
+  SBOM before it publishes, and the Syft installer fetches its checksums from GitHub's
+  release-asset CDN. On 2026-09-21 that answered `504` for about twenty minutes, failing the job
+  four times *before* the publish step — so the tag existed with no release behind it, which is
+  the drift the release table exists to catch, produced by the release machinery itself.
+
+  Two changes. The step now retries once after 45 seconds, which covers a single transient `504`
+  — the common case. And a second failure no longer fails the job: the release publishes without
+  the asset and emits a `::warning::` naming the re-run.
+
+  **The two failure states are not equally bad, and that asymmetry is the whole design.** A
+  release missing an attachment is repaired by re-running this workflow, which re-attaches it. A
+  tag with no release persists silently until a person notices. Preferring the recoverable one
+  is worth the loss of "every release always carries an SBOM" as an absolute.
+
+  `fail_on_unmatched_files: false` is now stated on the publish step. It is already the action's
+  default, but the point of this change is that a missing SBOM must not fail the publish, so it
+  should not rest on a default a future reader has to know.
+
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.8`.** Core `0.2.8` fixes two issues a pack inherits
+  through the engine: `%` and `_` in a search query acted as `LIKE` wildcards, widening results
+  and forcing full-table scans; and the icon watcher followed symlinks and read files of
+  unbounded size, so a link inside a watched directory pointed the reader anywhere on disk.
+
+  `^0.2.5` still permitted resolving to `0.2.5`, `0.2.6` or `0.2.7`, all of which carry both.
+  The `|| ^0.3` arm is unchanged — core `0.3.0` moved the scaffolder out but left the engine,
+  registry, seeder and SVG pipeline untouched, so an installed pack is unaffected by it.
+
+## [0.2.5] - 2026-09-21
+
+### Changed
+
+- **`ichava/core` widened to `^0.2.5 || ^0.3`.** Core `0.3.0` removes the icon-package
+  scaffolder and its stub tree, which moved to `ichava/icon-package-scaffolder`. This package
+  never used either, so it works unchanged on both series.
+
+  Widened rather than raised on purpose. A caret on a `0.x` version pins the minor, so plain
+  `^0.2.5` cannot resolve `0.3.0` and this package would have held every consumer back on the
+  0.2 series for a removal that does not affect it. Raising it to `^0.3` instead would have
+  forced a core upgrade on anyone deliberately staying on 0.2.x, for the same non-reason.
+  Both series genuinely work, so the constraint says so.
+
+## [0.2.4] - 2026-09-21
+
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.5`.** Core `0.2.5` closes an address-notation gap in the
+  pack update-check guard: `isPublicIp()` judged addresses by how they were written, so
+  `::7f00:1` and `::a9fe:a9fe` — IPv4-compatible IPv6 spellings of `127.0.0.1` and of the
+  `169.254.169.254` cloud-metadata address — were accepted while the same addresses in dotted
+  form were refused. `^0.2.4` still permitted resolving to `0.2.4`, which has it.
+
+  Weaker than the containment fixes in `0.2.4`: the notation was deprecated in 2006 and most
+  stacks will not route it. The floor moves anyway, because a constraint that can resolve to a
+  release with a known gap is the thing this rule exists to prevent.
+
+## [0.2.3] - 2026-09-21
+
+### Security
+
+- **Floor raised to `ichava/core: ^0.2.4`.** Core `0.2.4` carries seven security fixes — post-
+  sanitizer attribute gating, icon-path containment, off-document paint URLs, sanitizer policy
+  flag enforcement, SVG driver containment, debug path leakage and pack update-check URL
+  restriction. `^0.2.3` still permitted resolving to `0.2.3`, which has all seven. Raising a
+  floor to exclude a known-broken release is not a pin; the constraint stays a range.
 
 ## [Unreleased]
 

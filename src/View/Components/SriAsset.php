@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\View\Components;
+namespace Simtabi\Laranail\Ichava\IconBrowser\View\Components;
 
 use Throwable;
 use RuntimeException;
@@ -22,7 +22,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
  *   <x-ichava::sri-asset src="vendor/ichava/spa.js" />
  *   <x-ichava::sri-asset href="vendor/ichava/spa.css" rel="stylesheet" />
  *
- * If `ichava-browser.security.sri.manifest` points at a JSON map of
+ * If `ichava.icon-browser.security.sri.manifest` points at a JSON map of
  * `{ "vendor/ichava/spa.js": "sha384-..." }` the hash is read from there.
  * Otherwise the hash is computed at render time from the file on disk.
  */
@@ -52,14 +52,14 @@ final class SriAsset extends Component
         $this->tag = $src !== null ? 'script' : 'link';
         $this->url = $this->resolveUrl($path);
 
-        if ((bool) config('ichava.browser.security.sri.enabled', true)) {
+        if ((bool) config('ichava.icon-browser.security.sri.enabled', true)) {
             $this->integrity = $this->computeIntegrity($path);
         }
     }
 
     public function render(): View
     {
-        return view('ichava::components.sri-asset');
+        return view('ichava/icon-browser::components.sri-asset');
     }
 
     private function resolveUrl(string $path): string
@@ -76,9 +76,9 @@ final class SriAsset extends Component
 
     private function computeIntegrity(string $path): string
     {
-        $algo = (string) config('ichava.browser.security.sri.algorithm', 'sha384');
+        $algo = (string) config('ichava.icon-browser.security.sri.algorithm', 'sha384');
 
-        if ($manifestPath = config('ichava.browser.security.sri.manifest')) {
+        if ($manifestPath = config('ichava.icon-browser.security.sri.manifest')) {
             $hash = $this->lookupManifest((string) $manifestPath, $path);
             if ($hash !== null) {
                 return $hash;

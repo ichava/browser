@@ -20,7 +20,7 @@
     // $vueApp is also true: a Blade-content page ($vueApp=false) has no app shell
     // for either frontend to mount into.
     $useReact = $vueApp
-        && config('ichava.browser.react_ui_enabled', false)
+        && config('ichava.icon-browser.react_ui_enabled', false)
         && request()->query('ui') === 'react';
 @endphp
     <!DOCTYPE html>

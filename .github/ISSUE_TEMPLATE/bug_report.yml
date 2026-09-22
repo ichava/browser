@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in ichava/browser misbehaves
+description: Something in ichava/icon-browser misbehaves
 labels: [bug]
 body:
   - type: textarea

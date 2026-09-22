@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Requests;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

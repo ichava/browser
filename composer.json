@@ -1,5 +1,5 @@
 {
-    "name": "ichava/browser",
+    "name": "ichava/icon-browser",
     "description": "Visual icon browser for the Ichava ecosystem. Vue/Vite SPA, Blade views, REST API, and middleware for searching, previewing, and copying icons from installed Ichava icon packs.",
     "type": "library",
     "keywords": [
@@ -12,12 +12,12 @@
         "vite",
         "ichava"
     ],
-    "homepage": "https://opensource.simtabi.com/products/ichava/browser",
+    "homepage": "https://opensource.simtabi.com/products/ichava/icon-browser",
     "support": {
-        "source": "https://github.com/ichava/browser",
-        "issues": "https://github.com/ichava/browser/issues",
-        "security": "https://github.com/ichava/browser/security/policy",
-        "docs": "https://opensource.simtabi.com/documentation/ichava/browser/"
+        "source": "https://github.com/ichava/icon-browser",
+        "issues": "https://github.com/ichava/icon-browser/issues",
+        "security": "https://github.com/ichava/icon-browser/security/policy",
+        "docs": "https://opensource.simtabi.com/documentation/ichava/icon-browser/"
     },
     "license": "MIT",
     "authors": [
@@ -28,7 +28,7 @@
     ],
     "require": {
         "php": "^8.4.1 || ^8.5",
-        "ichava/core": "^0.2.3",
+        "ichava/core": "^0.2.8 || ^0.3.1 || ^0.4",
         "illuminate/support": "^13.0",
         "illuminate/view": "^13.0",
         "inertiajs/inertia-laravel": "^3.3"
@@ -59,22 +59,22 @@
     },
     "autoload": {
         "psr-4": {
-            "Simtabi\\Laranail\\Ichava\\Browser\\": "src/"
+            "Simtabi\\Laranail\\Ichava\\IconBrowser\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Simtabi\\Laranail\\Ichava\\Browser\\Tests\\": "tests/"
+            "Simtabi\\Laranail\\Ichava\\IconBrowser\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Simtabi\\Laranail\\Ichava\\Browser\\Providers\\IchavaBrowserServiceProvider"
+                "Simtabi\\Laranail\\Ichava\\IconBrowser\\Providers\\IconBrowserServiceProvider"
             ]
         },
         "branch-alias": {
-            "dev-main": "0.2.x-dev"
+            "dev-main": "0.4.x-dev"
         }
     },
     "scripts": {

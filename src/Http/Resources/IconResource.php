@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Resources;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Resources;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;

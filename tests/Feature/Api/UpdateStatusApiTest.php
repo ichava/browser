@@ -32,7 +32,7 @@ beforeEach(function () {
                         'reason'      => null,
                     ],
                     [
-                        'package'     => 'ichava/flag-icons',
+                        'package'     => 'ichava/icon-sets-flag',
                         'source'      => 'primary',
                         'status'      => 'up-to-date',
                         'current'     => '7.5.0',
@@ -41,7 +41,7 @@ beforeEach(function () {
                         'reason'      => null,
                     ],
                     [
-                        'package'     => 'ichava/metronic-icons',
+                        'package'     => 'ichava/icon-sets-metronic',
                         'source'      => 'primary',
                         'status'      => 'no-upstream',
                         'current'     => null,
@@ -83,10 +83,10 @@ it('returns rows + summary tallies for every registered pack', function () {
 });
 
 it('forwards the ?package= filter into the checker', function () {
-    $response = test()->getJson(route('ichava.api.icons.update-status', ['package' => 'ichava/flag-icons']));
+    $response = test()->getJson(route('ichava.api.icons.update-status', ['package' => 'ichava/icon-sets-flag']));
 
     $response->assertOk()
         ->assertJsonPath('data.summary.total', 1)
-        ->assertJsonPath('data.rows.0.package', 'ichava/flag-icons')
+        ->assertJsonPath('data.rows.0.package', 'ichava/icon-sets-flag')
         ->assertJsonPath('data.rows.0.status', 'up-to-date');
 });

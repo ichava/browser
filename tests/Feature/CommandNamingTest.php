@@ -16,7 +16,7 @@ function browserCommands(): array
     $owned = [];
 
     foreach (app(Kernel::class)->all() as $name => $command) {
-        if (str_contains($command::class, 'Ichava\\Browser')) {
+        if (str_contains($command::class, 'Ichava\\IconBrowser')) {
             $owned[$name] = $command;
         }
     }
@@ -27,9 +27,9 @@ function browserCommands(): array
 it('registers the command under the vendor and slug', function (): void {
     $found = browserCommands();
 
-    expect($found)->toHaveKey('ichava::browser.inject-scripts');
-    expect($found['ichava::browser.inject-scripts']->getName())
-        ->toBe('ichava::browser.inject-scripts');
+    expect($found)->toHaveKey('ichava::icon-browser.inject-scripts');
+    expect($found['ichava::icon-browser.inject-scripts']->getName())
+        ->toBe('ichava::icon-browser.inject-scripts');
 });
 
 it('registers no bare name at all, not even as an alias', function (): void {
