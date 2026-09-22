@@ -41,7 +41,7 @@ Full documentation is at **[opensource.simtabi.com/documentation/ichava/icon-bro
 
 ## Contributing & security
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). PHP tests run with `vendor/bin/pest`; the frontend dev server is `npm install && npm run dev` on port 5174. Report vulnerabilities privately through [SECURITY.md](SECURITY.md) — never in a public issue.
+See [CONTRIBUTING.md](CONTRIBUTING.md). PHP tests run with `vendor/bin/pest`; the frontend dev server is `npm install && npm run dev` on port 5174. Report vulnerabilities privately through [security policy](https://github.com/ichava/icon-browser/security/policy) — never in a public issue.
 
 ## License
 
