@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware;
 
 use Inertia\Middleware;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
 
 final class HandleInertiaRequests extends Middleware
 {
-    protected $rootView = 'ichava::app';
+    protected $rootView = 'ichava/icon-browser::app';
 
     public function __construct(
         private readonly IconPreferenceService $preferences,
@@ -32,8 +32,8 @@ final class HandleInertiaRequests extends Middleware
 
             'ichava' => fn () => [
                 'prefix'       => config('ichava.core.prefix', 'ichava'),
-                'perPage'      => (int) config('ichava.browser.browser.per_page', 24),
-                'defaultTheme' => config('ichava.browser.browser.default_theme', 'light'),
+                'perPage'      => (int) config('ichava.icon-browser.browser.per_page', 24),
+                'defaultTheme' => config('ichava.icon-browser.browser.default_theme', 'light'),
                 'routes'       => [
                     'browser' => route('ichava.browser'),
                     'stats'   => route('ichava.stats'),

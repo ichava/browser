@@ -28,6 +28,7 @@ it('resolves every view this package renders', function () {
     foreach ([
         'ichava/icon-browser::browser.index',
         'ichava/icon-browser::stats.index',
+        'ichava/icon-browser::app',
         'ichava/icon-browser::components.layouts.app',
         'ichava/icon-browser::components.layouts.browser',
         'ichava/icon-browser::components.sri-asset',
@@ -80,7 +81,7 @@ it('ships exactly the views the resolution test enumerates', function () {
         ->in(dirname(__DIR__, 2) . '/resources/views')
         ->name('*.blade.php');
 
-    expect(iterator_count($shipped))->toBe(5);
+    expect(iterator_count($shipped))->toBe(6);
 });
 
 it('leaves the anonymous-component prefix and class-component namespace alone', function () {

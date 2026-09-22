@@ -30,10 +30,10 @@ describe('InertiaBrowserController::index', function () {
     });
 
     it('is disabled when the inertia flag is off', function () {
-        config()->set('ichava.browser.inertia.enabled', false);
+        config()->set('ichava.icon-browser.inertia.enabled', false);
 
         // Route files are loaded at boot, so the route stays registered for
         // this process; the flag is honoured on the next boot instead.
-        expect(config('ichava.browser.inertia.enabled'))->toBeFalse();
+        expect(config('ichava.icon-browser.inertia.enabled'))->toBeFalse();
     });
 });

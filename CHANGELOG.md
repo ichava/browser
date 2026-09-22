@@ -10,18 +10,31 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
   components alongside the existing Vue SPA and JSON API, which are untouched. `GET
   /{prefix}/app` renders `Browser/Index` with live statistics from core's
   `IconBrowserService`; shared props (`auth`, `flash`, `preferences`, `ichava`) flow from
-  the new `HandleInertiaRequests` middleware (`ichava::app` root view) through the new
-  `ichava.inertia` middleware group. The entry is `resources/js/app.tsx` with glob-based
-  page resolution, built by the self-contained `vite.inertia.config.ts` into fixed-name
-  `inertia-app.js`/`inertia-app.css` bundles that never wipe the Vue or React
-  parallel-run output. Inertia routes load only when `ichava.browser.inertia.enabled` is
-  truthy (on by default, `ICHAVA_INERTIA_ENABLED`); the `?ui=react` parallel-run flag is
-  retained as legacy until the REST API it fronts is removed. Requires
-  `inertiajs/inertia-laravel: ^3.3` and `@inertiajs/react: ^3.0`.
+  the new `HandleInertiaRequests` middleware (`ichava/icon-browser::app` root view)
+  through the new `ichava.inertia` middleware group. The entry is `resources/js/app.tsx`
+  with glob-based page resolution, built by the self-contained `vite.inertia.config.ts`
+  into fixed-name `inertia-app.js`/`inertia-app.css` bundles that never wipe the Vue or
+  React parallel-run output. Inertia routes load only when
+  `ichava.icon-browser.inertia.enabled` is truthy (on by default,
+  `ICHAVA_INERTIA_ENABLED`); the `?ui=react` parallel-run flag is retained as legacy
+  until the REST API it fronts is removed. Requires `inertiajs/inertia-laravel: ^3.3`
+  and `@inertiajs/react: ^3.0`.
 - Three `assertInertia` tests pinning the proving route: page component, shared props, and
   the config flag. The test harness registers Inertia's service provider and points
   `inertia.pages.paths` at the package's `resources/js/pages` so the component-existence
   check resolves.
+- **React component library migrated in from `@ichava/react-browser`.** `core/` (engine,
+  model, config, i18n, storage, snippet/treatment/motion/export services), `components/`
+  (layout, browser, ui, base design system, dialogs, boot splash), `hooks/`, `lib/`,
+  `styles/`, `test/` fixtures and the Zustand `store.ts` plus `IchavaBrowser.tsx` now live
+  under `resources/js/` and import via the `@js` alias -- a shared `@` would collide with
+  the Vue tree on `components/`, `lib/` and `styles/`. The REST transport is gone:
+  `httpClient`, `browserId`, `RestCatalog`, `useRestRepoState`, `useIconCatalogClient` and
+  `useUrlSync` are deleted, and `useRepo`, `useResolvedIcons`, `IconDetailDialog` and
+  `AppToolbar` are static-only; server data arrives as Inertia props from Phase 3 on.
+  Moved tests run in this package's vitest (21 files, 205 tests) with the
+  `@testing-library` stack added to devDependencies. Requires `zustand`,
+  `@tanstack/react-virtual`, `react-aria`, `@ichava/motion` and the Untitled UI packages.
 
 ### Changed
 

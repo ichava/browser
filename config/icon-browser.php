@@ -16,7 +16,7 @@ return [
     */
     'inertia' => [
         'enabled'   => env('ICHAVA_INERTIA_ENABLED', true),
-        'root_view' => env('ICHAVA_INERTIA_ROOT_VIEW', 'ichava::app'),
+        'root_view' => env('ICHAVA_INERTIA_ROOT_VIEW', 'ichava/icon-browser::app'),
     ],
 
     /*
@@ -35,7 +35,7 @@ return [
     | Vite dev mode (HMR)
     |--------------------------------------------------------------------------
     | Enable Vite's hot-module-reload dev server during local development.
-    | The `ichava::app` root template loads the Inertia entry from this
+    | The `ichava/icon-browser::app` root template loads the Inertia entry from this
     | server when both this flag and `app.debug` are true; production
     | always uses the published `vendor/ichava` bundle.
     */

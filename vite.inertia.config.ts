@@ -19,6 +19,10 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
+            // The migrated React tree imports itself as `@js/...`; the legacy
+            // Vue tree (separate config) keeps `@` → scripts. Shared `@` would
+            // collide on `components/`, `lib/` and `styles/`.
+            '@js': fileURLToPath(new URL('./resources/js', import.meta.url)),
             '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
         },
     },

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Providers;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Simtabi\Laranail\Package\Tools\Package;
@@ -10,21 +10,21 @@ use Illuminate\Session\Middleware\StartSession;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Simtabi\Laranail\Ichava\Services\IconRegistry;
 use Simtabi\Laranail\Ichava\Support\HostCapabilities;
-use Simtabi\Laranail\Ichava\Browser\View\Components\SriAsset;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\LogRequests;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\EnsureSession;
+use Simtabi\Laranail\Ichava\IconBrowser\View\Components\SriAsset;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\LogRequests;
 use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
-use Simtabi\Laranail\Ichava\Browser\Commands\InjectNpmScriptsCommand;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ForceJsonResponse;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\AuthorizeCacheAdmin;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaStatefulGuard;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ValidateIchavaRoute;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\HandleInertiaRequests;
-use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaUiIconComponent;
-use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaTestIconComponent;
-use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\App as AppLayout;
-use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\Browser as BrowserLayout;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\EnsureSession;
+use Simtabi\Laranail\Ichava\IconBrowser\Commands\InjectNpmScriptsCommand;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\ForceJsonResponse;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaApiSecurity;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\AuthorizeCacheAdmin;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaStatefulGuard;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\ValidateIchavaRoute;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\HandleInertiaRequests;
+use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaUiIconComponent;
+use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaTestIconComponent;
+use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\App as AppLayout;
+use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\Browser as BrowserLayout;
 
 /**
  * Visual icon browser for the Ichava ecosystem.
@@ -42,7 +42,7 @@ use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\Browser as BrowserLa
  *
  * @api
  */
-class IchavaBrowserServiceProvider extends PackageServiceProvider
+class IconBrowserServiceProvider extends PackageServiceProvider
 {
     /**
      * Declare the browser package metadata, assets, and commands.
@@ -51,12 +51,16 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
     {
         $packager
             ->setPathFrom(source: $this, levelsUp: 2)
-            ->setName('ichava/browser')
-            ->hasConfigFile('browser')
-            ->hasViews('ichava')
+            ->setName('ichava/icon-browser')
+            ->hasConfigFile('icon-browser')
+            // No argument: package-tools resolves the vendor-scoped default,
+            // `ichava/icon-browser`. A bare slug like `ichava` is a flat-map key any
+            // sibling package or the host application could also claim, and the
+            // loser is replaced silently.
+            ->hasViews()
             ->hasTranslations()
             ->hasRoutes(['web', 'api'])
-            ->hasRoutesWhen('ichava.browser.inertia.enabled', 'inertia', true)
+            ->hasRoutesWhen('ichava.icon-browser.inertia.enabled', 'inertia', true)
             ->hasCommands([
                 InjectNpmScriptsCommand::class,
             ]);
@@ -76,7 +80,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         // none of it.
         $this->registerMiddleware();
 
-        // Domain-scoped routing (config('ichava.browser.domains')). When empty
+        // Domain-scoped routing (config('ichava.icon-browser.domains')). When empty
         // (default), routes work on every domain; otherwise restrict to listed
         // domains. Auto-skips when no domains are configured.
         $this->registerRoutesOnConfiguredDomains();
@@ -177,7 +181,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             'ichava.security',
             'ichava.json',
             'ichava.log',
-            'throttle:' . (int) config('ichava.browser.rate_limiting.api_floor', 300) . ',1',
+            'throttle:' . (int) config('ichava.icon-browser.rate_limiting.api_floor', 300) . ',1',
         ]);
 
         $router->middlewareGroup('ichava.api', $apiMiddleware);
@@ -200,7 +204,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
     /**
      * Register routes on configured domains (multi-tenant support).
      *
-     * Reads `config('ichava.browser.domains')`:
+     * Reads `config('ichava.icon-browser.domains')`:
      *  • [] (default) → routes work on every domain (handled by hasRoutes).
      *  • 'app.test,admin.test' string → split into array.
      *  • ['app.test', 'admin.test'] → register on each.
@@ -210,7 +214,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
      */
     protected function registerRoutesOnConfiguredDomains(): void
     {
-        $domains = config('ichava.browser.domains', []);
+        $domains = config('ichava.icon-browser.domains', []);
 
         if (is_string($domains) && $domains !== '') {
             $domains = array_map('trim', explode(',', $domains));
@@ -229,7 +233,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             if ($domain !== '') {
                 $router->domain($domain)->group($webRouteFile);
                 $router->domain($domain)->group($apiRouteFile);
-                if (config('ichava.browser.inertia.enabled', true)) {
+                if (config('ichava.icon-browser.inertia.enabled', true)) {
                     $router->domain($domain)->group($inertiaRouteFile);
                 }
             }

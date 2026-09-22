@@ -9,9 +9,9 @@
 
     @php
         use Simtabi\Laranail\Ichava\Support\Helpers;
-        $viteDev = config('ichava.browser.vite_dev_mode', true) && config('app.debug');
-        $viteHost = config('ichava.browser.vite.host', 'localhost');
-        $vitePort = config('ichava.browser.vite.port', 5174);
+        $viteDev = config('ichava.icon-browser.vite_dev_mode', true) && config('app.debug');
+        $viteHost = config('ichava.icon-browser.vite.host', 'localhost');
+        $vitePort = config('ichava.icon-browser.vite.port', 5174);
         $viteBase = "http://{$viteHost}:{$vitePort}";
     @endphp
 

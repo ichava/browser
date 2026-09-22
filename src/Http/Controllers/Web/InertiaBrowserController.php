@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Web;
 
 use Exception;
 use Inertia\Inertia;

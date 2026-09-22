@@ -16,10 +16,10 @@
         "dev:inertia": "vite --config vite.inertia.config.ts",
         "build:inertia": "echo '' && echo '\ud83d\udd28 Building Ichava Inertia (dev)...' && NODE_ENV=development vite build --config vite.inertia.config.ts",
         "build:inertia:prod": "echo '' && echo '\ud83d\ude80 Building Ichava Inertia (production)...' && NODE_ENV=production vite build --config vite.inertia.config.ts",
-        "build:react": "npx vite build --config vite.react.config.ts",
         "preview": "vite preview",
         "test:js": "vitest run",
-        "test:js:watch": "vitest"
+        "test:js:watch": "vitest",
+        "typecheck:inertia": "tsc -p tsconfig.inertia.json"
     },
     "keywords": [
         "icons",
@@ -32,8 +32,19 @@
     ],
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
+        "@ichava/motion": "git+https://github.com/ichava/motion.git#v0.1.1",
         "@ichava/react-browser": "file:../react-browser",
         "@inertiajs/react": "^3.0",
+        "@react-stately/utils": "^3.12.1",
+        "@tanstack/react-virtual": "^3.14.8",
+        "@untitledui/icons": "^0.0.22",
+        "fflate": "^0.8.3",
+        "input-otp": "^1.4.2",
+        "react-aria": "^3.50.0",
+        "react-aria-components": "^1.19.0",
+        "tailwindcss-react-aria-components": "^2.2.0",
+        "tw-animate-css": "^1.4.0",
+        "zustand": "^5.0.14",
         "@tailwindcss/postcss": "^4.1.17",
         "@tailwindplus/elements": "^1.0.19",
         "@types/dompurify": "^3.0.5",
@@ -73,6 +84,9 @@
     "devDependencies": {
         "@radix-icons/vue": "^1.0.0",
         "@tailwindcss/postcss": "^4.1.17",
+        "@testing-library/dom": "^10.4.1",
+        "@testing-library/jest-dom": "^7.0.0",
+        "@testing-library/react": "^16.3.2",
         "@types/node": "^24.10.1",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web\InertiaBrowserController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Web\InertiaBrowserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,8 +11,8 @@ use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web\InertiaBrowserControlle
 |--------------------------------------------------------------------------
 |
 | React pages served through Inertia.js. Loaded only when
-| `ichava.browser.inertia.enabled` is truthy (see
-| IchavaBrowserServiceProvider::configurePackage()).
+| `ichava.icon-browser.inertia.enabled` is truthy (see
+| IconBrowserServiceProvider::configurePackage()).
 |
 | Middleware: 'ichava.inertia' (web + shared props + prefix validation)
 | Prefix: /ichava
