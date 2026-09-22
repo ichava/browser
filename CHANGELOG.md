@@ -2,6 +2,21 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **The markdown path filter now matches markdown at any depth.**
+  `code-quality.yml` and `tests.yml` carried `paths-ignore: '*.md'`. In GitHub's
+  filter syntax a single `*` does not cross a `/`, so that pattern matched a
+  root-level `README.md` and nothing else -- every edit under `docs/` ran the
+  full PHP suite and the static-analysis job, which is precisely what the filter
+  existed to skip. `'**.md'` matches at any depth.
+
+  Worth stating which direction this failed in, because it decides how urgent it
+  was: a broken `paths-ignore` runs **more** than it should, never less. The cost
+  was CI minutes on a free-plan allowance, not a gate that stopped firing.
+
 ## [0.3.0] - 2026-09-21
 
 ### Changed
