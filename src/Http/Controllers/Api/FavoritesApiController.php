@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api;
 
 use Exception;
 use Illuminate\Http\JsonResponse;

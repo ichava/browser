@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Web;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Web;
 
 use Exception;
 use Illuminate\Routing\Controller;
@@ -63,7 +63,7 @@ final class IconBrowserController extends Controller
             // Get statistics
             $statistics = $this->browserService->getStatistics();
 
-            return view('ichava/browser::browser.index', [
+            return view('ichava/icon-browser::browser.index', [
                 'packages'    => $filters['packages'] ?? [],
                 'categories'  => $filters['categories'] ?? [],
                 'preferences' => $preferences,
@@ -76,7 +76,7 @@ final class IconBrowserController extends Controller
                 'exception' => $e,
             ]);
 
-            return view('ichava/browser::browser.index', [
+            return view('ichava/icon-browser::browser.index', [
                 'packages'    => [],
                 'categories'  => [],
                 'preferences' => $this->preferenceService->getAll(),
@@ -148,7 +148,7 @@ final class IconBrowserController extends Controller
             $cacheStats = $this->cacheService->getStats();
             $cacheHealthy = $this->cacheService->isHealthy();
 
-            return view('ichava/browser::stats.index', [
+            return view('ichava/icon-browser::stats.index', [
                 'statistics'    => $statistics,
                 'packageStats'  => $packageStats,
                 'topCategories' => $topCategories,
@@ -160,7 +160,7 @@ final class IconBrowserController extends Controller
                 'exception' => $e,
             ]);
 
-            return view('ichava/browser::stats.index', [
+            return view('ichava/icon-browser::stats.index', [
                 'statistics' => [
                     'total_icons'      => 0,
                     'total_packages'   => 0,

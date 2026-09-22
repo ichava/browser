@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api\IconBrowserApiController;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api\IconBrowserApiController;
 
 /*
 |--------------------------------------------------------------------------

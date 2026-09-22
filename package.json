@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
-    "name": "@ichava/browser",
+    "name": "@ichava/icon-browser",
     "version": "0.1.0",
     "description": "SVG Icon Management Package with Vue.js + shadcn-vue Browser (Laravel Integrated)",
     "private": true,

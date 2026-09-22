@@ -4,10 +4,10 @@
 
 *Reference.*
 
-Publish `config/ichava/browser.php` once after install:
+Publish `config/ichava/icon-browser.php` once after install:
 
 ```bash
-php artisan vendor:publish --tag=ichava::browser-config
+php artisan vendor:publish --tag=ichava::icon-browser-config
 ```
 
 Browser-specific HTTP keys live here. Engine config (database, queue, logging) is in [`config/ichava/core.php`](https://opensource.simtabi.com/documentation/ichava/core/configuration).

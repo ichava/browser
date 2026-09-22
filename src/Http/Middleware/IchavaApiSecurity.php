@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware;
 
 use Closure;
 use Throwable;
@@ -145,7 +145,7 @@ final class IchavaApiSecurity
         }
 
         // 2. Check request size
-        $maxSize = (int) config('ichava.browser.max_request_size', 1048576); // 1MB default
+        $maxSize = (int) config('ichava.icon-browser.max_request_size', 1048576); // 1MB default
         if ($request->header('Content-Length') && (int) $request->header('Content-Length') > $maxSize) {
             $this->audit('http.request_too_large', AuditLogger::SEVERITY_WARNING, [
                 'content_length' => (int) $request->header('Content-Length'),
@@ -316,7 +316,7 @@ final class IchavaApiSecurity
     /**
      * Add security headers to response.
      *
-     * Header values come from `config('ichava.browser.security.*')` so the
+     * Header values come from `config('ichava.icon-browser.security.*')` so the
      * host application can tighten or relax them per environment without
      * forking the middleware. CSP mode supports `strict`, `nonce`, and
      * `hash`.
@@ -329,16 +329,16 @@ final class IchavaApiSecurity
         // some configurations. CSP supersedes it; see security-model.md.
         $headers = [
             'X-Content-Type-Options' => 'nosniff',
-            'X-Frame-Options'        => (string) config('ichava.browser.security.frame_options', 'DENY'),
+            'X-Frame-Options'        => (string) config('ichava.icon-browser.security.frame_options', 'DENY'),
             'Referrer-Policy'        => (string) config(
-                'ichava.browser.security.referrer_policy',
+                'ichava.icon-browser.security.referrer_policy',
                 'strict-origin-when-cross-origin',
             ),
             'Cache-Control'        => 'no-store, no-cache, must-revalidate, max-age=0',
             'Pragma'               => 'no-cache',
             'X-Ichava-API-Version' => '1.0',
             'Permissions-Policy'   => (string) config(
-                'ichava.browser.security.permissions_policy',
+                'ichava.icon-browser.security.permissions_policy',
                 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
             ),
         ];
@@ -354,7 +354,7 @@ final class IchavaApiSecurity
             $headers['Strict-Transport-Security'] = $hsts;
         }
 
-        if (config('ichava.browser.api.cors.enabled', true)) {
+        if (config('ichava.icon-browser.api.cors.enabled', true)) {
             $headers = array_merge($headers, $this->getCorsHeaders());
         }
 
@@ -422,8 +422,8 @@ final class IchavaApiSecurity
      */
     private function buildCspHeader(): ?array
     {
-        $mode = (string) config('ichava.browser.security.csp.mode', 'strict');
-        $extra = (array) config('ichava.browser.security.csp.extra_directives', []);
+        $mode = (string) config('ichava.icon-browser.security.csp.mode', 'strict');
+        $extra = (array) config('ichava.icon-browser.security.csp.extra_directives', []);
 
         $directives = match ($mode) {
             'nonce' => $this->cspNonceDirectives(),
@@ -438,7 +438,7 @@ final class IchavaApiSecurity
             $directives[$name] = $value;
         }
 
-        if ($report = config('ichava.browser.security.csp.report_uri')) {
+        if ($report = config('ichava.icon-browser.security.csp.report_uri')) {
             $directives['report-uri'] = $report;
         }
 
@@ -448,7 +448,7 @@ final class IchavaApiSecurity
         }
         $value = rtrim($value, '; ');
 
-        $name = (bool) config('ichava.browser.security.csp.report_only', false)
+        $name = (bool) config('ichava.icon-browser.security.csp.report_only', false)
             ? 'Content-Security-Policy-Report-Only'
             : 'Content-Security-Policy';
 
@@ -482,7 +482,7 @@ final class IchavaApiSecurity
      */
     private function cspHashDirectives(): array
     {
-        $hashes = (array) config('ichava.browser.security.csp.hashes', []);
+        $hashes = (array) config('ichava.icon-browser.security.csp.hashes', []);
         $script = isset($hashes['script-src']) ? implode(' ', (array) $hashes['script-src']) : '';
         $style = isset($hashes['style-src']) ? implode(' ', (array) $hashes['style-src']) : '';
 
@@ -512,17 +512,17 @@ final class IchavaApiSecurity
 
     private function buildHstsHeader(): ?string
     {
-        if (! (bool) config('ichava.browser.security.hsts.enabled', true)) {
+        if (! (bool) config('ichava.icon-browser.security.hsts.enabled', true)) {
             return null;
         }
 
-        $maxAge = (int) config('ichava.browser.security.hsts.max_age', 31536000);
+        $maxAge = (int) config('ichava.icon-browser.security.hsts.max_age', 31536000);
         $value = "max-age={$maxAge}";
 
-        if ((bool) config('ichava.browser.security.hsts.include_subdomains', true)) {
+        if ((bool) config('ichava.icon-browser.security.hsts.include_subdomains', true)) {
             $value .= '; includeSubDomains';
         }
-        if ((bool) config('ichava.browser.security.hsts.preload', false)) {
+        if ((bool) config('ichava.icon-browser.security.hsts.preload', false)) {
             $value .= '; preload';
         }
 
@@ -545,9 +545,9 @@ final class IchavaApiSecurity
      */
     private function getCorsHeaders(): array
     {
-        $allowedOrigins = config('ichava.browser.api.cors.allowed_origins');
-        $allowedMethods = config('ichava.browser.api.cors.allowed_methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        $allowedHeaders = config('ichava.browser.api.cors.allowed_headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+        $allowedOrigins = config('ichava.icon-browser.api.cors.allowed_origins');
+        $allowedMethods = config('ichava.icon-browser.api.cors.allowed_methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $allowedHeaders = config('ichava.icon-browser.api.cors.allowed_headers', 'Content-Type, Authorization, X-Requested-With, Accept');
 
         return [
             'Access-Control-Allow-Origin'  => is_array($allowedOrigins) ? implode(', ', $allowedOrigins) : $allowedOrigins,
@@ -576,7 +576,7 @@ final class IchavaApiSecurity
         }
 
         // Pretty print is enabled by default (configurable)
-        return config('ichava.browser.api.pretty_print', true);
+        return config('ichava.icon-browser.api.pretty_print', true);
     }
 
     /**

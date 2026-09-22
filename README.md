@@ -1,7 +1,7 @@
-# ichava/browser
+# ichava/icon-browser
 
-[![Tests](https://github.com/ichava/browser/actions/workflows/tests.yml/badge.svg)](https://github.com/ichava/browser/actions/workflows/tests.yml)
-[![Code Quality](https://github.com/ichava/browser/actions/workflows/code-quality.yml/badge.svg)](https://github.com/ichava/browser/actions/workflows/code-quality.yml)
+[![Tests](https://github.com/ichava/icon-browser/actions/workflows/tests.yml/badge.svg)](https://github.com/ichava/icon-browser/actions/workflows/tests.yml)
+[![Code Quality](https://github.com/ichava/icon-browser/actions/workflows/code-quality.yml/badge.svg)](https://github.com/ichava/icon-browser/actions/workflows/code-quality.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > The HTTP layer for the Ichava Laravel icon ecosystem — REST API, Vue 3 + Vite SPA, Blade browser views and middleware, installed on top of `ichava/core` when you want a visual icon browser or programmatic REST access.
@@ -11,14 +11,14 @@ This package is not published to Packagist, so there is no registry-version badg
 ## Install
 
 ```bash
-composer require ichava/browser
+composer require ichava/icon-browser
 ```
 
 Browser and its dependencies are unpublished, so your application's `composer.json` needs VCS repository entries before that command resolves — [Installation](docs/installation.md) gives the block, then covers publishing the config and SPA assets and reaching the browser at `/{prefix}/icons`.
 
 ## <a name="documentation"></a>Documentation
 
-Full documentation is at **[opensource.simtabi.com/documentation/ichava/browser](https://opensource.simtabi.com/documentation/ichava/browser/)**.
+Full documentation is at **[opensource.simtabi.com/documentation/ichava/icon-browser](https://opensource.simtabi.com/documentation/ichava/icon-browser/)**.
 
 ### Guides
 

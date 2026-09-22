@@ -1,6 +1,6 @@
 # React 19 parallel-run entry (`ichava-react`)
 
-This directory is the **React frontend** for `ichava/browser`, run **in parallel**
+This directory is the **React frontend** for `ichava/icon-browser`, run **in parallel**
 with the existing Vue SPA behind an opt-in flag. Vue stays the default and is
 untouched; React mounts only for `?ui=react` when a server kill-switch allows it.
 
@@ -42,7 +42,7 @@ fetches.
 2. **Config kill-switch** -- `config/browser.php` carries
    `'react_ui_enabled' => env('ICHAVA_REACT_UI', false)`.
 3. **Blade branch** -- `resources/views/components/layouts/app.blade.php` computes
-   `$useReact = $vueApp && config('ichava.browser.react_ui_enabled', false) &&
+   `$useReact = $vueApp && config('ichava.icon-browser.react_ui_enabled', false) &&
    request()->query('ui') === 'react'` once near the top, then branches the mount
    node (`#ichava-app-react` vs `#ichava-app`) and the bundle `<script>`/`<link>`
    tags on it. `window.ichavaRoutes` and `window.ichavaConfig` are both injected

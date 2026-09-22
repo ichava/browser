@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\Ichava\Browser\Tests\TestCase;
+use Simtabi\Laranail\Ichava\IconBrowser\Tests\TestCase;
 
 pest()
     ->extend(TestCase::class)
