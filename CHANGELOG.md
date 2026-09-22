@@ -2,7 +2,14 @@
 
 All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2026-09-22
+
+### Added
+
+- **`ConfigKeyResolutionTest` asserts the shipped config actually merges at
+  `ichava.icon-browser`**, and that the doubled key V39 produces does not exist. Nothing
+  asserted this before, which is why V39 shipped: a test calling `config()->set()` writes the
+  key it then reads, so only the shipped *file* resolving proves the merge.
 
 ### Changed
 
@@ -43,23 +50,6 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
     the repository URLs were updated. Rewriting them would make this file lie about its own
     history.
 
-### Fixed
-
-- **Per-route rate limits were silently ignored.** `Helpers::getRateLimit()` read its master
-  switch from the correct key but the actual limit from `config("ichava-browser.rate_limiting.
-  {$type}")` -- the pre-V39 key form, which has never resolved -- so every call fell through to
-  the hardcoded `$default` and the configured `rate_limiting` block did nothing. Found by the
-  rename sweep rather than by a test, because the fallback made the wrong value look right.
-
-### Added
-
-- **`ConfigKeyResolutionTest` asserts the shipped config actually merges at
-  `ichava.icon-browser`**, and that the doubled key V39 produces does not exist. Nothing
-  asserted this before, which is why V39 shipped: a test calling `config()->set()` writes the
-  key it then reads, so only the shipped *file* resolving proves the merge.
-
-### Changed
-
 - **The markdown path filter now matches markdown at any depth.**
   `code-quality.yml` and `tests.yml` carried `paths-ignore: '*.md'`. In GitHub's
   filter syntax a single `*` does not cross a `/`, so that pattern matched a
@@ -75,6 +65,14 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
   longer exists, so every cross-reference to it resolved to a 404. The reporting channels in
   `SECURITY.md` were already stated inline and are unchanged; the Code of Conduct now cites the
   Contributor Covenant directly. Historical mentions in this changelog are left as written.
+
+### Fixed
+
+- **Per-route rate limits were silently ignored.** `Helpers::getRateLimit()` read its master
+  switch from the correct key but the actual limit from `config("ichava-browser.rate_limiting.
+  {$type}")` -- the pre-V39 key form, which has never resolved -- so every call fell through to
+  the hardcoded `$default` and the configured `rate_limiting` block did nothing. Found by the
+  rename sweep rather than by a test, because the fallback made the wrong value look right.
 
 ## [0.3.0] - 2026-09-21
 
