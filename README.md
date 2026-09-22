@@ -38,7 +38,6 @@ Full documentation is at **[opensource.simtabi.com/documentation/ichava/browser]
 
 - [Core architecture](https://opensource.simtabi.com/documentation/ichava/core/architecture)
 - [Troubleshooting](https://opensource.simtabi.com/documentation/ichava/core/troubleshooting)
-- [Security model](https://github.com/ichava/documentation/blob/main/security-model.md)
 
 ## Contributing & security
 
