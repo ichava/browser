@@ -1,5 +1,5 @@
 name: Feature request
-description: Propose an improvement to ichava/browser
+description: Propose an improvement to ichava/icon-browser
 labels: [enhancement]
 body:
   - type: textarea

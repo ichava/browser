@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -38,7 +38,7 @@ final class AuthorizeCacheAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $config = config('ichava.browser.security.cache_admin', []);
+        $config = config('ichava.icon-browser.security.cache_admin', []);
 
         // The deliberate escape hatch. Off by default: the point of this middleware is
         // that reaching the endpoint is not the same as being allowed to use it.
@@ -55,7 +55,7 @@ final class AuthorizeCacheAdmin
         if (! Gate::has($ability)) {
             abort(403, sprintf(
                 'Ichava cache administration is not configured. Define the "%s" ability, '
-                . 'or set ichava-browser.security.cache_admin.allow_without_gate to true.',
+                . 'or set ichava.icon-browser.security.cache_admin.allow_without_gate to true.',
                 $ability,
             ));
         }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Middleware;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Str;

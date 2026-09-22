@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 describe('React UI kill switch', function () {
     it('mounts Vue by default: flag off, no query param', function () {
-        config(['ichava.browser.react_ui_enabled' => false]);
+        config(['ichava.icon-browser.react_ui_enabled' => false]);
 
         $html = test()->get(route('ichava.browser'))->getContent();
 
@@ -23,7 +23,7 @@ describe('React UI kill switch', function () {
     });
 
     it('stays on Vue when only the query param is present: flag off', function () {
-        config(['ichava.browser.react_ui_enabled' => false]);
+        config(['ichava.icon-browser.react_ui_enabled' => false]);
 
         $html = test()->get(route('ichava.browser', ['ui' => 'react']))->getContent();
 
@@ -32,7 +32,7 @@ describe('React UI kill switch', function () {
     });
 
     it('stays on Vue when only the flag is on: no query param', function () {
-        config(['ichava.browser.react_ui_enabled' => true]);
+        config(['ichava.icon-browser.react_ui_enabled' => true]);
 
         $html = test()->get(route('ichava.browser'))->getContent();
 
@@ -41,7 +41,7 @@ describe('React UI kill switch', function () {
     });
 
     it('mounts React only when BOTH the flag is on and ?ui=react is present', function () {
-        config(['ichava.browser.react_ui_enabled' => true]);
+        config(['ichava.icon-browser.react_ui_enabled' => true]);
 
         $html = test()->get(route('ichava.browser', ['ui' => 'react']))->getContent();
 
@@ -52,10 +52,10 @@ describe('React UI kill switch', function () {
     });
 
     it('the kill switch overrides the query param with no deploy: flip the flag back off', function () {
-        config(['ichava.browser.react_ui_enabled' => true]);
+        config(['ichava.icon-browser.react_ui_enabled' => true]);
         expect(test()->get(route('ichava.browser', ['ui' => 'react']))->getContent())->toContain('id="ichava-app-react"');
 
-        config(['ichava.browser.react_ui_enabled' => false]);
+        config(['ichava.icon-browser.react_ui_enabled' => false]);
         expect(test()->get(route('ichava.browser', ['ui' => 'react']))->getContent())
             ->toContain('id="ichava-app"')
             ->not->toContain('id="ichava-app-react"');

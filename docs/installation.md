@@ -4,22 +4,22 @@
 
 *How-to guide.*
 
-`ichava/browser` is the optional HTTP layer for Ichava: visual icon browser SPA + REST API + middleware. Install it on top of [`ichava/core`](https://opensource.simtabi.com/documentation/ichava/core/installation).
+`ichava/icon-browser` is the optional HTTP layer for Ichava: visual icon browser SPA + REST API + middleware. Install it on top of [`ichava/core`](https://opensource.simtabi.com/documentation/ichava/core/installation).
 
 ## 1. Require the package
 
-`ichava/browser` is not on Packagist either, so add its repository alongside the ones
+`ichava/icon-browser` is not on Packagist either, so add its repository alongside the ones
 [core's installation](https://opensource.simtabi.com/documentation/ichava/core/installation) already asked for:
 
 ```json
-{ "type": "vcs", "url": "https://github.com/ichava/browser" }
+{ "type": "vcs", "url": "https://github.com/ichava/icon-browser" }
 ```
 
 ```bash
-composer require ichava/browser:^0.1
+composer require ichava/icon-browser:^0.1
 ```
 
-The `IchavaBrowserServiceProvider` registers automatically. The browser depends on `ichava/core`, so Composer pulls it transitively if you don't already have it, but only if core's repository is declared in **your** `composer.json`: Composer reads `repositories` from the root package only.
+The `IconBrowserServiceProvider` registers automatically. The browser depends on `ichava/core`, so Composer pulls it transitively if you don't already have it, but only if core's repository is declared in **your** `composer.json`: Composer reads `repositories` from the root package only.
 
 ## 2. Publish the browser config
 
@@ -27,7 +27,7 @@ The `IchavaBrowserServiceProvider` registers automatically. The browser depends 
 php artisan vendor:publish --tag=ichava:browser-config
 ```
 
-Creates `config/ichava/browser.php`. See [configuration](configuration.md) for the keys.
+Creates `config/ichava/icon-browser.php`. See [configuration](configuration.md) for the keys.
 
 ## 3. Publish the SPA assets
 
@@ -50,7 +50,7 @@ The prefix (`ichava` by default) is set by `ICHAVA_BROWSER_PREFIX`. The same pre
 If you want to rebuild the SPA yourself:
 
 ```bash
-php artisan ichava::browser.inject-scripts
+php artisan ichava::icon-browser.inject-scripts
 ```
 
 Adds `ichava:dev`, `ichava:build`, and `ichava::ichava-core.watch` to your host app's `package.json`. Run `npm run ichava:dev` for the Vite dev server with HMR, or `npm run ichava:build` for a production bundle.

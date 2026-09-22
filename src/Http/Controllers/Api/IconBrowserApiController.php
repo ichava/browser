@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -17,13 +17,13 @@ use Simtabi\Laranail\Ichava\Exceptions\IchavaException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Simtabi\Laranail\Ichava\Services\IconBrowserService;
 use Simtabi\Laranail\Ichava\Services\IconPreferenceService;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconResource;
-use Simtabi\Laranail\Ichava\Browser\Http\Resources\IconCollection;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\IconFilterRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceFilterRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceSearchRequest;
-use Simtabi\Laranail\Ichava\Browser\Http\Requests\PreferenceUpdateRequest;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Resources\IconResource;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Resources\IconCollection;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Requests\IconFilterRequest;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaApiSecurity;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Requests\PreferenceFilterRequest;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Requests\PreferenceSearchRequest;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Requests\PreferenceUpdateRequest;
 
 /**
  * IconBrowserApiController - RESTful API for Icon Browser

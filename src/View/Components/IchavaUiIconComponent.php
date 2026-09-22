@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\View\Components;
+namespace Simtabi\Laranail\Ichava\IconBrowser\View\Components;
 
-use Simtabi\Laranail\Ichava\Browser\Constants\IchavaUiIconsConstants;
+use Simtabi\Laranail\Ichava\IconBrowser\Constants\IchavaUiIconsConstants;
 use Simtabi\Laranail\Ichava\View\Components\IconComponent as BaseIconComponent;
 
 /**

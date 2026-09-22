@@ -4,7 +4,7 @@
 
 *Reference.*
 
-REST endpoints exposed by `ichava/browser`. All endpoints sit under `/{prefix}/api/...` where `{prefix}` defaults to `ichava` (set by `ICHAVA_BROWSER_PREFIX`).
+REST endpoints exposed by `ichava/icon-browser`. All endpoints sit under `/{prefix}/api/...` where `{prefix}` defaults to `ichava` (set by `ICHAVA_BROWSER_PREFIX`).
 
 ### Base URL
 
@@ -70,7 +70,7 @@ curl "http://example.com/ichava/api/icons/statistics"
 
 ### Postman collection
 
-A ready-to-import Postman collection ships with the browser package at [`.dev/postman_collection.json`](https://github.com/ichava/browser/blob/main/.dev/postman_collection.json). Import it into Postman, then set the collection variables:
+A ready-to-import Postman collection ships with the browser package at [`.dev/postman_collection.json`](https://github.com/ichava/icon-browser/blob/main/.dev/postman_collection.json). Import it into Postman, then set the collection variables:
 
 | Variable | Default | Description |
 |---|---|---|

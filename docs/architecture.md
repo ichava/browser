@@ -2,7 +2,7 @@
 
 # Architecture
 
-*Explanation.* What `ichava/browser` ships, how it attaches to `ichava/core`, and how its middleware stack adapts to whatever the host application provides.
+*Explanation.* What `ichava/icon-browser` ships, how it attaches to `ichava/core`, and how its middleware stack adapts to whatever the host application provides.
 
 ## What browser provides
 

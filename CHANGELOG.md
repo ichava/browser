@@ -1,8 +1,62 @@
 # Changelog
 
-All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
+All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+### Changed
+
+- **Renamed: `ichava/browser` is now `ichava/icon-browser`.** The repository, the composer
+  package, the npm package and the PHP namespace all move together, so `local dir = GitHub
+  repo = composer name` continues to hold. **This is a breaking change and no version number
+  expresses it** -- a consumer has to change the name it requires.
+
+  | Surface | Before | After |
+  |---|---|---|
+  | composer / GitHub | `ichava/browser` | `ichava/icon-browser` |
+  | npm | `@ichava/browser` | `@ichava/icon-browser` |
+  | PSR-4 root | `Simtabi\Laranail\Ichava\Browser\` | `…\Ichava\IconBrowser\` |
+  | provider | `IchavaBrowserServiceProvider` | `IconBrowserServiceProvider` |
+  | config file | `config/browser.php` | `config/icon-browser.php` |
+  | config key | `ichava.browser.*` | `ichava.icon-browser.*` |
+  | view namespace | `ichava/browser` | `ichava/icon-browser` |
+  | Blade alias | `ichava-browser` | `ichava-icon-browser` |
+  | Artisan | `ichava::browser.inject-scripts` | `ichava::icon-browser.inject-scripts` |
+  | publish tags | `--tag=ichava::browser-*` | `--tag=ichava::icon-browser-*` |
+
+  **If you published this package's views**, the override directory moves from
+  `resources/views/vendor/ichava/browser/` to `resources/views/vendor/ichava/icon-browser/`.
+
+  **Four surfaces deliberately did not move**, because each names something other than the
+  package and each fails silently if renamed:
+
+  - **Route names.** `route('ichava.browser')` and its 13 call sites stay, along with the
+    `ichava.api.*` family. These are an `ichava.*` namespace naming *features*, not the
+    package; renaming one of them and not the others would be inconsistent as well as
+    breaking. Same reasoning that defers `<x-ichava::icon>` to 1.0.
+  - **The `ichava.browser()` JavaScript API**, 18 call sites, which is this package's public
+    JS surface.
+  - **`ICHAVA_BROWSER_PREFIX`, `_RATE_LIMIT`, `_PER_PAGE`, `_CACHE`.** A renamed environment
+    variable reads as unset and the default applies with nothing reported -- the quietest
+    failure available -- and renaming buys nothing.
+  - **Historical CHANGELOG entries.** Past entries describe what shipped at the time; only
+    the repository URLs were updated. Rewriting them would make this file lie about its own
+    history.
+
+### Fixed
+
+- **Per-route rate limits were silently ignored.** `Helpers::getRateLimit()` read its master
+  switch from the correct key but the actual limit from `config("ichava-browser.rate_limiting.
+  {$type}")` -- the pre-V39 key form, which has never resolved -- so every call fell through to
+  the hardcoded `$default` and the configured `rate_limiting` block did nothing. Found by the
+  rename sweep rather than by a test, because the fallback made the wrong value look right.
+
+### Added
+
+- **`ConfigKeyResolutionTest` asserts the shipped config actually merges at
+  `ichava.icon-browser`**, and that the doubled key V39 produces does not exist. Nothing
+  asserted this before, which is why V39 shipped: a test calling `config()->set()` writes the
+  key it then reads, so only the shipped *file* resolving proves the merge.
 
 ### Changed
 

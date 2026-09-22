@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Controllers\Api;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Api;
 
 use DateTime;
 use Exception;
@@ -13,7 +13,7 @@ use Simtabi\Laranail\Ichava\Models\Icon;
 use Illuminate\Validation\ValidationException;
 use Simtabi\Laranail\Ichava\Services\IchavaLogger;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Simtabi\Laranail\Ichava\Browser\Http\Traits\ApiResponseTrait;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Traits\ApiResponseTrait;
 
 /**
  * BaseApiController - Base class for all Ichava API controllers

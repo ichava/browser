@@ -2,7 +2,7 @@
 
 # Release
 
-*Reference.* How a version of `ichava/browser` is cut, what the tag triggers, and what the published release carries.
+*Reference.* How a version of `ichava/icon-browser` is cut, what the tag triggers, and what the published release carries.
 
 ## The tag is the trigger
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Commands;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -28,7 +28,7 @@ class InjectNpmScriptsCommand extends Command
         'ichava:watch'       => 'cd vendor/ichava/ichava && npm run watch --silent',
     ];
 
-    protected $signature = 'ichava::browser.inject-scripts
+    protected $signature = 'ichava::icon-browser.inject-scripts
                             {--path= : Absolute path to the host package.json (default: base_path)}
                             {--force : Re-inject scripts even if they already exist}';
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Http\Traits;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

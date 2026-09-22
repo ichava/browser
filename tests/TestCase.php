@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\Ichava\Browser\Tests;
+namespace Simtabi\Laranail\Ichava\IconBrowser\Tests;
 
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Simtabi\Laranail\Ichava\Providers\IchavaServiceProvider;
-use Simtabi\Laranail\Ichava\Browser\Providers\IchavaBrowserServiceProvider;
+use Simtabi\Laranail\Ichava\IconBrowser\Providers\IconBrowserServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -20,7 +20,7 @@ abstract class TestCase extends Orchestra
     {
         return [
             IchavaServiceProvider::class,
-            IchavaBrowserServiceProvider::class,
+            IconBrowserServiceProvider::class,
         ];
     }
 

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\View;
  * holding.
  */
 it('registers views under the composer package name', function () {
-    expect(array_keys(View::getFinder()->getHints()))->toContain('ichava/browser');
+    expect(array_keys(View::getFinder()->getHints()))->toContain('ichava/icon-browser');
 });
 
 it('does not claim the bare ecosystem slug as a view namespace', function () {
@@ -26,11 +26,11 @@ it('does not claim the bare ecosystem slug as a view namespace', function () {
 
 it('resolves every view this package renders', function () {
     foreach ([
-        'ichava/browser::browser.index',
-        'ichava/browser::stats.index',
-        'ichava/browser::components.layouts.app',
-        'ichava/browser::components.layouts.browser',
-        'ichava/browser::components.sri-asset',
+        'ichava/icon-browser::browser.index',
+        'ichava/icon-browser::stats.index',
+        'ichava/icon-browser::components.layouts.app',
+        'ichava/icon-browser::components.layouts.browser',
+        'ichava/icon-browser::components.sri-asset',
     ] as $view) {
         expect(View::exists($view))->toBeTrue("view [{$view}] does not resolve");
     }
@@ -61,14 +61,14 @@ it('leaves the Blade component registries alone', function () {
 it('aliases the tag-safe hyphen form over the same paths', function () {
     // Taking the default creates a *second* hint as a side effect, not by an
     // explicit call: componentPrefix() now differs from viewNamespace(), so
-    // package-tools aliases `ichava-browser` over the paths loadViewsFrom()
+    // package-tools aliases `ichava-icon-browser` over the paths loadViewsFrom()
     // resolved -- Blade's component-tag pattern admits no forward slash, so
-    // `ichava/browser` is unusable as a tag prefix. Pinned because nothing in
+    // `ichava/icon-browser` is unusable as a tag prefix. Pinned because nothing in
     // this package asks for it, and an upstream change could drop it silently.
     $hints = View::getFinder()->getHints();
 
-    expect(array_keys($hints))->toContain('ichava-browser');
-    expect($hints['ichava-browser'])->toBe($hints['ichava/browser']);
+    expect(array_keys($hints))->toContain('ichava-icon-browser');
+    expect($hints['ichava-icon-browser'])->toBe($hints['ichava/icon-browser']);
 });
 
 it('ships exactly the views the resolution test enumerates', function () {
