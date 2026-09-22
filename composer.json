@@ -30,7 +30,8 @@
         "php": "^8.4.1 || ^8.5",
         "ichava/core": "^0.2.3",
         "illuminate/support": "^13.0",
-        "illuminate/view": "^13.0"
+        "illuminate/view": "^13.0",
+        "inertiajs/inertia-laravel": "^3.3"
     },
     "repositories": [
         {

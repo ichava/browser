@@ -20,6 +20,7 @@ use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaApiSecurity;
 use Simtabi\Laranail\Ichava\Browser\Http\Middleware\AuthorizeCacheAdmin;
 use Simtabi\Laranail\Ichava\Browser\Http\Middleware\IchavaStatefulGuard;
 use Simtabi\Laranail\Ichava\Browser\Http\Middleware\ValidateIchavaRoute;
+use Simtabi\Laranail\Ichava\Browser\Http\Middleware\HandleInertiaRequests;
 use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaUiIconComponent;
 use Simtabi\Laranail\Ichava\Browser\View\Components\IchavaTestIconComponent;
 use Simtabi\Laranail\Ichava\Browser\View\Components\Layouts\App as AppLayout;
@@ -55,6 +56,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             ->hasViews('ichava')
             ->hasTranslations()
             ->hasRoutes(['web', 'api'])
+            ->hasRoutesWhen('ichava.browser.inertia.enabled', 'inertia', true)
             ->hasCommands([
                 InjectNpmScriptsCommand::class,
             ]);
@@ -143,6 +145,7 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         $router->aliasMiddleware('ichava.validate', ValidateIchavaRoute::class);
         $router->aliasMiddleware('ichava.guard', IchavaStatefulGuard::class);
         $router->aliasMiddleware('ichava.cache-admin', AuthorizeCacheAdmin::class);
+        $router->aliasMiddleware('ichava.handle-inertia', HandleInertiaRequests::class);
 
         // Legacy alias for backward compatibility.
         $router->aliasMiddleware('ichava.api.security', IchavaApiSecurity::class);
@@ -184,6 +187,14 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
             'web',
             'ichava.validate',
         ]);
+
+        // Inertia routes (React pages via Inertia.js). Same `web` foundation
+        // plus the shared-props middleware; validation keeps the prefix check.
+        $router->middlewareGroup('ichava.inertia', [
+            'web',
+            'ichava.handle-inertia',
+            'ichava.validate',
+        ]);
     }
 
     /**
@@ -212,11 +223,15 @@ class IchavaBrowserServiceProvider extends PackageServiceProvider
         $router = $this->app['router'];
         $webRouteFile = $this->package->basePath('routes/web.php');
         $apiRouteFile = $this->package->basePath('routes/api.php');
+        $inertiaRouteFile = $this->package->basePath('routes/inertia.php');
 
         foreach ((array) $domains as $domain) {
             if ($domain !== '') {
                 $router->domain($domain)->group($webRouteFile);
                 $router->domain($domain)->group($apiRouteFile);
+                if (config('ichava.browser.inertia.enabled', true)) {
+                    $router->domain($domain)->group($inertiaRouteFile);
+                }
             }
         }
     }

@@ -2,6 +2,27 @@
 
 All notable changes to `ichava/browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Inertia.js frontend foundation.** The React 19 UI is now served through Inertia.js page
+  components alongside the existing Vue SPA and JSON API, which are untouched. `GET
+  /{prefix}/app` renders `Browser/Index` with live statistics from core's
+  `IconBrowserService`; shared props (`auth`, `flash`, `preferences`, `ichava`) flow from
+  the new `HandleInertiaRequests` middleware (`ichava::app` root view) through the new
+  `ichava.inertia` middleware group. The entry is `resources/js/app.tsx` with glob-based
+  page resolution, built by the self-contained `vite.inertia.config.ts` into fixed-name
+  `inertia-app.js`/`inertia-app.css` bundles that never wipe the Vue or React
+  parallel-run output. Inertia routes load only when `ichava.browser.inertia.enabled` is
+  truthy (on by default, `ICHAVA_INERTIA_ENABLED`); the `?ui=react` parallel-run flag is
+  retained as legacy until the REST API it fronts is removed. Requires
+  `inertiajs/inertia-laravel: ^3.3` and `@inertiajs/react: ^3.0`.
+- Three `assertInertia` tests pinning the proving route: page component, shared props, and
+  the config flag. The test harness registers Inertia's service provider and points
+  `inertia.pages.paths` at the package's `resources/js/pages` so the component-existence
+  check resolves.
+
 ## [0.2.2] - 2026-09-16
 
 ### Changed

@@ -7,16 +7,26 @@ use Simtabi\Laranail\Ichava\Constants\IchavaConstants;
 return [
     /*
     |--------------------------------------------------------------------------
-    | React frontend (R-P16, parallel run)
+    | Inertia.js frontend
     |--------------------------------------------------------------------------
-    | Server-side kill switch for the React 19 rebuild, mounted behind BOTH this
-    | flag and the `?ui=react` query string -- neither alone is enough, so the
-    | URL parameter can never turn the feature on for a host that has not opted
-    | in, and this flag alone (with the query param absent) never changes what
-    | any existing user sees. Off by default: Vue is the reference until
-    | cutover (see PLAN.md R-P17, gated on W1 being complete -- it now is).
-    | Flip ICHAVA_REACT_UI=false at any time to fall back to Vue with no
-    | deploy.
+    | The React 19 UI is served through Inertia.js page components. The
+    | `enabled` flag gates the Inertia routes; when off, only the legacy
+    | Vue SPA and JSON API remain mounted. On by default: Inertia is the
+    | reference frontend going forward.
+    */
+    'inertia' => [
+        'enabled'   => env('ICHAVA_INERTIA_ENABLED', true),
+        'root_view' => env('ICHAVA_INERTIA_ROOT_VIEW', 'ichava::app'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | React parallel run (R-P16, legacy)
+    |--------------------------------------------------------------------------
+    | Server-side kill switch for the standalone React 19 SPA, mounted behind
+    | BOTH this flag and the `?ui=react` query string. Superseded by the
+    | Inertia frontend above; kept until the REST API it fronts is removed.
+    | Off by default.
     */
     'react_ui_enabled' => env('ICHAVA_REACT_UI', false),
 
@@ -25,9 +35,16 @@ return [
     | Vite dev mode (HMR)
     |--------------------------------------------------------------------------
     | Enable Vite's hot-module-reload dev server during local development.
-    | Auto-disabled in production regardless of this value.
+    | The `ichava::app` root template loads the Inertia entry from this
+    | server when both this flag and `app.debug` are true; production
+    | always uses the published `vendor/ichava` bundle.
     */
     'vite_dev_mode' => env('ICHAVA_VITE_DEV', true),
+
+    'vite' => [
+        'host' => env('ICHAVA_VITE_HOST', 'localhost'),
+        'port' => (int) env('ICHAVA_VITE_PORT', 5174),
+    ],
 
     /*
     |--------------------------------------------------------------------------

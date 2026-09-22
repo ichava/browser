@@ -11,6 +11,10 @@
         "build:prod": "npm run clean && echo '' && echo '\ud83d\ude80 Building Ichava (production)...' && NODE_ENV=production vite build",
         "watch": "echo '' && echo '\ud83d\udc40 Watching Ichava for changes...' && vite build --watch",
         "dev": "vite",
+        "dev:inertia": "vite --config vite.inertia.config.ts",
+        "build:inertia": "echo '' && echo '\ud83d\udd28 Building Ichava Inertia (dev)...' && NODE_ENV=development vite build --config vite.inertia.config.ts",
+        "build:inertia:prod": "echo '' && echo '\ud83d\ude80 Building Ichava Inertia (production)...' && NODE_ENV=production vite build --config vite.inertia.config.ts",
+        "build:react": "npx vite build --config vite.react.config.ts",
         "preview": "vite preview",
         "test:js": "vitest run",
         "test:js:watch": "vitest"
@@ -27,6 +31,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@ichava/react-browser": "file:../react-browser",
+        "@inertiajs/react": "^3.0",
         "@tailwindcss/postcss": "^4.1.17",
         "@tailwindplus/elements": "^1.0.19",
         "@types/dompurify": "^3.0.5",

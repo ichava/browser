@@ -6,6 +6,7 @@ namespace Simtabi\Laranail\Ichava\Browser\Tests;
 
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Inertia\ServiceProvider as InertiaServiceProvider;
 use Simtabi\Laranail\Ichava\Providers\IchavaServiceProvider;
 use Simtabi\Laranail\Ichava\Browser\Providers\IchavaBrowserServiceProvider;
 
@@ -21,6 +22,7 @@ abstract class TestCase extends Orchestra
         return [
             IchavaServiceProvider::class,
             IchavaBrowserServiceProvider::class,
+            InertiaServiceProvider::class,
         ];
     }
 
@@ -32,6 +34,13 @@ abstract class TestCase extends Orchestra
         // Web routes that use sessions/cookies require an encryption key in
         // Testbench; without it any web-route GET trips MissingAppKeyException.
         $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
+
+        // Inertia resolves page components against the host's js/pages dir by
+        // default; point it at this package's pages so `assertInertia()` can
+        // verify components exist on disk.
+        $app['config']->set('inertia.pages.paths', [
+            dirname(__DIR__) . '/resources/js/pages',
+        ]);
 
         $this->configureDatabase($app);
         $this->configureCache($app);
