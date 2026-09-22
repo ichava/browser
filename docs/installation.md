@@ -53,7 +53,7 @@ If you want to rebuild the SPA yourself:
 php artisan ichava::icon-browser.inject-scripts
 ```
 
-Adds `ichava:dev`, `ichava:build`, and `ichava::ichava-core.watch` to your host app's `package.json`. Run `npm run ichava:dev` for the Vite dev server with HMR, or `npm run ichava:build` for a production bundle.
+Adds `ichava:build`, `ichava:build:prod`, and `ichava:watch` to your host app's `package.json`. Run `npm run ichava:watch` to rebuild on change, or `npm run ichava:build:prod` for a production bundle.
 
 You only need this if you customise the SPA. End users running pre-built assets do not.
 
@@ -64,7 +64,7 @@ You only need this if you customise the SPA. End users running pre-built assets 
 - All Ichava middleware (`ichava.api`, `ichava.web`, hybrid Sanctum/session detection)
 - The `<x-ichava:ichava-test-icons>` and `<x-ichava:ichava-ui-icons>` demo Blade components
 - The `ui-icons` icon set used by the SPA
-- The `ichava:inject-npm-scripts` Artisan command
+- The `ichava::icon-browser.inject-scripts` Artisan command
 
 ## See also
 

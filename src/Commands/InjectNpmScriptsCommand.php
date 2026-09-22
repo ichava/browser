@@ -21,11 +21,22 @@ class InjectNpmScriptsCommand extends Command
      */
     use SupportsNamespacedNames;
 
+    /**
+     * Where Composer installs this package, which is `name` in composer.json.
+     *
+     * These scripts are written into the *host* application's package.json, so
+     * nothing in this repository ever runs them -- which is how they went on
+     * naming `vendor/ichava/ichava`, the pre-split monolith's install path, long
+     * after the split renamed this package. `NpmScriptPathTest` pins this
+     * constant to the manifest so a rename cannot quietly strand it again.
+     */
+    private const PACKAGE_DIR = 'vendor/ichava/icon-browser';
+
     private const SCRIPTS = [
         '// Package: Ichava' => '',
-        'ichava:build'       => 'cd vendor/ichava/ichava && npm run build --silent',
-        'ichava:build:prod'  => 'cd vendor/ichava/ichava && npm run build:prod --silent',
-        'ichava:watch'       => 'cd vendor/ichava/ichava && npm run watch --silent',
+        'ichava:build'       => 'cd ' . self::PACKAGE_DIR . ' && npm run build --silent',
+        'ichava:build:prod'  => 'cd ' . self::PACKAGE_DIR . ' && npm run build:prod --silent',
+        'ichava:watch'       => 'cd ' . self::PACKAGE_DIR . ' && npm run watch --silent',
     ];
 
     protected $signature = 'ichava::icon-browser.inject-scripts
