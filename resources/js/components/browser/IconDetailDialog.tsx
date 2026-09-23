@@ -20,6 +20,7 @@ import { useT } from '@js/hooks/useT';
 import { Select } from '@js/components/base/select/select';
 import { Menu } from '@js/components/ui/Menu';
 import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
 import { Slider } from '@js/components/base/slider/slider';
 
 export function IconDetailDialog() {
@@ -29,10 +30,8 @@ export function IconDetailDialog() {
   const closeLayer = useAppStore((s) => s.closeLayer);
   const openDetail = useAppStore((s) => s.openDetail);
   const favorites = useAppStore((s) => s.favorites);
-  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const collections = useAppStore((s) => s.collections);
-  const addToCollection = useAppStore((s) => s.addToCollection);
-  const pushHistory = useAppStore((s) => s.pushHistory);
+  const { toggleFavorite, addToCollection, pushHistory } = useInertiaMutations();
   const copy = useCopy();
   const t = useT();
 
@@ -375,7 +374,7 @@ export function IconDetailDialog() {
                 return (
                   <button
                     key={c.id}
-                    onClick={() => { addToCollection(c.id, icon.id); storeApi.getState().showToast(t('detail.addedTo', { name: c.name }), 'folder'); }}
+                    onClick={() => addToCollection(c.id, icon.id)}
                     style={{ height: 24, padding: '0 9px', border: `1px solid ${has ? 'var(--accent)' : 'var(--border)'}`, borderRadius: 12, background: has ? 'var(--accent-soft)' : 'var(--bg)', color: has ? 'var(--accent)' : 'var(--fg)', fontSize: 11, cursor: 'pointer' }}
                   >
                     {c.name}

@@ -6,69 +6,31 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
 
 ### Added
 
-- **Inertia.js frontend foundation.** The React 19 UI is now served through Inertia.js page
-  components alongside the JSON API, which is untouched. `GET /{prefix}/icons` renders
-  `Browser/Index` with the filtered listing from core's `IconBrowserService`; shared
-  props (`auth`, `flash`, `preferences`, `ichava`) flow from
-  the new `HandleInertiaRequests` middleware (`ichava/icon-browser::app` root view)
-  through the new `ichava.inertia` middleware group. The entry is `resources/js/app.tsx`
-  with glob-based page resolution, built by the self-contained `vite.inertia.config.ts`
-  into fixed-name `inertia-app.js`/`inertia-app.css` bundles that never wipe the Vue or
-  React parallel-run output. Inertia routes load only when
-  `ichava.icon-browser.inertia.enabled` is truthy (on by default,
-  `ICHAVA_INERTIA_ENABLED`); the `?ui=react` parallel-run flag is retained as legacy
-  until the REST API it fronts is removed. Requires `inertiajs/inertia-laravel: ^3.3`
-  and `@inertiajs/react: ^3.0`.
-- Three `assertInertia` tests pinning the proving route: page component, shared props, and
-  the config flag. The test harness registers Inertia's service provider and points
-  `inertia.pages.paths` at the package's `resources/js/pages` so the component-existence
-  check resolves.
-- **React component library migrated in from `@ichava/react-browser`.** `core/` (engine,
-  model, config, i18n, storage, snippet/treatment/motion/export services), `components/`
-  (layout, browser, ui, base design system, dialogs, boot splash), `hooks/`, `lib/`,
-  `styles/`, `test/` fixtures and the Zustand `store.ts` plus `IchavaBrowser.tsx` now live
-  under `resources/js/` and import via the `@js` alias -- a shared `@` would collide with
-  the Vue tree on `components/`, `lib/` and `styles/`. The REST transport is gone:
-  `httpClient`, `browserId`, `RestCatalog`, `useRestRepoState`, `useIconCatalogClient` and
-  `useUrlSync` are deleted, and `useRepo`, `useResolvedIcons`, `IconDetailDialog` and
-  `AppToolbar` are static-only; server data arrives as Inertia props from Phase 3 on.
-  Moved tests run in this package's vitest (21 files, 205 tests) with the
-  `@testing-library` stack added to devDependencies. Requires `zustand`,
+- **Inertia.js frontend serving the React 19 UI, beside the untouched JSON API.**
+  `GET /{prefix}/icons` renders `Browser/Index` with the filtered listing from core's
+  `IconBrowserService`; shared props (`auth`, `flash`, `preferences`, `ichava`) flow
+  from the `HandleInertiaRequests` middleware through the `ichava.inertia` middleware
+  group. Requires `inertiajs/inertia-laravel: ^3.3` and `@inertiajs/react: ^3.0`. Routes
+  load only when `ichava.icon-browser.inertia.enabled` is truthy (on by default,
+  `ICHAVA_INERTIA_ENABLED`).
+- **Page controllers, one per resource, mirroring the JSON API.** Browser
+  listing/detail/stats plus package, favorite, collection, history,
+  command-history, settings and cache pages; mutations redirect back with flash
+  data. Destructive cache routes keep the fail-closed `ichava.cache-admin` gate.
+- **Canonical URLs serve Inertia pages.** The legacy Vue mount points could not stay
+  mounted beside their replacements, so `routes/web.php` keeps only the `/`
+  redirect; the Vue surface remains on disk, unreachable, until it is removed.
+- **React component library lives under `resources/js/`.** Engine, components, hooks,
+  store and tests moved in from `@ichava/react-browser` (imports via `@js`), with the
+  REST transport deleted in favor of Inertia props. Requires `zustand`,
   `@tanstack/react-virtual`, `react-aria`, `@ichava/motion` and the Untitled UI packages.
-- **Inertia page controllers, one per resource, mirroring the JSON API.** The expanded
-  `InertiaBrowserController` serves the filtered/paginated listing (`Browser/Index`),
-  icon detail (`Browser/Show`) and stats dashboard (`Stats/Index`, now including
-  upstream update-status); new `Package`, `Favorite`, `Collection`, `History`,
-  `CommandHistory`, `Settings` and `Cache` controllers expose the API's actions as
-  Inertia pages plus redirect-back mutations with flash data. A shared
-  `BaseInertiaController` (logging, `iconExists`, `formatTimeAgo`) and a
-  `ResolvesIconsForPages` trait (uniform `transformIcon` shaping for every page) back
-  them; the destructive cache routes keep the `ichava.cache-admin` gate, fail-closed.
-  `assertInertia` coverage per controller.
-- **Canonical URLs cut over to Inertia.** Laravel overwrites routes that share a method
-  and URI, so the legacy Vue mount points (`/icons`, `/stats`, `/cache/*`) could not
-  stay mounted beside their Inertia replacements: `routes/web.php` keeps only the `/`
-  redirect, and the Vue views and controllers remain on disk, unreachable over HTTP,
-  until Phase 6 removes them. The legacy mount tests went with the routes they pinned.
-- **`propsToCatalog()` bridge.** Server icon rows map onto the client `Catalog` (null
-  category/variant defaulted, packages mapped to `IconPackage`), so Inertia pages feed
-  `<IchavaBrowser catalog={...}>` with no component rewrites.
-- **Test harness uses file sessions.** Core's `HostCapabilities` treats the `array`
-  session driver as unavailable and the preference service then silently no-ops every
-  write, so session-backed flows (favorites, collections, history, settings) could
-  never persist in tests. Each test still gets a fresh session id from its clean
-  cookie jar.
-- **Real Inertia pages (Phase 4).** All eleven placeholders now render: the browser
-  mounts the full `<IchavaBrowser>` shell from a `propsToCatalog()`-built catalog
-  with `manageDocument`, the detail page shows preview/meta/snippets/related, and
-  packages, favorites, collections, history, command history, settings and stats get
-  focused content pages reusing `IconAsset`, `Glyph` and the snippet factory. Filter
-  and pagination state syncs both ways with the server query string via
-  `useFilterSync` (loop-guarded, `only:`-scoped reloads, per-page clamped to the
-  server maximum); server totals and the corpus-wide tree override the loaded-set
-  numbers through new ephemeral store slices so footer and sidebar stay honest.
-  Server flash lands in the shell's toast queue (`FlashToasts`) or inline banners
-  (`FlashBanner`) on simple pages. Mutations stay unwired until Phase 5.
+- **Two-way filter sync and server mutations.** Listing state syncs with the server
+  query string; all library writes (favorites, collections, history, settings,
+  cache) go through the server with flash and validation feedback, and settings is
+  a real form.
+- **Test coverage.** `assertInertia` tests per controller; the moved JS tests run in
+  this package's vitest with the `@testing-library` stack; the harness uses file
+  sessions so session-backed flows persist across requests in a test.
 
 ### Changed
 

@@ -8,6 +8,7 @@ import { snippets, iconRef } from '@js/core/SnippetFactory';
 import { getSvgParts } from '@js/core/svgCache';
 import type { Icon } from '@js/core/types';
 import { useAppStore } from '@js/hooks/useStoreApi';
+import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
 import { TILE_MIN } from '@js/core/appScale';
 
 const toolBtn: React.CSSProperties = {
@@ -34,10 +35,9 @@ export function IconTile({ icon, size }: { icon: Icon; size: number }) {
   const favorites = useAppStore((s) => s.favorites);
   const selection = useAppStore((s) => s.selection);
   const openDetail = useAppStore((s) => s.openDetail);
-  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const toggleSelect = useAppStore((s) => s.toggleSelect);
   const multiSelect = useAppStore((s) => s.config?.features.multiSelect !== false);
-  const pushHistory = useAppStore((s) => s.pushHistory);
+  const { toggleFavorite, pushHistory } = useInertiaMutations();
   const openCtx = useAppStore((s) => s.openCtx);
   const copy = useCopy();
   const t = useT();

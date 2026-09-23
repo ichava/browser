@@ -14,6 +14,7 @@ import { densityMetrics, tileMinWidth } from '@js/core/appScale';
 import type { Icon } from '@js/core/model';
 import type { CopyFormat } from '@js/core/types';
 import { useAppStore } from '@js/hooks/useStoreApi';
+import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
 
 // Build a copy payload, fetching the real SVG body for the "svg" format so it is
 // never an empty placeholder (multicolor icons keep their fills). Shared shape
@@ -122,7 +123,7 @@ function EmptyState({ search, onReset }: { search: string; onReset: () => void }
 function IconList() {
   const { page } = useRepo();
   const openDetail = useAppStore((s) => s.openDetail);
-  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
+  const { toggleFavorite } = useInertiaMutations();
   const favorites = useAppStore((s) => s.favorites);
   const copyFormat = useAppStore((s) => s.copyFormat);
   const size = useAppStore((s) => s.size);

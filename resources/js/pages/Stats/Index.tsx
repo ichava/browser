@@ -1,5 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import { FlashBanner } from '@js/components/FlashBanner';
+import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
 import type { SharedProps } from '@js/types';
 
 interface PackageStat {
@@ -42,6 +43,7 @@ interface StatsIndexProps extends SharedProps {
 
 export default function StatsIndex() {
   const { props } = usePage<StatsIndexProps>();
+  const { clearCache, rebuildCache } = useInertiaMutations();
   const stats = props.statistics;
   const updateRows: UpdateRow[] = Array.isArray(props.updateStatus)
     ? props.updateStatus
@@ -107,6 +109,22 @@ export default function StatsIndex() {
                   {props.cacheHealthy ? 'Healthy' : 'Unhealthy'}
                 </span>
               </p>
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={clearCache}
+                  className="theme-bg-muted theme-text-secondary rounded-md px-3 py-1.5 text-xs font-medium"
+                >
+                  Clear cache
+                </button>
+                <button
+                  onClick={() => {
+                    if (window.confirm('Rebuild the icon cache? Stored preferences will be reset.')) rebuildCache();
+                  }}
+                  className="rounded-md border border-red-500/40 px-3 py-1.5 text-xs font-medium text-red-400"
+                >
+                  Rebuild cache
+                </button>
+              </div>
             </section>
 
             {updateRows.length > 0 && (

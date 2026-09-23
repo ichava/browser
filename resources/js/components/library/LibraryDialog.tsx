@@ -12,6 +12,7 @@ import { useT } from '@js/hooks/useT';
 import { iconRef } from '@js/core/SnippetFactory';
 import type { LibTab, Collection } from '@js/store';
 import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
 
 const TABS: { id: LibTab; key: string }[] = [
   { id: 'favorites', key: 'library.favorites' },
@@ -79,7 +80,7 @@ const rowBtn: React.CSSProperties = {
 
 function Favorites() {
   const favorites = useAppStore((s) => s.favorites);
-  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
+  const { toggleFavorite } = useInertiaMutations();
   const openDetail = useAppStore((s) => s.openDetail);
   const t = useT();
   const { icons } = useResolvedIcons(favorites);
@@ -101,7 +102,7 @@ function Favorites() {
 
 function History() {
   const history = useAppStore((s) => s.history);
-  const clearHistory = useAppStore((s) => s.clearHistory);
+  const { clearHistory } = useInertiaMutations();
   const openDetail = useAppStore((s) => s.openDetail);
   const t = useT();
   const { icons } = useResolvedIcons(history.map((h) => h.id));
@@ -128,7 +129,7 @@ function History() {
 
 function Collections() {
   const collections = useAppStore((s) => s.collections);
-  const createCollection = useAppStore((s) => s.createCollection);
+  const { createCollection } = useInertiaMutations();
   const openAccess = useAppStore((s) => s.openAccess);
   const t = useT();
   const [name, setName] = useState('');
@@ -177,8 +178,7 @@ function Collections() {
  * in REST mode; it now reuses exactly what this card already resolved.
  */
 function CollectionCard({ c, onManageAccess }: { c: Collection; onManageAccess: () => void }) {
-  const removeCollection = useAppStore((s) => s.removeCollection);
-  const removeFromCollection = useAppStore((s) => s.removeFromCollection);
+  const { deleteCollection: removeCollection, removeFromCollection } = useInertiaMutations();
   const openDetail = useAppStore((s) => s.openDetail);
   const copy = useCopy();
   const t = useT();

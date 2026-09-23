@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { IconAsset } from '@js/components/ui/IconAsset';
+import { Glyph } from '@js/components/ui/Glyph';
 import { FlashBanner } from '@js/components/FlashBanner';
 import { useCopy } from '@js/hooks/useClipboard';
 import { normalizeRawIcon } from '@js/core/propsToCatalog';
@@ -66,6 +67,19 @@ export default function BrowserShow() {
               {icon.package}
               {icon.category ? ` · ${icon.category}` : ''} · {icon.variant}
             </p>
+            <button
+              onClick={() =>
+                router.post(
+                  `${props.ichava.routes.favorites}/${icon.id}/toggle`,
+                  {},
+                  { preserveState: true },
+                )
+              }
+              className="theme-bg-muted theme-text-secondary mt-3 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium"
+            >
+              <Glyph name="heart" size={13} color="currentColor" />
+              Toggle favorite
+            </button>
 
             {icon.tags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">

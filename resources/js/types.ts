@@ -20,7 +20,12 @@ export interface IchavaShared {
         favorites: string;
         collections: string;
         history: string;
+        commands: string;
         settings: string;
+        cache: {
+            clear: string;
+            rebuild: string;
+        };
     };
 }
 

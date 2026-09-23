@@ -41,7 +41,12 @@ final class HandleInertiaRequests extends Middleware
                     'favorites'   => route('ichava.inertia.favorites.index'),
                     'collections' => route('ichava.inertia.collections.index'),
                     'history'     => route('ichava.inertia.history.index'),
+                    'commands'    => route('ichava.inertia.commandHistory.index'),
                     'settings'    => route('ichava.inertia.settings.index'),
+                    'cache'       => [
+                        'clear'   => route('ichava.inertia.cache.clear'),
+                        'rebuild' => route('ichava.inertia.cache.rebuild'),
+                    ],
                 ],
             ],
         ]);
