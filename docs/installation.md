@@ -59,7 +59,7 @@ You only need this if you customise the SPA. End users running pre-built assets 
 
 ## What you get on top of core
 
-- The Vue + Vite icon-browser SPA at `/{prefix}/icons`
+- The React + Inertia.js icon browser at `/{prefix}/icons`
 - The REST API at `/{prefix}/api/...` (icons, packages, terms, preferences, cache)
 - All Ichava middleware (`ichava.api`, `ichava.web`, hybrid Sanctum/session detection)
 - The `<x-ichava:ichava-test-icons>` and `<x-ichava:ichava-ui-icons>` demo Blade components
@@ -71,7 +71,6 @@ You only need this if you customise the SPA. End users running pre-built assets 
 - [Configuration](configuration.md)
 - [Environment variables](environment.md)
 - [API endpoints](tools/api-endpoints.md)
-- [shadcn-vue installer](tools/shadcn-installer.md)
 - [Core installation](https://opensource.simtabi.com/documentation/ichava/core/installation)
 - [Troubleshooting](https://opensource.simtabi.com/documentation/ichava/core/troubleshooting)
 

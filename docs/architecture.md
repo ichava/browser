@@ -10,7 +10,7 @@ Relocated from the README, which is now a slim pointer.
 
 | Concern | What browser ships |
 |---|---|
-| Visual SPA | Vue 3 + Vite + Tailwind icon browser at `/{prefix}/icons`. Search, filter by pack/variant/category, copy-to-clipboard, theme toggle. |
+| Visual browser | React 19 + Inertia.js icon browser at `/{prefix}/icons`. Search, filter by pack/variant/category, copy-to-clipboard, theme toggle. |
 | REST API | Endpoints for icons, packages, terms, preferences, command history, cache and statistics. |
 | Middleware | The `ichava.api` and `ichava.web` groups, plus per-middleware aliases: `ichava.guard`, `ichava.security`, `ichava.json`, `ichava.log`, `ichava.session`, `ichava.validate`. |
 | Hybrid auth | `HostCapabilities` detects Sanctum and sessions, then adapts the stack. |

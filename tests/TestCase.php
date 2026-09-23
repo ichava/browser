@@ -45,6 +45,9 @@ abstract class TestCase extends Orchestra
         $this->configureDatabase($app);
         $this->configureCache($app);
         $this->configureSession($app);
+
+        // The REST routes mount only when opted in; the suite exercises them.
+        $app['config']->set('ichava.icon-browser.api.enabled', $this->apiRoutesEnabled());
     }
 
     /**
@@ -115,6 +118,15 @@ abstract class TestCase extends Orchestra
     protected function configureSession($app): void
     {
         $app['config']->set('session.driver', 'file');
+    }
+
+    /**
+     * Whether the booted app mounts the REST routes. Overridden by harnesses
+     * that need the default-off state.
+     */
+    protected function apiRoutesEnabled(): bool
+    {
+        return true;
     }
 
     /**

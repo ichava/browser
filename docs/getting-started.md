@@ -57,7 +57,6 @@ Browser adapts to the host application rather than imposing a stack, so the prot
 - [Configuration](configuration.md)
 - [Environment variables](environment.md)
 - [Architecture](architecture.md)
-- [shadcn-vue installer](tools/shadcn-installer.md)
 
 ---
 

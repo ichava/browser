@@ -57,8 +57,9 @@ class IconBrowserServiceProvider extends PackageServiceProvider
             // loser is replaced silently.
             ->hasViews()
             ->hasTranslations()
-            ->hasRoutes(['web', 'api'])
+            ->hasRoutes(['web'])
             ->hasRoutesWhen('ichava.icon-browser.inertia.enabled', 'inertia', true)
+            ->hasRoutesWhen('ichava.icon-browser.api.enabled', 'api', false)
             ->hasCommands([
                 InjectNpmScriptsCommand::class,
             ]);
@@ -219,7 +220,9 @@ class IconBrowserServiceProvider extends PackageServiceProvider
         foreach ((array) $domains as $domain) {
             if ($domain !== '') {
                 $router->domain($domain)->group($webRouteFile);
-                $router->domain($domain)->group($apiRouteFile);
+                if (config('ichava.icon-browser.api.enabled', false)) {
+                    $router->domain($domain)->group($apiRouteFile);
+                }
                 if (config('ichava.icon-browser.inertia.enabled', true)) {
                     $router->domain($domain)->group($inertiaRouteFile);
                 }

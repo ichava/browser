@@ -73,9 +73,13 @@ return [
     |--------------------------------------------------------------------------
     | API
     |--------------------------------------------------------------------------
-    | JSON-API behaviour and CORS policy.
+    | JSON-API behaviour and CORS policy. The REST routes stay mounted only
+    | when `enabled` is truthy -- off by default, since the Inertia pages
+    | are the reference frontend. Hosts with programmatic consumers opt in
+    | with ICHAVA_API_ENABLED=true.
     */
     'api' => [
+        'enabled'      => env('ICHAVA_API_ENABLED', false),
         'pretty_print' => env('ICHAVA_API_PRETTY_PRINT', true),
 
         'cors' => [

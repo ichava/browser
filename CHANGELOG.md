@@ -36,6 +36,11 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
   controllers, and the checked-in Vue bundles are gone; the JSON API is untouched.
   The npm tree drops the Vue ecosystem and resolves a single `@` alias to
   `resources/js/`.
+- **REST API off by default, still shipped.** The JSON routes mount only when
+  `ichava.icon-browser.api.enabled` is truthy (`ICHAVA_API_ENABLED`); hosts with
+  programmatic consumers opt in, everyone else serves Inertia pages alone.
+- **Docs describe the React browser.** README and guides no longer reference Vue
+  or the shadcn installer.
 
 ### Changed
 
