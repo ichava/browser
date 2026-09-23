@@ -4,6 +4,44 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+### Added
+
+- **Inertia.js frontend serving the React 19 UI, beside the untouched JSON API.**
+  `GET /{prefix}/icons` renders `Browser/Index` with the filtered listing from core's
+  `IconBrowserService`; shared props (`auth`, `flash`, `preferences`, `ichava`) flow
+  from the `HandleInertiaRequests` middleware through the `ichava.inertia` middleware
+  group. Requires `inertiajs/inertia-laravel: ^3.3` and `@inertiajs/react: ^3.0`. Routes
+  load only when `ichava.icon-browser.inertia.enabled` is truthy (on by default,
+  `ICHAVA_INERTIA_ENABLED`).
+- **Page controllers, one per resource, mirroring the JSON API.** Browser
+  listing/detail/stats plus package, favorite, collection, history,
+  command-history, settings and cache pages; mutations redirect back with flash
+  data. Destructive cache routes keep the fail-closed `ichava.cache-admin` gate.
+- **Canonical URLs serve Inertia pages.** The legacy Vue mount points could not stay
+  mounted beside their replacements, so `routes/web.php` keeps only the `/`
+  redirect; the Vue surface remains on disk, unreachable, until it is removed.
+- **React component library lives under `resources/js/`.** Engine, components, hooks,
+  store and tests moved in from `@ichava/react-browser` (imports via `@js`), with the
+  REST transport deleted in favor of Inertia props. Requires `zustand`,
+  `@tanstack/react-virtual`, `react-aria`, `@ichava/motion` and the Untitled UI packages.
+- **Two-way filter sync and server mutations.** Listing state syncs with the server
+  query string; all library writes (favorites, collections, history, settings,
+  cache) go through the server with flash and validation feedback, and settings is
+  a real form.
+- **Test coverage.** `assertInertia` tests per controller; the moved JS tests run in
+  this package's vitest with the `@testing-library` stack; the harness uses file
+  sessions so session-backed flows persist across requests in a test.
+- **Vue SPA and parallel-run React removed.** The Vue single-page app, the
+  standalone React entry with its `?ui=react` flag, the legacy Blade views and
+  controllers, and the checked-in Vue bundles are gone; the JSON API is untouched.
+  The npm tree drops the Vue ecosystem and resolves a single `@` alias to
+  `resources/js/`.
+- **REST API off by default, still shipped.** The JSON routes mount only when
+  `ichava.icon-browser.api.enabled` is truthy (`ICHAVA_API_ENABLED`); hosts with
+  programmatic consumers opt in, everyone else serves Inertia pages alone.
+- **Docs describe the React browser.** README and guides no longer reference Vue
+  or the shadcn installer.
+
 ### Changed
 
 - **`SECURITY.md` removed; the organization policy serves this repository now.**

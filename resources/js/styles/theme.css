@@ -1,0 +1,567 @@
+/*
+ * Theme entry.
+ *
+ * Untitled UI's token layer (`uui-theme.css`) is the SOURCE OF TRUTH for colour,
+ * type, radius and shadow. This file adopts it and derives the app's own semantic
+ * variables from it.
+ *
+ * It used to be the reverse: a 234-line `@theme inline` bridge that mapped shadcn
+ * token names onto hand-picked app hex values, so the app owned the palette and the
+ * component library inherited it. That is gone. No bridge, no shadcn tokens, no
+ * hand-picked greys -- the design system decides, and the app follows.
+ *
+ * Two things the app still owns, because they are product features rather than
+ * theming:
+ *
+ *   --accent / --accent-soft / --accent-fg   the user-picked accent (colour picker)
+ *   --radius                                 the user-picked corner radius
+ *
+ * Both are written to the component root at runtime. The accent also OVERRIDES
+ * Untitled UI's brand tokens there, so an Untitled UI `primary` Button follows the
+ * user's accent rather than the shipped purple -- see `IchavaBrowser.tsx`.
+ */
+
+@import 'tailwindcss';
+@import './uui-theme.css';
+
+@plugin 'tailwindcss-animate';
+@plugin 'tailwindcss-react-aria-components';
+
+/*
+ * Geist, self-hosted. Files in `public/fonts/`; provenance in `public/fonts/README.md`.
+ *
+ * These were loaded from `fonts.googleapis.com` until the visual suite proved that is not
+ * a barrier anyone can wait on. `landing-hero` failed with a 4,639-pixel diff because the
+ * CDN stylesheet had not arrived when the screenshot was taken -- and the guard in
+ * `settle()`, `await document.fonts.ready`, had already resolved.
+ *
+ * That is the whole mechanism, and it is worth stating plainly because the guard LOOKS
+ * sufficient: `document.fonts.ready` settles when every face the document currently knows
+ * about has finished loading. A `<link>` to a third-party stylesheet contributes no faces
+ * until that stylesheet is parsed, so before it lands `document.fonts` is EMPTY and
+ * `ready` resolves immediately -- truthfully, and about nothing. Playwright logged
+ * "fonts loaded" and shot the page in a fallback face.
+ *
+ * Declaring the faces here fixes it at the root rather than at the test seam. This file is
+ * bundled into the render-blocking stylesheet every entry point links, so the `@font-face`
+ * rules exist before first paint, the fetches are same-origin, and `document.fonts.ready`
+ * becomes a promise with something to wait for. Production stops depending on Google's CDN
+ * for its typography at the same time, which is the reason to prefer this over stubbing
+ * the two hosts in the Playwright config: a stub makes the suite deterministic about a
+ * page that is still racing for real users, and pins baselines to a face the page may not
+ * be showing them.
+ *
+ * Variable files, one per family, replacing the six static instances the CDN served
+ * (Geist 400/500/600/700, Geist Mono 400/500). Nothing here sets `font-style: italic`, so
+ * the italic faces are deliberately not shipped -- the CDN request did not carry an `ital`
+ * axis either, so synthetic oblique is what the page has always had.
+ *
+ * `swap` rather than `block`: these are same-origin and preloaded from `index.html` and
+ * `landing.html`, so the swap period is not reachable in practice, and `swap` cannot
+ * produce invisible text if one day it is. The determinism the screenshots rely on comes
+ * from the explicit `document.fonts.load()` barrier in `visual.spec.ts`, not from this
+ * descriptor.
+ *
+ * The bare `format('woff2')` is deliberate, and narrowing it to the variable-specific hint
+ * would be a mistake worth naming, because it fails silently.
+ *
+ * A format hint is a GATE, never an optimisation: the spec has the UA skip a source whose
+ * hint it does not recognise. So the only thing a narrower hint can do here is stop the
+ * font loading. The variable-specific spellings -- the deprecated one and its `tech()`
+ * replacement -- buy nothing either way: they exist so a UA can choose between a variable
+ * file and a static fallback, and we ship one file per family with nothing to choose
+ * between. What actually engages the weight axis is the `font-weight: 100 900` range
+ * below; a variable woff2 is still a woff2. Narrowing this would break in whichever engine
+ * did not recognise the hint, and would surface as a fallback face in a screenshot.
+ */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Dark mode is keyed off `.dark-mode`, which is Untitled UI's convention and what
+ * every vendored component's `dark:` variant compiles against. The app previously
+ * used `.dark`; changing the class was not optional.
+ *
+ * `:where()` keeps specificity at zero so utilities still win.
+ */
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@custom-variant label (& [data-label]);
+@custom-variant focus-input-within (&:has(input:focus));
+
+@utility scrollbar-hide {
+  &::-webkit-scrollbar {
+    display: none;
+    -webkit-appearance: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@utility transition-inherit-all {
+  transition-property: inherit;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+}
+
+/*
+ * The app's semantic variables, derived from Untitled UI tokens.
+ *
+ * These exist because ~900 call sites reference them (`--border` alone is used 156
+ * times). Rather than rewrite all of them in one commit, they are re-pointed at the
+ * design system: same names, Untitled UI's values. Call sites migrate to Tailwind
+ * utilities per component, and each of these disappears when its last consumer does.
+ *
+ * `--faint-fg` is the one worth calling out. It was `#a1a1aa`, which is 2.68:1 on
+ * white and fails AA at every size -- and it was used for list metadata and chevrons.
+ * Pointing it at `text-quaternary` fixes that by adopting a palette that was designed
+ * for contrast.
+ */
+@layer base {
+  :root {
+    /*
+     * Untitled UI's `--font-body` and `--font-display` resolve through
+     * `var(--font-inter, "Inter")`. That indirection is the supported way to swap the
+     * typeface, so point it at the family the app actually loads.
+     *
+     * Without this the app requested Inter, which nothing loads, and fell through to
+     * -apple-system -- so adopting the token layer silently dropped Geist. Same class
+     * of loss as the base-layer block below.
+     */
+    --font-inter: 'Geist';
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --bg: var(--color-bg-primary);
+    --fg: var(--color-text-primary);
+    --card: var(--color-bg-primary);
+    /*
+     * The RAISED surface: popovers, modal panels, the context menu, tile hover buttons.
+     *
+     * Was `--color-bg-primary`, which in dark is the canvas colour -- so a modal's sticky
+     * header painted #0a0a0a inside a #171717 panel and left a visible seam. `--pop` and
+     * `--surface` describe the same thing, so it now defers to the elevation pair rather
+     * than duplicating one half of it.
+     */
+    --pop: var(--surface);
+    --muted: var(--color-bg-secondary);
+    /*
+     * `--color-bg-tertiary`, NOT `--color-bg-secondary_alt`.
+     *
+     * The vendored dark block defines `--color-bg-secondary_alt: var(--color-bg-primary)`,
+     * so in dark mode this token was byte-identical to `--bg` and all 21 surfaces built on
+     * it -- segmented-control tracks, the palette's search row, code blocks, the header's
+     * command trigger -- rendered with no fill at all. A live audit confirmed both resolved
+     * to #0a0a0a. `bg-tertiary` is distinct in both themes (#f5f5f5 / #262626).
+     */
+    --muted2: var(--color-bg-tertiary);
+
+    /*
+     * Elevation pair: the sunken page (`--canvas`) and the raised card on it
+     * (`--surface`). Without this the whole UI was one flat field of `bg-primary`
+     * separated only by 1px hairlines, which in dark mode is a near-black expanse -- the
+     * single biggest reason the layout read as muddy.
+     *
+     * The two Untitled UI tokens have to SWAP between themes, because "raised" is not a
+     * fixed colour, it is a direction. In light, `bg-primary` (#ffffff) is lighter than
+     * `bg-secondary` (#fafafa), so the card is primary and the page is secondary. In dark
+     * the ordering inverts -- `bg-primary` is #0a0a0a and `bg-secondary` is #171717 -- so
+     * mapping them the same way puts the card BELOW the page and cards read as holes.
+     * Assigning by role per theme keeps light coming from above in both.
+     */
+    /*
+     * Overlay layering, in one place.
+     *
+     * These were ad-hoc: the modal overlay, the tooltip and the dropdown menu all sat at
+     * `z-50` and whichever mounted last won. That is why a Select inside a Modal was
+     * unusable -- its popover portals to <body>, landed at the same level as the modal
+     * scrim, and lost, so options rendered but every click hit the scrim instead.
+     *
+     * The order is by how transient a surface is. A popover is opened FROM a modal, so it
+     * must sit above it; a tooltip describes whatever is topmost, so it sits above that;
+     * a toast must never be buried.
+     */
+    --z-overlay: 60;
+    --z-popover: 70;
+    --z-tooltip: 80;
+    --z-toast: 90;
+
+    --canvas: var(--color-bg-secondary);
+    --surface: var(--color-bg-primary);
+    --muted-fg: var(--color-text-tertiary);
+    --faint-fg: var(--color-text-quaternary);
+    --border: var(--color-border-primary);
+    --input: var(--color-border-primary);
+
+    --danger: var(--color-fg-error-primary);
+    --danger-soft: var(--color-bg-error-primary);
+    --success: var(--color-fg-success-primary);
+    --warning: var(--color-fg-warning-primary);
+    --info: var(--color-fg-brand-primary);
+
+    /*
+     * Named `--shadow-elevated`, not `--shadow-lg`. Untitled UI already defines
+     * `--shadow-lg`, so an alias of that name would read
+     * `--shadow-lg: var(--shadow-lg)` -- self-referential, which CSS resolves to the
+     * initial value rather than erroring. It fails silently and every elevated surface
+     * loses its shadow. Renaming makes the reference unambiguous.
+     */
+    --shadow: var(--shadow-xs);
+    --shadow-elevated: var(--shadow-lg);
+    --overlay: var(--color-bg-overlay);
+    --code: var(--color-bg-secondary);
+    --tip-bg: var(--color-bg-primary-solid);
+    --tip-fg: var(--color-text-primary_on-brand);
+
+    /* Product features, not theming. Overwritten per mount at runtime. */
+    --accent: var(--color-bg-brand-solid);
+    --accent-fg: var(--color-text-white);
+    --accent-soft: var(--color-bg-brand-primary);
+    --ring: var(--color-border-brand);
+    --radius: var(--radius-lg);
+
+    /*
+     * The console surface is deliberately NOT derived: it is a terminal panel and
+     * stays dark in both themes, which is the point of it.
+     */
+    --console-bg: #0b0b0e;
+    --console-chrome: #18181b;
+    --console-border: #26262b;
+    --console-fg: #e4e4e7;
+    --console-gutter: #52525b;
+    --console-comment: #71717a;
+    --console-string: #6ee7b7;
+    --console-number: #fbbf24;
+    --console-keyword: #c4b5fd;
+    --console-punct: #94a3b8;
+  }
+}
+
+/*
+ * Almost no `.dark` override block.
+ *
+ * There were two parallel palettes -- 13 hand-picked light values and 13 hand-picked
+ * dark ones -- that had to be kept in step by hand. Now every variable above resolves
+ * through an Untitled UI token, and Untitled UI's own `.dark-mode` block re-points
+ * those. One palette, defined once, inverted by the design system.
+ *
+ * The one exception is the elevation pair. Its two tokens are not a palette that inverts;
+ * they are a ROLE assignment, and the role flips because `bg-secondary` is darker than
+ * `bg-primary` in light and lighter in dark. Two lines, stated once, rather than a second
+ * palette to maintain.
+ */
+.dark-mode {
+  --canvas: var(--color-bg-primary);
+  --surface: var(--color-bg-secondary);
+}
+
+/*
+ * Base layer.
+ *
+ * RESTORED. The R-P7 token replacement preserved this file's keyframes from a fixed
+ * line offset and silently dropped the 84 lines above them -- box-sizing, the
+ * html/body/#root layout reset, the global focus-visible ring, scrollbar styling and
+ * every range-input rule. Nothing failed: typecheck, 101 unit tests and 14 e2e specs
+ * all passed, because none of them assert appearance. That is precisely the missing
+ * control §1.8 of the brief describes, and it is why R-P12 adds visual regression.
+ */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * These are element RESETS, so they belong in `base`, and the layer is load-bearing
+ * rather than tidy: an unlayered rule beats every layered one regardless of
+ * specificity, so while these sat outside a layer no Tailwind utility could override
+ * them on the elements they name. `font-mono` on a <button> lost to
+ * `button { font-family: inherit }`; `text-[var(--muted-fg)]` on an <a> lost to
+ * `a { color: var(--accent) }`; `underline` on an <a> lost to
+ * `a { text-decoration: none }`.
+ *
+ * Nothing surfaced it while those properties were set inline, because an inline style
+ * outranks any stylesheet rule in any layer. Converting the landing page's inline
+ * styles to utilities is what exposed it -- the nav links came back accent-purple
+ * instead of muted and the banner link lost its underline, and visual regression
+ * caught both.
+ *
+ * Keep the focus-visible rules below UNLAYERED. Those are deliberate overrides that
+ * should beat a utility; these are defaults that should not.
+ */
+@layer base {
+  input,
+  select,
+  button {
+    font-family: inherit;
+  }
+  button {
+    white-space: nowrap;
+  }
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Hide the native spinners and the search clear affordance (from Untitled UI's own
+   base layer -- adopted rather than reinvented). */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+/*
+ * Focus is never removed, only replaced: `outline: none` is always paired with a
+ * visible ring. Untitled UI components manage their own focus rings via react-aria,
+ * so this covers the app's remaining hand-rolled controls until they migrate.
+ */
+input:focus,
+select:focus,
+button:focus {
+  outline: none;
+}
+/*
+ * `:not([data-rac])` — react-aria marks every element it renders with `data-rac`, and
+ * those components draw their own focus ring.
+ *
+ * Without the exclusion this rule fired IN ADDITION to the design system's, so a focused
+ * Input showed two rings: Untitled UI's `ring-2 ring-brand` inside, and this 2px/4px
+ * box-shadow outside it. That is the doubled purple outline on the sign-in field.
+ *
+ * The rule stays for the app's remaining hand-rolled controls, which have no ring of
+ * their own; it shrinks as those migrate, and should be deleted when none are left.
+ */
+input:focus-visible:not([data-rac]),
+select:focus-visible:not([data-rac]),
+button:focus-visible:not([data-rac]),
+a:focus-visible:not([data-rac]),
+[tabindex]:focus-visible:not([data-rac]),
+[role='button']:focus-visible:not([data-rac]),
+[role='checkbox']:focus-visible:not([data-rac]),
+[role='radio']:focus-visible:not([data-rac]),
+[role='menuitem']:focus-visible:not([data-rac]),
+[role='tab']:focus-visible:not([data-rac]) {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--ring);
+}
+
+/* Overlay row highlighting for the REMAINING shadcn/Radix/cmdk components. These
+   corrections exist because the shadcn defaults assume tokens this app does not have;
+   they are deleted along with the components in R-P10. */
+[data-slot='select-item']:focus-visible,
+[data-slot='dropdown-menu-item']:focus-visible,
+[data-slot='dropdown-menu-checkbox-item']:focus-visible,
+[data-slot='dropdown-menu-radio-item']:focus-visible,
+[data-slot='dropdown-menu-sub-trigger']:focus-visible {
+  box-shadow: none;
+}
+[data-slot='select-item']:focus,
+[data-slot='select-item'][data-highlighted],
+[data-slot='dropdown-menu-item']:focus,
+[data-slot='dropdown-menu-item'][data-highlighted],
+[data-slot='dropdown-menu-checkbox-item'][data-highlighted],
+[data-slot='dropdown-menu-radio-item'][data-highlighted],
+[data-slot='dropdown-menu-sub-trigger'][data-highlighted],
+[data-slot='dropdown-menu-sub-trigger'][data-state='open'],
+[cmdk-item][data-selected='true'] {
+  outline: none;
+  box-shadow: none;
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ich-side-scroll,
+.ich-marquee-scroll {
+  scrollbar-width: none;
+}
+.ich-side-scroll::-webkit-scrollbar,
+.ich-marquee-scroll::-webkit-scrollbar,
+[data-region='credits']::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/*
+ * Native range inputs.
+ *
+ * Only the colour picker's hue and lightness sliders remain native; every value
+ * slider is now the Untitled UI Slider. These two stay because their whole purpose is
+ * the gradient TRACK -- a hue spectrum and a lightness ramp -- and the design-system
+ * slider paints a flat token track with no slot for one. A `Slider` here would be a
+ * hue control that does not show hues.
+ */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
+  margin-top: -4.5px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+input[type='range'].ich-hue::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+input[type='range'].ich-hue::-webkit-slider-thumb {
+  margin-top: -2.5px;
+}
+input[type='range'].ich-light::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #000, var(--pick-mid, #888), #fff);
+}
+input[type='range'].ich-light::-webkit-slider-thumb {
+  margin-top: -2.5px;
+}
+
+@keyframes ichPulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+@keyframes ichIn { from { opacity: 0; transform: translateY(6px) scale(.98) } to { opacity: 1; transform: none } }
+@keyframes ichFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes ichRise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+@keyframes ichFloat { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }
+@keyframes ichGlow {
+  0%, 100% { box-shadow: 0 12px 34px -8px var(--accent-soft), 0 0 0 0 var(--accent-soft) }
+  50% { box-shadow: 0 16px 44px -6px var(--accent-soft), 0 0 0 10px transparent }
+}
+@keyframes ichSpin { to { transform: rotate(360deg) } }
+@keyframes ichPulseS { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.18) } }
+@keyframes ichBounce { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-18%) } }
+@keyframes ichWiggle { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-11deg) } 75% { transform: rotate(11deg) } }
+@keyframes ichPing { 0% { transform: scale(1); opacity: 1 } 80%, 100% { transform: scale(1.45); opacity: 0 } }
+@keyframes ichSpinPath { to { transform: rotate(360deg) } }
+@keyframes ichMarqueeY { from { transform: translateY(0) } to { transform: translateY(-50%) } }
+@keyframes ichMarqueeX { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.ich-pop { position: relative; }
+
+/* In-app "Reduce motion" toggle (set on the app root by IchavaBrowser). */
+[data-reduce-motion] *,
+[data-reduce-motion] {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Detail dialog: collapse the two-column layout on narrow screens. */
+@media (max-width: 760px) {
+  .ich-detail-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Responsive: below 860px the sidebar becomes an off-canvas drawer. */
+.ich-hamburger { display: none; }
+.ich-scrim { display: none; }
+@media (max-width: 860px) {
+  .ich-hamburger { display: flex; }
+  .ich-sidebar {
+    position: fixed;
+    top: 48px;
+    bottom: 0;
+    left: 0;
+    z-index: 65;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: var(--shadow-elevated);
+  }
+  .ich-sidebar.open { transform: translateX(0); }
+  /* RTL: the off-canvas drawer slides in from the right edge. */
+  [dir='rtl'] .ich-sidebar { left: auto; right: 0; transform: translateX(100%); }
+  [dir='rtl'] .ich-sidebar.open { transform: translateX(0); }
+  .ich-scrim {
+    display: block;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 64;
+    background: var(--overlay);
+    animation: ichFade 0.15s ease;
+  }
+}
+
+/*
+ * Tree connector guides.
+ *
+ * Off by default and switched on by the `showConnectors` prop, which sets
+ * `data-connectors` on the tree root. Using the shared border token rather than a bespoke
+ * colour -- the previous tree drew these with a class that compiled to no rule at all, so
+ * they fell back to `currentColor` and rendered as near-black bars.
+ */
+.ich-tree .ich-tree-guide { background: transparent; }
+.ich-tree[data-connectors] .ich-tree-guide { background: var(--border); }
+
+/* Indent step per size, read by the row padding and the guide offsets. */
+.ich-tree[data-size='sm'] { --ich-tree-indent: 20px; }
+.ich-tree[data-size='md'] { --ich-tree-indent: 24px; }

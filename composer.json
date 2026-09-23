@@ -8,7 +8,7 @@
         "icons",
         "svg",
         "browser",
-        "vue",
+        "ReactJs",
         "vite",
         "ichava"
     ],
@@ -30,7 +30,8 @@
         "php": "^8.4.1 || ^8.5",
         "ichava/core": "^0.2.8 || ^0.3.1 || ^0.4",
         "illuminate/support": "^13.0",
-        "illuminate/view": "^13.0"
+        "illuminate/view": "^13.0",
+        "inertiajs/inertia-laravel": "^3.3"
     },
     "repositories": [
         {
@@ -71,9 +72,6 @@
             "providers": [
                 "Simtabi\\Laranail\\Ichava\\IconBrowser\\Providers\\IconBrowserServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "0.4.x-dev"
         }
     },
     "scripts": {

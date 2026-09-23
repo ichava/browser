@@ -20,10 +20,9 @@ use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaApiSecurity;
 use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\AuthorizeCacheAdmin;
 use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\IchavaStatefulGuard;
 use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\ValidateIchavaRoute;
+use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\HandleInertiaRequests;
 use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaUiIconComponent;
 use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaTestIconComponent;
-use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\App as AppLayout;
-use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\Browser as BrowserLayout;
 
 /**
  * Visual icon browser for the Ichava ecosystem.
@@ -58,7 +57,9 @@ class IconBrowserServiceProvider extends PackageServiceProvider
             // loser is replaced silently.
             ->hasViews()
             ->hasTranslations()
-            ->hasRoutes(['web', 'api'])
+            ->hasRoutes(['web'])
+            ->hasRoutesWhen('ichava.icon-browser.inertia.enabled', 'inertia', true)
+            ->hasRoutesWhen('ichava.icon-browser.api.enabled', 'api', false)
             ->hasCommands([
                 InjectNpmScriptsCommand::class,
             ]);
@@ -88,35 +89,12 @@ class IconBrowserServiceProvider extends PackageServiceProvider
         Blade::component('ichava::ichava-ui-icons', IchavaUiIconComponent::class);
 
         // SRI-aware <script>/<link> emitter; reads the manifest configured at
-        // `ichava.icon-browser.security.sri.manifest` or computes the digest from
+        // `ichava-browser.security.sri.manifest` or computes the digest from
         // the public-path file at render time.
         Blade::component(
             'ichava::sri-asset',
             SriAsset::class,
         );
-
-        // Anonymous Blade components (views without PHP classes) under the
-        // shared `ichava::` namespace.
-        //
-        // DEFERRED, not overlooked: `ichava` is a bare generic slug here, the
-        // same class of claim the view namespace above was corrected away from.
-        // It is left in place because Blade component tags are the ecosystem's
-        // documented public API -- `<x-ichava::icon>` appears ~85 times across
-        // source, resources and docs and 24 more in `ichava/documentation` --
-        // so renaming it is a breaking change for every consumer and belongs in
-        // its own release with its own migration note, not folded into a
-        // namespace fix. Four flat maps are keyed `ichava`: this one, core's
-        // `Blade::componentNamespace()`, core's and this package's
-        // `Blade::component('ichava::…')` aliases, and -- until the commit
-        // before this one -- the view hints.
-        Blade::anonymousComponentPath(
-            $this->package->basePath('resources/views/components'),
-            'ichava',
-        );
-
-        // Class-based layout components.
-        Blade::component('ichava::layouts.app', AppLayout::class);
-        Blade::component('ichava::layouts.browser', BrowserLayout::class);
 
         // Publish the Vite-built browser SPA dist (CSS/JS) into the host's
         // public/vendor/ichava/ namespace. The asset HTTP path stays under
@@ -159,6 +137,7 @@ class IconBrowserServiceProvider extends PackageServiceProvider
         $router->aliasMiddleware('ichava.validate', ValidateIchavaRoute::class);
         $router->aliasMiddleware('ichava.guard', IchavaStatefulGuard::class);
         $router->aliasMiddleware('ichava.cache-admin', AuthorizeCacheAdmin::class);
+        $router->aliasMiddleware('ichava.handle-inertia', HandleInertiaRequests::class);
 
         // Legacy alias for backward compatibility.
         $router->aliasMiddleware('ichava.api.security', IchavaApiSecurity::class);
@@ -200,6 +179,14 @@ class IconBrowserServiceProvider extends PackageServiceProvider
             'web',
             'ichava.validate',
         ]);
+
+        // Inertia routes (React pages via Inertia.js). Same `web` foundation
+        // plus the shared-props middleware; validation keeps the prefix check.
+        $router->middlewareGroup('ichava.inertia', [
+            'web',
+            'ichava.handle-inertia',
+            'ichava.validate',
+        ]);
     }
 
     /**
@@ -228,11 +215,17 @@ class IconBrowserServiceProvider extends PackageServiceProvider
         $router = $this->app['router'];
         $webRouteFile = $this->package->basePath('routes/web.php');
         $apiRouteFile = $this->package->basePath('routes/api.php');
+        $inertiaRouteFile = $this->package->basePath('routes/inertia.php');
 
         foreach ((array) $domains as $domain) {
             if ($domain !== '') {
                 $router->domain($domain)->group($webRouteFile);
-                $router->domain($domain)->group($apiRouteFile);
+                if (config('ichava.icon-browser.api.enabled', false)) {
+                    $router->domain($domain)->group($apiRouteFile);
+                }
+                if (config('ichava.icon-browser.inertia.enabled', true)) {
+                    $router->domain($domain)->group($inertiaRouteFile);
+                }
             }
         }
     }
