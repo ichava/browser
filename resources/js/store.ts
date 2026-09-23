@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist, type PersistStorage } from 'zustand/middleware';
 import type { CopyFormat, SizeUnit, SortKey, SortOrder, Theme, Treatment, Scale, Density } from '@js/core/types';
-import type { Catalog } from '@js/core/IconRepository';
-import type { Filters, IconId } from '@js/core/model';
+import type { Catalog, CategoryGroup } from '@js/core/IconRepository';
+import type { Filters, IconId, PageResult } from '@js/core/model';
 import type { ListParams } from '@js/core/api/ApiClient';
 import type { AppConfig } from '@js/core/config';
 import { DEFAULT_FILTERS, DEFAULT_APPEARANCE, DEFAULT_RENDER, DEFAULT_COLLECTIONS, HISTORY_CAP } from '@js/core/defaults';
@@ -106,6 +106,19 @@ export interface BrowserStore {
   setFiltersData: (f: Filters) => void;
   setConfig: (c: AppConfig) => void;
   setActiveWorkspace: (id: string) => void;
+
+  /**
+   * Server-driven listing state (Inertia pages).
+   *
+   * The loaded catalog holds one server page of icons; these slices carry
+   * the corpus-wide truth (totals, page counts, full tree) so the footer
+   * and sidebar render server numbers instead of loaded-set numbers.
+   * `useRepo` prefers them whenever set. Null outside Inertia pages.
+   */
+  serverPage: Pick<PageResult, 'total' | 'page' | 'perPage' | 'lastPage' | 'rangeStart' | 'rangeEnd'> | null;
+  serverTree: CategoryGroup[] | null;
+  setServerPage: (p: BrowserStore['serverPage']) => void;
+  setServerTree: (t: CategoryGroup[] | null) => void;
 
   theme: Theme;
   accent: string;
@@ -431,6 +444,11 @@ export function createBrowserStore({ persistKey = CONFIG_DEFAULTS.storageKeys.pe
           };
         }),
       setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
+
+      serverPage: null,
+      serverTree: null,
+      setServerPage: (p) => set({ serverPage: p }),
+      setServerTree: (t) => set({ serverTree: t }),
 
       theme: DEFAULT_APPEARANCE.theme,
       accent: DEFAULT_APPEARANCE.accent,

@@ -58,6 +58,17 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
   write, so session-backed flows (favorites, collections, history, settings) could
   never persist in tests. Each test still gets a fresh session id from its clean
   cookie jar.
+- **Real Inertia pages (Phase 4).** All eleven placeholders now render: the browser
+  mounts the full `<IchavaBrowser>` shell from a `propsToCatalog()`-built catalog
+  with `manageDocument`, the detail page shows preview/meta/snippets/related, and
+  packages, favorites, collections, history, command history, settings and stats get
+  focused content pages reusing `IconAsset`, `Glyph` and the snippet factory. Filter
+  and pagination state syncs both ways with the server query string via
+  `useFilterSync` (loop-guarded, `only:`-scoped reloads, per-page clamped to the
+  server maximum); server totals and the corpus-wide tree override the loaded-set
+  numbers through new ephemeral store slices so footer and sidebar stay honest.
+  Server flash lands in the shell's toast queue (`FlashToasts`) or inline banners
+  (`FlashBanner`) on simple pages. Mutations stay unwired until Phase 5.
 
 ### Changed
 

@@ -16,6 +16,11 @@ export interface IchavaShared {
     routes: {
         browser: string;
         stats: string;
+        packages: string;
+        favorites: string;
+        collections: string;
+        history: string;
+        settings: string;
     };
 }
 
