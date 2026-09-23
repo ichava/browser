@@ -44,6 +44,7 @@ abstract class TestCase extends Orchestra
 
         $this->configureDatabase($app);
         $this->configureCache($app);
+        $this->configureSession($app);
     }
 
     /**
@@ -99,6 +100,21 @@ abstract class TestCase extends Orchestra
                 'foreign_key_constraints' => true,
             ],
         });
+    }
+
+    /**
+     * Use file sessions so the session-backed preference flows (favorites,
+     * collections, history, settings) persist across requests in a test.
+     * Core's HostCapabilities treats the `array` driver as unavailable and
+     * the session manager then silently no-ops every write. Each test gets
+     * a fresh session id from its clean cookie jar, so files never leak
+     * state between tests.
+     *
+     * @param Application $app
+     */
+    protected function configureSession($app): void
+    {
+        $app['config']->set('session.driver', 'file');
     }
 
     /**

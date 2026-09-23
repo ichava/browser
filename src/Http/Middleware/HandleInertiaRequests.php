@@ -35,8 +35,8 @@ final class HandleInertiaRequests extends Middleware
                 'perPage'      => (int) config('ichava.icon-browser.browser.per_page', 24),
                 'defaultTheme' => config('ichava.icon-browser.browser.default_theme', 'light'),
                 'routes'       => [
-                    'browser' => route('ichava.browser'),
-                    'stats'   => route('ichava.stats'),
+                    'browser' => route('ichava.inertia.browser'),
+                    'stats'   => route('ichava.inertia.stats'),
                 ],
             ],
         ]);

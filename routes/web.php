@@ -3,15 +3,17 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Simtabi\Laranail\Ichava\IconBrowser\Http\Controllers\Web\IconBrowserController;
 
 /*
 |--------------------------------------------------------------------------
 | Ichava Web Routes
 |--------------------------------------------------------------------------
 |
-| Web routes for the Ichava icon browser interface.
-| These routes return HTML views and handle web-triggered cache operations.
+| Legacy Vue SPA mount points used to live here. They were cut over to the
+| Inertia.js pages in `routes/inertia.php`: Laravel overwrites routes that
+| share a method and URI, so the two generations cannot stay mounted on
+| the same URLs. The Vue views and controllers remain on disk until
+| Phase 6 removes them; they are simply unreachable over HTTP now.
 |
 | Middleware: 'ichava.web' (includes web + validation)
 | Prefix: /ichava
@@ -23,31 +25,7 @@ Route::prefix(config('ichava.core.prefix', 'ichava'))
     ->name('ichava.')
     ->group(function () {
 
-        // Redirect bare /{prefix} to the canonical browser URL.
+        // Redirect bare /{prefix} to the canonical (Inertia) browser URL.
         Route::redirect('/', '/' . config('ichava.core.prefix', 'ichava') . '/icons')
             ->name('home');
-
-        // Browser UI. Route name kept as `browser` so views/layouts that call
-        // route('ichava.browser') keep resolving.
-        Route::get('/icons', [IconBrowserController::class, 'index'])
-            ->name('browser');
-
-        Route::get('/stats', [IconBrowserController::class, 'stats'])
-            ->name('stats');
-
-        // =====================================================================
-        // WEB CACHE MANAGEMENT (returns redirects)
-        // =====================================================================
-        // Same gate as the JSON API. These call the identical services, so leaving the
-        // web pair open would make the API's authorization a formality -- an attacker
-        // would simply post to the HTML route instead.
-        Route::prefix('cache')
-            ->name('cache.')
-            ->middleware('ichava.cache-admin')
-            ->group(function () {
-                Route::post('/clear', [IconBrowserController::class, 'clearCache'])
-                    ->name('clear');
-                Route::post('/rebuild', [IconBrowserController::class, 'rebuildCache'])
-                    ->name('rebuild');
-            });
     });
