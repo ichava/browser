@@ -36,9 +36,7 @@ final class CommandHistoryController extends BaseInertiaController
 
             $props = ['commands' => $history, 'count' => count($history)];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia command history', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia command history', $e);
 
             $props = ['commands' => [], 'count' => 0];
         }

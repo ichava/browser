@@ -395,7 +395,7 @@ function IchavaBrowserInner({
   return (
     <TooltipProvider>
     <div
-      className={theme === 'dark' ? 'dark-mode' : undefined}
+      className={theme === 'dark' ? 'dark-mode flex min-h-dvh flex-1 flex-col' : 'flex min-h-dvh flex-1 flex-col'}
       style={rootStyle}
       data-app="ichava-browser"
       data-ichava-root=""

@@ -13,6 +13,7 @@
         $viteHost = config('ichava.icon-browser.vite.host', 'localhost');
         $vitePort = config('ichava.icon-browser.vite.port', 5174);
         $viteBase = "http://{$viteHost}:{$vitePort}";
+        $viteClient = "{$viteBase}/@vite/client";
     @endphp
 
     @if($viteDev)
@@ -23,16 +24,22 @@
             window.$RefreshSig$ = () => (type) => type;
             window.__vite_plugin_react_preamble_installed__ = true;
         </script>
-        <script type="module" src="{{ $viteBase }}/@vite/client"></script>
+        <script type="module" src="{{ $viteClient }}"></script>
         <script type="module" src="{{ $viteBase }}/resources/js/app.tsx"></script>
     @else
         <link rel="stylesheet" href="{{ asset('vendor/ichava/assets/css/inertia-app.css') }}?v={{ Helpers::assetVersion('vendor/ichava/assets/css/inertia-app.css') }}">
     @endif
 
     @inertiaHead
+
+    <style>
+        #app { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 100dvh; }
+    </style>
 </head>
 <body class="antialiased h-full bg-white text-gray-900 dark:bg-[#0a0d1a] dark:text-gray-100">
-    @inertia
+    <div class="flex min-h-dvh flex-col">
+        @inertia
+    </div>
 
     @if(! $viteDev)
         <script src="{{ asset('vendor/ichava/assets/js/inertia-app.js') }}?v={{ Helpers::assetVersion('vendor/ichava/assets/js/inertia-app.js') }}" type="module"></script>

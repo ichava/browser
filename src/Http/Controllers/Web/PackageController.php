@@ -32,9 +32,7 @@ final class PackageController extends BaseInertiaController
         try {
             $packages = $this->browserService->getFilters()['packages'] ?? [];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia packages', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia packages', $e);
 
             $packages = [];
         }

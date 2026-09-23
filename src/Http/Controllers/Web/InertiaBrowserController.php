@@ -87,9 +87,7 @@ final class InertiaBrowserController extends BaseInertiaController
                 'commandHistory' => $this->preferenceService->getCommandHistory(),
             ];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia browser data', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia browser data', $e);
 
             $props = [
                 'icons'      => [],
@@ -216,9 +214,7 @@ final class InertiaBrowserController extends BaseInertiaController
                 'updateStatus'  => $this->updateChecker->checkAll(),
             ];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia statistics', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia statistics', $e);
 
             $props = [
                 'statistics' => [

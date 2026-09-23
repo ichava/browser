@@ -48,9 +48,7 @@ final class HistoryController extends BaseInertiaController
 
             $props = ['history' => $history, 'count' => count($history)];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia history', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia history', $e);
 
             $props = ['history' => [], 'count' => 0];
         }

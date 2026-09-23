@@ -36,9 +36,7 @@ final class CacheController extends BaseInertiaController
                 ->back()
                 ->with('success', 'Ichava icon cache cleared successfully.');
         } catch (IchavaException $e) {
-            $this->logger->error('Failed to clear cache from Inertia page', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to clear cache from Inertia page', $e);
 
             return redirect()
                 ->back()
@@ -61,9 +59,7 @@ final class CacheController extends BaseInertiaController
                 ->back()
                 ->with('success', 'Icon cache rebuilt successfully. Preferences have been reset.');
         } catch (IchavaException $e) {
-            $this->logger->error('Failed to rebuild cache from Inertia page', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to rebuild cache from Inertia page', $e);
 
             return redirect()
                 ->back()

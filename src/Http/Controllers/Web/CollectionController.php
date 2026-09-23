@@ -34,9 +34,7 @@ final class CollectionController extends BaseInertiaController
         try {
             $props = ['collections' => $this->collectionsWithIcons()];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia collections', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia collections', $e);
 
             $props = ['collections' => []];
         }

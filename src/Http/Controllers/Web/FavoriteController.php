@@ -39,9 +39,7 @@ final class FavoriteController extends BaseInertiaController
                 'count' => count($favoriteIds),
             ];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia favorites', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia favorites', $e);
 
             $props = ['ids' => [], 'icons' => [], 'count' => 0];
         }

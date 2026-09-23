@@ -37,9 +37,7 @@ final class SettingsController extends BaseInertiaController
 
             $props = ['preferences' => $validated];
         } catch (Exception $e) {
-            $this->logger->error('Failed to load Inertia settings', [
-                'exception' => $e,
-            ]);
+            $this->logger->error('Failed to load Inertia settings', $e);
 
             $props = ['preferences' => []];
         }
