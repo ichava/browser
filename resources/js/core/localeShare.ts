@@ -1,5 +1,5 @@
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { DEFAULT_LOCALE, LOCALES, type Locale } from '@js/core/i18n';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { DEFAULT_LOCALE, LOCALES, type Locale } from '@/core/i18n';
 
 // A single localStorage key (`ichava.locale`) shared by the app store and the
 // standalone landing bundle, so switching the language in either surface carries

@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import type { Icon } from '@js/core/model';
+import { IconAsset } from '@/components/ui/IconAsset';
+import type { Icon } from '@/core/model';
 
 /**
  * Simple read-only icon grid for library pages (favorites, collections,

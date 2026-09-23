@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react';
-import { IconRepository } from '@js/core/IconRepository';
-import type { CategoryGroup } from '@js/core/IconRepository';
-import type { PageResult, Icon } from '@js/core/model';
-import { toListParams } from '@js/store';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { IconRepository } from '@/core/IconRepository';
+import type { CategoryGroup } from '@/core/IconRepository';
+import type { PageResult, Icon } from '@/core/model';
+import { toListParams } from '@/store';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * The single derived-data boundary.

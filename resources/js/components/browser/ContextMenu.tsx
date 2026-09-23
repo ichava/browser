@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * ContextMenu — a REUSABLE, data-driven context menu (plan Part D). Renders whatever

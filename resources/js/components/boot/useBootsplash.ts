@@ -6,7 +6,7 @@
 // tested without fake-timer choreography; this file owns the timers and wires
 // their output into that math.
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { mergeConfig } from '@js/core/config';
+import { mergeConfig } from '@/core/config';
 import { BOOT_DEFAULTS, type BootConfig } from './bootsplashConfig';
 import { advanceTasks, progressCurve, type NodeStatus } from './bootsplashEngine';
 

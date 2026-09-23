@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { useCopy } from '@js/hooks/useClipboard';
-import { Input } from '@js/components/base/input/input';
-import { Modal } from '@js/components/ui/Modal';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { useCopy } from '@/hooks/useClipboard';
+import { Input } from '@/components/base/input/input';
+import { Modal } from '@/components/ui/Modal';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const EXPIRIES = [{ v: '24h', k: 'invite.exp24h' }, { v: '7 days', k: 'invite.exp7d' }, { v: '30 days', k: 'invite.exp30d' }, { v: 'Never', k: 'invite.expNever' }];
 

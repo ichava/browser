@@ -31,6 +31,11 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
 - **Test coverage.** `assertInertia` tests per controller; the moved JS tests run in
   this package's vitest with the `@testing-library` stack; the harness uses file
   sessions so session-backed flows persist across requests in a test.
+- **Vue SPA and parallel-run React removed.** The Vue single-page app, the
+  standalone React entry with its `?ui=react` flag, the legacy Blade views and
+  controllers, and the checked-in Vue bundles are gone; the JSON API is untouched.
+  The npm tree drops the Vue ecosystem and resolves a single `@` alias to
+  `resources/js/`.
 
 ### Changed
 

@@ -23,8 +23,6 @@ use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\ValidateIchavaRoute;
 use Simtabi\Laranail\Ichava\IconBrowser\Http\Middleware\HandleInertiaRequests;
 use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaUiIconComponent;
 use Simtabi\Laranail\Ichava\IconBrowser\View\Components\IchavaTestIconComponent;
-use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\App as AppLayout;
-use Simtabi\Laranail\Ichava\IconBrowser\View\Components\Layouts\Browser as BrowserLayout;
 
 /**
  * Visual icon browser for the Ichava ecosystem.
@@ -96,17 +94,6 @@ class IconBrowserServiceProvider extends PackageServiceProvider
             'ichava::sri-asset',
             SriAsset::class,
         );
-
-        // Anonymous Blade components (views without PHP classes) under the
-        // shared `ichava::` namespace.
-        Blade::anonymousComponentPath(
-            $this->package->basePath('resources/views/components'),
-            'ichava',
-        );
-
-        // Class-based layout components.
-        Blade::component('ichava::layouts.app', AppLayout::class);
-        Blade::component('ichava::layouts.browser', BrowserLayout::class);
 
         // Publish the Vite-built browser SPA dist (CSS/JS) into the host's
         // public/vendor/ichava/ namespace. The asset HTTP path stays under

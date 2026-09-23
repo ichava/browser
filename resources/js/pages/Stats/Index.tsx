@@ -1,7 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import { FlashBanner } from '@js/components/FlashBanner';
-import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
-import type { SharedProps } from '@js/types';
+import { FlashBanner } from '@/components/FlashBanner';
+import { useInertiaMutations } from '@/hooks/useInertiaMutations';
+import type { SharedProps } from '@/types';
 
 interface PackageStat {
   name: string;

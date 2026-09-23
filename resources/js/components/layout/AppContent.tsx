@@ -1,20 +1,20 @@
 import { useRef } from 'react';
 
-import { useRepo } from '@js/hooks/useRepo';
-import { useCopy } from '@js/hooks/useClipboard';
-import { useT } from '@js/hooks/useT';
-import { Button } from '@js/components/base/buttons/button';
-import { IconTile } from '@js/components/browser/IconTile';
-import { VirtualGrid } from '@js/components/browser/VirtualGrid';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { Glyph } from '@js/components/ui/Glyph';
-import { snippets } from '@js/core/SnippetFactory';
-import { getSvgParts } from '@js/core/svgCache';
-import { densityMetrics, tileMinWidth } from '@js/core/appScale';
-import type { Icon } from '@js/core/model';
-import type { CopyFormat } from '@js/core/types';
-import { useAppStore } from '@js/hooks/useStoreApi';
-import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
+import { useRepo } from '@/hooks/useRepo';
+import { useCopy } from '@/hooks/useClipboard';
+import { useT } from '@/hooks/useT';
+import { Button } from '@/components/base/buttons/button';
+import { IconTile } from '@/components/browser/IconTile';
+import { VirtualGrid } from '@/components/browser/VirtualGrid';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { Glyph } from '@/components/ui/Glyph';
+import { snippets } from '@/core/SnippetFactory';
+import { getSvgParts } from '@/core/svgCache';
+import { densityMetrics, tileMinWidth } from '@/core/appScale';
+import type { Icon } from '@/core/model';
+import type { CopyFormat } from '@/core/types';
+import { useAppStore } from '@/hooks/useStoreApi';
+import { useInertiaMutations } from '@/hooks/useInertiaMutations';
 
 // Build a copy payload, fetching the real SVG body for the "svg" format so it is
 // never an empty placeholder (multicolor icons keep their fills). Shared shape

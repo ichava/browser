@@ -1,5 +1,5 @@
-import type { Icon } from '@js/core/model';
-import type { Catalog } from '@js/core/IconRepository';
+import type { Icon } from '@/core/model';
+import type { Catalog } from '@/core/IconRepository';
 
 export function mkIcon(p: Partial<Icon> & { id: number; name: string }): Icon {
   return {

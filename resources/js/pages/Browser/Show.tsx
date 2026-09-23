@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { Glyph } from '@js/components/ui/Glyph';
-import { FlashBanner } from '@js/components/FlashBanner';
-import { useCopy } from '@js/hooks/useClipboard';
-import { normalizeRawIcon } from '@js/core/propsToCatalog';
-import { toIcon, type RawIcon } from '@js/core/model';
-import { snippets, SNIPPET_TABS, type SnippetFormat } from '@js/core/SnippetFactory';
-import type { SharedProps } from '@js/types';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { Glyph } from '@/components/ui/Glyph';
+import { FlashBanner } from '@/components/FlashBanner';
+import { useCopy } from '@/hooks/useClipboard';
+import { normalizeRawIcon } from '@/core/propsToCatalog';
+import { toIcon, type RawIcon } from '@/core/model';
+import { snippets, SNIPPET_TABS, type SnippetFormat } from '@/core/SnippetFactory';
+import type { SharedProps } from '@/types';
 
 interface BrowserShowProps extends SharedProps {
   icon: RawIcon | null;

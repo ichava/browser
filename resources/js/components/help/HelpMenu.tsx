@@ -1,10 +1,10 @@
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { iconBtn, menuItem } from '@js/components/ui/controls';
-import { modKey } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { iconBtn, menuItem } from '@/components/ui/controls';
+import { modKey } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * HelpMenu — the header "info" button as a dropdown (plan Part A): About Ichava /

@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
 import { Glyph } from './Glyph';
-import { useT } from '@js/hooks/useT';
+import { useT } from '@/hooks/useT';
 
 /**
  * Console — a terminal-styled code surface: traffic-light chrome, a line-number

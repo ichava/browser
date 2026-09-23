@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { useStore as defaultStore, type BrowserStoreHook } from '@js/store';
+import { useStore as defaultStore, type BrowserStoreHook } from '@/store';
 
 /**
  * Per-mount store plumbing.

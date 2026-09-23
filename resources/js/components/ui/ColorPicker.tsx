@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Input } from '@js/components/base/input/input';
-import { hslToHex, isValidHex, hexWithAlpha } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
+import { Input } from '@/components/base/input/input';
+import { hslToHex, isValidHex, hexWithAlpha } from '@/core/format';
+import { useT } from '@/hooks/useT';
 
 const SWATCHES = ['#09090b', '#71717a', '#7c3aed', '#2563eb', '#059669', '#e11d48', '#ea580c', '#0891b2'];
 

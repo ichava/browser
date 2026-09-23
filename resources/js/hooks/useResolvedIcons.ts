@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { Icon, IconId } from '@js/core/model';
-import { useRepo } from '@js/hooks/useRepo';
+import type { Icon, IconId } from '@/core/model';
+import { useRepo } from '@/hooks/useRepo';
 
 /**
  * Resolve saved icon ids (favorites, history, collections, selection) back

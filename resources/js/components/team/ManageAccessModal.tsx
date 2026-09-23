@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { useCopy } from '@js/hooks/useClipboard';
+import { useCopy } from '@/hooks/useClipboard';
 import { SearchMd } from '@untitledui/icons';
-import { Input } from '@js/components/base/input/input';
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { useT } from '@js/hooks/useT';
-import type { TeamRef } from '@js/store';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Input } from '@/components/base/input/input';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { useT } from '@/hooks/useT';
+import type { TeamRef } from '@/store';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const PALETTE = ['#7c3aed', '#0891b2', '#059669', '#e11d48', '#ea580c'];
 

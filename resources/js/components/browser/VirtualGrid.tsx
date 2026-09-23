@@ -2,9 +2,9 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { IconTile } from './IconTile';
 
-import { densityMetrics, tileMinWidth } from '@js/core/appScale';
-import type { Icon } from '@js/core/model';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { densityMetrics, tileMinWidth } from '@/core/appScale';
+import type { Icon } from '@/core/model';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * VirtualGrid — row-windowed grid for large pages (plan P5). Only rows in view are

@@ -2,7 +2,7 @@ import type { DOMAttributes, ReactElement, ReactNode } from 'react';
 import type { FocusableElement } from '@react-types/shared';
 import { Focusable } from 'react-aria-components';
 
-import { Tooltip as UuiTooltip } from '@js/components/base/tooltip/tooltip';
+import { Tooltip as UuiTooltip } from '@/components/base/tooltip/tooltip';
 
 /**
  * Tooltip — the app's tooltip, on Untitled UI.

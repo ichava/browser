@@ -6,7 +6,7 @@ import {
   Package, Palette, PauseCircle, PlayCircle, Plus, RefreshCw01, SearchMd, Settings01,
   Sliders01, Stars01, Sun, Trash01, Type01, X, Zap,
 } from '@untitledui/icons';
-import { assetUrl } from '@js/core/SvgFidelity';
+import { assetUrl } from '@/core/SvgFidelity';
 
 type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 

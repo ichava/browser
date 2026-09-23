@@ -1,6 +1,6 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { FlashBanner } from '@js/components/FlashBanner';
-import type { SharedProps } from '@js/types';
+import { FlashBanner } from '@/components/FlashBanner';
+import type { SharedProps } from '@/types';
 
 interface PreferenceGroups {
   preferences?: { view_mode?: string; icon_size?: number; per_page?: number };

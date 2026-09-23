@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /** How long a toast stays up before dismissing itself. */
 const DWELL_MS = 3200;

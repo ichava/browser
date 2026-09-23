@@ -1,12 +1,12 @@
 
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Select } from '@js/components/base/select/select';
-import { Button } from '@js/components/base/buttons/button';
-import { useT } from '@js/hooks/useT';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import type { CopyFormat } from '@js/core/types';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { Select } from '@/components/base/select/select';
+import { Button } from '@/components/base/buttons/button';
+import { useT } from '@/hooks/useT';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import type { CopyFormat } from '@/core/types';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 export function SettingsDialog() {
   const t = useT();

@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import type { FlashMessages } from '@js/types';
+import type { FlashMessages } from '@/types';
 
 /**
  * Inline flash banners for simple (non-shell) pages, which mount no

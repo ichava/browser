@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IconRepository } from './IconRepository';
-import { catalog, mkIcon } from '@js/test/fixtures';
+import { catalog, mkIcon } from '@/test/fixtures';
 import type { Catalog } from './IconRepository';
 
 const repo = new IconRepository(catalog);

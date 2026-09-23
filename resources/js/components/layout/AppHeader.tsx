@@ -1,20 +1,20 @@
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { AppearancePopover } from '@js/components/appearance/AppearancePopover';
-import { LanguagePopover } from '@js/components/layout/LanguagePopover';
-import { TeamPopover } from '@js/components/layout/TeamPopover';
-import { AccountMenu } from '@js/components/auth/AccountMenu';
-import { NotificationsPopover } from '@js/components/notifications/NotificationsPopover';
-import { HelpMenu } from '@js/components/help/HelpMenu';
-import { iconBtn } from '@js/components/ui/controls';
-import { Button } from '@js/components/base/buttons/button';
-import { Tooltip } from '@js/components/ui/Tooltip';
-import { modKey } from '@js/core/format';
-import { isDevToolsAvailable } from '@js/core/env';
-import { useT } from '@js/hooks/useT';
-import { useFullscreen } from '@js/hooks/useFullscreen';
-import { rem } from '@js/core/appScale';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { AppearancePopover } from '@/components/appearance/AppearancePopover';
+import { LanguagePopover } from '@/components/layout/LanguagePopover';
+import { TeamPopover } from '@/components/layout/TeamPopover';
+import { AccountMenu } from '@/components/auth/AccountMenu';
+import { NotificationsPopover } from '@/components/notifications/NotificationsPopover';
+import { HelpMenu } from '@/components/help/HelpMenu';
+import { iconBtn } from '@/components/ui/controls';
+import { Button } from '@/components/base/buttons/button';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { modKey } from '@/core/format';
+import { isDevToolsAvailable } from '@/core/env';
+import { useT } from '@/hooks/useT';
+import { useFullscreen } from '@/hooks/useFullscreen';
+import { rem } from '@/core/appScale';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /** Top bar: brand, command trigger, view toggle, library shortcuts, appearance, theme, settings, account. */
 export function AppHeader() {

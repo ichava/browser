@@ -9,8 +9,8 @@ import {
   type TreeItemProps as AriaTreeItemProps,
 } from 'react-aria-components';
 
-import { Checkbox } from '@js/components/base/checkbox/checkbox';
-import { cx } from '@js/lib/utils/cx';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
+import { cx } from '@/lib/utils/cx';
 
 /**
  * TreeView — Untitled UI's tree, on react-aria's `Tree` primitives.

@@ -1,23 +1,23 @@
 import { useMemo } from 'react';
 
-import { useRepo } from '@js/hooks/useRepo';
-import { useCopy } from '@js/hooks/useClipboard';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { ColorPicker } from '@js/components/ui/ColorPicker';
+import { useRepo } from '@/hooks/useRepo';
+import { useCopy } from '@/hooks/useClipboard';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { ColorPicker } from '@/components/ui/ColorPicker';
 import { Stars01 as SparkleIcon } from '@untitledui/icons';
-import { Select } from '@js/components/base/select/select';
-import { toolBtn, menuItem } from '@js/components/ui/controls';
-import { num, modKey } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { iconRef } from '@js/core/SnippetFactory';
-import { exporter, type ExportFormat } from '@js/core/ExportService';
-import type { Icon } from '@js/core/model';
-import type { SortKey, Treatment, SizeUnit } from '@js/core/types';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { rem } from '@js/core/appScale';
-import { useAppStore } from '@js/hooks/useStoreApi';
-import { Slider } from '@js/components/base/slider/slider';
+import { Select } from '@/components/base/select/select';
+import { toolBtn, menuItem } from '@/components/ui/controls';
+import { num, modKey } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { iconRef } from '@/core/SnippetFactory';
+import { exporter, type ExportFormat } from '@/core/ExportService';
+import type { Icon } from '@/core/model';
+import type { SortKey, Treatment, SizeUnit } from '@/core/types';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { rem } from '@/core/appScale';
+import { useAppStore } from '@/hooks/useStoreApi';
+import { Slider } from '@/components/base/slider/slider';
 
 // Option lists come from config (CONFIG_DEFAULTS fallback) — no hardcoding.
 const EXPORTS = CONFIG_DEFAULTS.toolbar.exportFormats as { id: ExportFormat; label: string; desc: string; icon?: string }[];

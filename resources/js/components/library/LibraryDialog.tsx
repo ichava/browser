@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-import { useResolvedIcons } from '@js/hooks/useResolvedIcons';
-import { useCopy } from '@js/hooks/useClipboard';
-import { Input } from '@js/components/base/input/input';
-import { Form } from '@js/components/base/form/form';
-import { Modal } from '@js/components/ui/Modal';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { Glyph } from '@js/components/ui/Glyph';
-import { relativeTime } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { iconRef } from '@js/core/SnippetFactory';
-import type { LibTab, Collection } from '@js/store';
-import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
-import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
+import { useResolvedIcons } from '@/hooks/useResolvedIcons';
+import { useCopy } from '@/hooks/useClipboard';
+import { Input } from '@/components/base/input/input';
+import { Form } from '@/components/base/form/form';
+import { Modal } from '@/components/ui/Modal';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { Glyph } from '@/components/ui/Glyph';
+import { relativeTime } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { iconRef } from '@/core/SnippetFactory';
+import type { LibTab, Collection } from '@/store';
+import { useAppStore, useStoreApi } from '@/hooks/useStoreApi';
+import { useInertiaMutations } from '@/hooks/useInertiaMutations';
 
 const TABS: { id: LibTab; key: string }[] = [
   { id: 'favorites', key: 'library.favorites' },

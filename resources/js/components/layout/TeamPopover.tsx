@@ -1,7 +1,7 @@
 
-import { Popover } from '@js/components/ui/Popover';
-import { useT } from '@js/hooks/useT';
-import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { Popover } from '@/components/ui/Popover';
+import { useT } from '@/hooks/useT';
+import { useAppStore, useStoreApi } from '@/hooks/useStoreApi';
 
 const avatarBase: React.CSSProperties = {
   width: 22,

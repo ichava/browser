@@ -1,17 +1,17 @@
 import { usePage } from '@inertiajs/react';
-import { IchavaBrowser } from '@js/IchavaBrowser';
-import { FlashToasts } from '@js/components/FlashToasts';
+import { IchavaBrowser } from '@/IchavaBrowser';
+import { FlashToasts } from '@/components/FlashToasts';
 import {
   useInertiaCatalog,
   type ServerCollection,
   type ServerHistoryEntry,
   type ServerPagination,
-} from '@js/hooks/useInertiaCatalog';
-import { useFilterSync, type AppliedFilters } from '@js/hooks/useFilterSync';
-import type { ServerIcon, ServerPackage } from '@js/core/propsToCatalog';
-import type { CategoryGroup } from '@js/core/IconRepository';
-import type { IconId } from '@js/core/model';
-import type { SharedProps } from '@js/types';
+} from '@/hooks/useInertiaCatalog';
+import { useFilterSync, type AppliedFilters } from '@/hooks/useFilterSync';
+import type { ServerIcon, ServerPackage } from '@/core/propsToCatalog';
+import type { CategoryGroup } from '@/core/IconRepository';
+import type { IconId } from '@/core/model';
+import type { SharedProps } from '@/types';
 
 interface BrowserIndexProps extends SharedProps {
   icons: ServerIcon[];

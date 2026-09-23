@@ -11,7 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 async function fresh() {
   vi.resetModules();
   localStorage.clear();
-  return import('@js/store');
+  return import('@/store');
 }
 
 beforeEach(() => {

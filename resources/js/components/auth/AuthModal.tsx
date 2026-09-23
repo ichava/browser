@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Input } from '@js/components/base/input/input';
-import { Form } from '@js/components/base/form/form';
-import { useT } from '@js/hooks/useT';
-import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { Input } from '@/components/base/input/input';
+import { Form } from '@/components/base/form/form';
+import { useT } from '@/hooks/useT';
+import { useAppStore, useStoreApi } from '@/hooks/useStoreApi';
 
 /**
  * AuthModal — the frontend DEMO auth flow (plan Part B): sign-in via a one-time

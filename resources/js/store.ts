@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 import { persist, type PersistStorage } from 'zustand/middleware';
-import type { CopyFormat, SizeUnit, SortKey, SortOrder, Theme, Treatment, Scale, Density } from '@js/core/types';
-import type { Catalog, CategoryGroup } from '@js/core/IconRepository';
-import type { Filters, IconId, PageResult } from '@js/core/model';
-import type { ListParams } from '@js/core/api/ApiClient';
-import type { AppConfig } from '@js/core/config';
-import { DEFAULT_FILTERS, DEFAULT_APPEARANCE, DEFAULT_RENDER, DEFAULT_COLLECTIONS, HISTORY_CAP } from '@js/core/defaults';
-import { devbus } from '@js/core/devbus';
-import { driverStorage, switchDriver, getDriver, HAD_PERSISTED_STATE, type StorageDriver } from '@js/core/storage';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { NOTIFICATION_SEED } from '@js/core/notifications';
-import { type Locale } from '@js/core/i18n';
-import { loadSharedLocale, saveSharedLocale } from '@js/core/localeShare';
+import type { CopyFormat, SizeUnit, SortKey, SortOrder, Theme, Treatment, Scale, Density } from '@/core/types';
+import type { Catalog, CategoryGroup } from '@/core/IconRepository';
+import type { Filters, IconId, PageResult } from '@/core/model';
+import type { ListParams } from '@/core/api/ApiClient';
+import type { AppConfig } from '@/core/config';
+import { DEFAULT_FILTERS, DEFAULT_APPEARANCE, DEFAULT_RENDER, DEFAULT_COLLECTIONS, HISTORY_CAP } from '@/core/defaults';
+import { devbus } from '@/core/devbus';
+import { driverStorage, switchDriver, getDriver, HAD_PERSISTED_STATE, type StorageDriver } from '@/core/storage';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { NOTIFICATION_SEED } from '@/core/notifications';
+import { type Locale } from '@/core/i18n';
+import { loadSharedLocale, saveSharedLocale } from '@/core/localeShare';
 
 export type { Locale };
 

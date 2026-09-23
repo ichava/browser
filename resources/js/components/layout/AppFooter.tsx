@@ -1,12 +1,12 @@
 
-import { useRepo } from '@js/hooks/useRepo';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Select } from '@js/components/base/select/select';
-import { Tooltip } from '@js/components/ui/Tooltip';
-import { num } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { rem } from '@js/core/appScale';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { useRepo } from '@/hooks/useRepo';
+import { Glyph } from '@/components/ui/Glyph';
+import { Select } from '@/components/base/select/select';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { num } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { rem } from '@/core/appScale';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const PER_PAGE_FALLBACK = [30, 60, 120, 240];
 

@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { X } from '@untitledui/icons';
 import { Button as AriaButton } from 'react-aria-components';
 
-import { Dialog, Modal as UuiModal, ModalOverlay } from '@js/components/application/modals/modal';
+import { Dialog, Modal as UuiModal, ModalOverlay } from '@/components/application/modals/modal';
 
 /**
  * Modal — overlay + centred panel, on Untitled UI.

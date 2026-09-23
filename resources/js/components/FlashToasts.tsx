@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { usePage } from '@inertiajs/react';
-import { useStore } from '@js/store';
-import type { FlashMessages } from '@js/types';
+import { useStore } from '@/store';
+import type { FlashMessages } from '@/types';
 
 /**
  * Bridge server flash messages into the store toast queue (rendered by the

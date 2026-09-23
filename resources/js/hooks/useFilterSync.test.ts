@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toQueryParams } from './useFilterSync';
-import type { FilterState } from '@js/store';
+import type { FilterState } from '@/store';
 
 const base = (overrides: Partial<FilterState> = {}): FilterState =>
   ({

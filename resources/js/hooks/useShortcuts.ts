@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { toListParams } from '@js/store';
-import { IconRepository } from '@js/core/IconRepository';
-import { useStoreApi } from '@js/hooks/useStoreApi';
+import { toListParams } from '@/store';
+import { IconRepository } from '@/core/IconRepository';
+import { useStoreApi } from '@/hooks/useStoreApi';
 
 /**
  * Platform-aware keyboard shortcuts, ported 1:1 from the mockup behavior spec:

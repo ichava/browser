@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type DevToolsTab, type DevToolsEvent } from '@js/store';
-import { useCopy } from '@js/hooks/useClipboard';
-import { Glyph } from '@js/components/ui/Glyph';
-import { devbus } from '@js/core/devbus';
-import { logger, type LogEntry } from '@js/core/logger';
-import { getDriver, clearPersisted, PERSIST_KEY } from '@js/core/storage';
-import { runRegression, type TestResult } from '@js/components/devtools/regression';
-import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { type DevToolsTab, type DevToolsEvent } from '@/store';
+import { useCopy } from '@/hooks/useClipboard';
+import { Glyph } from '@/components/ui/Glyph';
+import { devbus } from '@/core/devbus';
+import { logger, type LogEntry } from '@/core/logger';
+import { getDriver, clearPersisted, PERSIST_KEY } from '@/core/storage';
+import { runRegression, type TestResult } from '@/components/devtools/regression';
+import { useAppStore, useStoreApi } from '@/hooks/useStoreApi';
 
 const TABS: { id: DevToolsTab; label: string }[] = [
   { id: 'events', label: 'Events' },

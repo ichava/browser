@@ -1,14 +1,14 @@
 
-import { useResolvedIcons } from '@js/hooks/useResolvedIcons';
-import { useCopy } from '@js/hooks/useClipboard';
-import { useT } from '@js/hooks/useT';
-import { Modal } from '@js/components/ui/Modal';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { Glyph } from '@js/components/ui/Glyph';
-import { iconRef } from '@js/core/SnippetFactory';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { useAppStore } from '@js/hooks/useStoreApi';
-import type { Collection } from '@js/store';
+import { useResolvedIcons } from '@/hooks/useResolvedIcons';
+import { useCopy } from '@/hooks/useClipboard';
+import { useT } from '@/hooks/useT';
+import { Modal } from '@/components/ui/Modal';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { Glyph } from '@/components/ui/Glyph';
+import { iconRef } from '@/core/SnippetFactory';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { useAppStore } from '@/hooks/useStoreApi';
+import type { Collection } from '@/store';
 
 const rowBtn: React.CSSProperties = {
   height: 26,

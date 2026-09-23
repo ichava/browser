@@ -1,8 +1,8 @@
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { Button } from '@js/components/base/buttons/button';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { Button } from '@/components/base/buttons/button';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * ConsentBanner — the "Cookies & storage" notice (plan Part B). Shown until a

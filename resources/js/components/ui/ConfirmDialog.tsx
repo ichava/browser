@@ -1,8 +1,8 @@
 
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * ConfirmDialog — one shared confirmation modal driven by the store's `confirm`

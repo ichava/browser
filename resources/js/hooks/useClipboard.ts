@@ -1,4 +1,4 @@
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /** Copy text with a graceful fallback + a toast, so callers stay one-liners. */
 export function useCopy() {

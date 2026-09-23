@@ -1,16 +1,16 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 
-import { useRepo } from '@js/hooks/useRepo';
-import { Modal } from '@js/components/ui/Modal';
-import { IconAsset } from '@js/components/ui/IconAsset';
+import { useRepo } from '@/hooks/useRepo';
+import { Modal } from '@/components/ui/Modal';
+import { IconAsset } from '@/components/ui/IconAsset';
 import { SearchMd } from '@untitledui/icons';
-import { Glyph } from '@js/components/ui/Glyph';
-import { InputBase } from '@js/components/base/input/input';
-import { modKey } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import type { Icon } from '@js/core/types';
-import { useAppStore, useStoreApi } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { InputBase } from '@/components/base/input/input';
+import { modKey } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import type { Icon } from '@/core/types';
+import { useAppStore, useStoreApi } from '@/hooks/useStoreApi';
 
 interface Action {
   id: string;

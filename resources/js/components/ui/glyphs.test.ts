@@ -54,7 +54,7 @@ function referencedGlyphs(): Map<string, string> {
     // `<Glyph name=…>` only where Glyph is imported; `icon:` fields anywhere, because
     // config, notification seeds and tour steps declare glyph names without rendering
     // them (core/config.ts names `stats` and `cube` for toolbar entries).
-    const importsGlyph = /from ['"](@js\/components\/ui\/Glyph|\.\/Glyph)['"]/.test(text);
+    const importsGlyph = /from ['"](@\/components\/ui\/Glyph|\.\/Glyph)['"]/.test(text);
     for (const holder of importsGlyph ? [glyphName, iconField] : [iconField]) {
       for (const h of text.matchAll(holder)) {
         // In a conditional, read only the BRANCHES. `name={theme === 'dark' ? 'sun' :

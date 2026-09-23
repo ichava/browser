@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useRepo } from '@js/hooks/useRepo';
-import { useT } from '@js/hooks/useT';
+import { useRepo } from '@/hooks/useRepo';
+import { useT } from '@/hooks/useT';
 import { SearchMd } from '@untitledui/icons';
-import { Glyph } from '@js/components/ui/Glyph';
-import { InputBase } from '@js/components/base/input/input';
-import { Checkbox } from '@js/components/base/checkbox/checkbox';
-import { Badge } from '@js/components/base/badges/badges';
+import { Glyph } from '@/components/ui/Glyph';
+import { InputBase } from '@/components/base/input/input';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
+import { Badge } from '@/components/base/badges/badges';
 import { Collection } from 'react-aria-components';
 import { Folder, Package } from '@untitledui/icons';
-import { TreeView } from '@js/components/application/tree-view/tree-view';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { TreeView } from '@/components/application/tree-view/tree-view';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * One row's worth of data.

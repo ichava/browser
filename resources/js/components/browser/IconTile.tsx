@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-import { useCopy } from '@js/hooks/useClipboard';
-import { useT } from '@js/hooks/useT';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { Glyph } from '@js/components/ui/Glyph';
-import { snippets, iconRef } from '@js/core/SnippetFactory';
-import { getSvgParts } from '@js/core/svgCache';
-import type { Icon } from '@js/core/types';
-import { useAppStore } from '@js/hooks/useStoreApi';
-import { useInertiaMutations } from '@js/hooks/useInertiaMutations';
-import { TILE_MIN } from '@js/core/appScale';
+import { useCopy } from '@/hooks/useClipboard';
+import { useT } from '@/hooks/useT';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { Glyph } from '@/components/ui/Glyph';
+import { snippets, iconRef } from '@/core/SnippetFactory';
+import { getSvgParts } from '@/core/svgCache';
+import type { Icon } from '@/core/types';
+import { useAppStore } from '@/hooks/useStoreApi';
+import { useInertiaMutations } from '@/hooks/useInertiaMutations';
+import { TILE_MIN } from '@/core/appScale';
 
 const toolBtn: React.CSSProperties = {
   width: 25,

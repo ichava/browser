@@ -1,9 +1,9 @@
 
-import { useT } from '@js/hooks/useT';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { menuItem } from '@js/components/ui/controls';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { useT } from '@/hooks/useT';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { menuItem } from '@/components/ui/controls';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * AccountMenu — the signed-in avatar + dropdown (plan Part B). Identity is

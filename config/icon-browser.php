@@ -10,25 +10,13 @@ return [
     | Inertia.js frontend
     |--------------------------------------------------------------------------
     | The React 19 UI is served through Inertia.js page components. The
-    | `enabled` flag gates the Inertia routes; when off, only the legacy
-    | Vue SPA and JSON API remain mounted. On by default: Inertia is the
-    | reference frontend going forward.
+    | `enabled` flag gates the Inertia routes; when off, only the JSON API
+    | remains mounted. On by default.
     */
     'inertia' => [
         'enabled'   => env('ICHAVA_INERTIA_ENABLED', true),
         'root_view' => env('ICHAVA_INERTIA_ROOT_VIEW', 'ichava/icon-browser::app'),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | React parallel run (R-P16, legacy)
-    |--------------------------------------------------------------------------
-    | Server-side kill switch for the standalone React 19 SPA, mounted behind
-    | BOTH this flag and the `?ui=react` query string. Superseded by the
-    | Inertia frontend above; kept until the REST API it fronts is removed.
-    | Off by default.
-    */
-    'react_ui_enabled' => env('ICHAVA_REACT_UI', false),
 
     /*
     |--------------------------------------------------------------------------

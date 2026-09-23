@@ -1,9 +1,9 @@
 
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { useT } from '@js/hooks/useT';
-import { TOUR_STEPS } from '@js/components/tour/steps';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { useT } from '@/hooks/useT';
+import { TOUR_STEPS } from '@/components/tour/steps';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * TourModal — the 5-step first-run onboarding (plan Part B). Shown on first load

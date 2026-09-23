@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import { FlashBanner } from '@js/components/FlashBanner';
-import type { SharedProps } from '@js/types';
+import { FlashBanner } from '@/components/FlashBanner';
+import type { SharedProps } from '@/types';
 
 interface CollectionRow {
   id: string;

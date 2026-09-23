@@ -1,6 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
-import type { IconId } from '@js/core/model';
-import type { IchavaShared } from '@js/types';
+import type { IconId } from '@/core/model';
+import type { IchavaShared } from '@/types';
 
 /**
  * Server mutations for library state (Phase 5, pessimistic).

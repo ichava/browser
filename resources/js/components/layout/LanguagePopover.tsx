@@ -1,10 +1,10 @@
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { iconBtn } from '@js/components/ui/controls';
-import { useT } from '@js/hooks/useT';
-import { LOCALES, type Locale } from '@js/core/i18n';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { iconBtn } from '@/components/ui/controls';
+import { useT } from '@/hooks/useT';
+import { LOCALES, type Locale } from '@/core/i18n';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * LanguagePopover — a globe-triggered locale picker for the app navbar. Lists the

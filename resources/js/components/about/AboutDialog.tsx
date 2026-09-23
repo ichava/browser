@@ -1,11 +1,11 @@
 
-import { Modal } from '@js/components/ui/Modal';
-import { Marquee } from '@js/components/ui/Marquee';
-import { Glyph } from '@js/components/ui/Glyph';
-import { num } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Modal } from '@/components/ui/Modal';
+import { Marquee } from '@/components/ui/Marquee';
+import { Glyph } from '@/components/ui/Glyph';
+import { num } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 export function AboutDialog() {
   const t = useT();

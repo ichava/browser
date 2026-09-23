@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { translate } from '@js/core/i18n';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { translate } from '@/core/i18n';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /** Returns a `t(key, vars?)` translator bound to the current store locale. */
 export function useT(): (key: string, vars?: Record<string, string | number>) => string {

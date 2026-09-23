@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Bootsplash } from './Bootsplash';
 import { useBootsplash, type BootsplashHandle } from './useBootsplash';
-import { buildBootConfig } from '@js/core/boot';
-import type { AppConfig } from '@js/core/config';
-import { isBootDebug } from '@js/core/env';
-import { logger } from '@js/core/logger';
-import { devbus } from '@js/core/devbus';
-import { type BootPhase } from '@js/store';
-import { translate } from '@js/core/i18n';
-import { useStoreApi } from '@js/hooks/useStoreApi';
+import { buildBootConfig } from '@/core/boot';
+import type { AppConfig } from '@/core/config';
+import { isBootDebug } from '@/core/env';
+import { logger } from '@/core/logger';
+import { devbus } from '@/core/devbus';
+import { type BootPhase } from '@/store';
+import { translate } from '@/core/i18n';
+import { useStoreApi } from '@/hooks/useStoreApi';
 
 interface Loaded {
   catalog: unknown;

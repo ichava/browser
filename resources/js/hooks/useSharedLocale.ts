@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Locale } from '@js/core/i18n';
-import { SHARED_LOCALE_KEY, isLocale, loadSharedLocale, saveSharedLocale, subscribeSharedLocale } from '@js/core/localeShare';
+import type { Locale } from '@/core/i18n';
+import { SHARED_LOCALE_KEY, isLocale, loadSharedLocale, saveSharedLocale, subscribeSharedLocale } from '@/core/localeShare';
 
 /**
  * useSharedLocale — locale state backed by the shared `ichava.locale` key, kept

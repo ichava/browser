@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import { BootGate } from './BootGate';
-import { useStore } from '@js/store';
+import { useStore } from '@/store';
 
 /**
  * End-to-end proof that the R7 rebuild's wiring holds together, not just that

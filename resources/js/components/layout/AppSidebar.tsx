@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import type { SearchScope } from '@js/store';
-import { useRepo } from '@js/hooks/useRepo';
-import { useT } from '@js/hooks/useT';
+import type { SearchScope } from '@/store';
+import { useRepo } from '@/hooks/useRepo';
+import { useT } from '@/hooks/useT';
 import { SearchMd } from '@untitledui/icons';
-import { Glyph } from '@js/components/ui/Glyph';
-import { InputBase } from '@js/components/base/input/input';
-import { Select } from '@js/components/base/select/select';
+import { Glyph } from '@/components/ui/Glyph';
+import { InputBase } from '@/components/base/input/input';
+import { Select } from '@/components/base/select/select';
 import { CategoryTree } from './CategoryTree';
-import { num } from '@js/core/format';
-import { rem } from '@js/core/appScale';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { num } from '@/core/format';
+import { rem } from '@/core/appScale';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const SCOPES: { id: SearchScope; key: string }[] = [
   { id: 'icons', key: 'sidebar.scopeIcons' },

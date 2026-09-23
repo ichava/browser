@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { IconAsset } from '@js/components/ui/IconAsset';
-import { FlashBanner } from '@js/components/FlashBanner';
-import { normalizeRawIcon, type ServerIcon } from '@js/core/propsToCatalog';
-import { toIcon, type Icon } from '@js/core/model';
-import type { SharedProps } from '@js/types';
+import { IconAsset } from '@/components/ui/IconAsset';
+import { FlashBanner } from '@/components/FlashBanner';
+import { normalizeRawIcon, type ServerIcon } from '@/core/propsToCatalog';
+import { toIcon, type Icon } from '@/core/model';
+import type { SharedProps } from '@/types';
 
 interface HistoryRow {
   icon_id: number;

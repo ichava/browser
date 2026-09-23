@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { router } from '@inertiajs/react';
-import { useStore, type FilterState } from '@js/store';
-import type { SortKey, SortOrder } from '@js/core/types';
+import { useStore, type FilterState } from '@/store';
+import type { SortKey, SortOrder } from '@/core/types';
 
 /** Validated query echo the server sends back (`appliedFilters` prop). */
 export interface AppliedFilters {

@@ -5,7 +5,7 @@ import { sanitizeSvg } from './sanitizeSvg';
 import { ExportService } from './ExportService';
 import { sliderToSpeed, speedLabel } from './MotionEngine';
 import { fidelity } from './SvgFidelity';
-import { mkIcon } from '@js/test/fixtures';
+import { mkIcon } from '@/test/fixtures';
 
 describe('model', () => {
   it('maps a RawIcon (snake_case) to the app Icon', () => {

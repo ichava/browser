@@ -1,5 +1,5 @@
-import { toIcon, type IconPackage, type RawIcon } from '@js/core/model';
-import type { Catalog } from '@js/core/IconRepository';
+import { toIcon, type IconPackage, type RawIcon } from '@/core/model';
+import type { Catalog } from '@/core/IconRepository';
 
 /**
  * The props → catalog bridge (Phase 3).

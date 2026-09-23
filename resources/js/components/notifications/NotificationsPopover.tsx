@@ -1,10 +1,10 @@
 
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { iconBtn } from '@js/components/ui/controls';
-import { relativeTime } from '@js/core/format';
-import { useT } from '@js/hooks/useT';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { iconBtn } from '@/components/ui/controls';
+import { relativeTime } from '@/core/format';
+import { useT } from '@/hooks/useT';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 /**
  * NotificationsPopover — the header bell + unread badge + activity panel (plan

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { fidelity } from '@js/core/SvgFidelity';
-import { getSvgParts, type SvgParts } from '@js/core/svgCache';
-import { treatmentInlineStyle, treatmentMaskStyle } from '@js/core/TreatmentEngine';
-import type { Icon } from '@js/core/model';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { fidelity } from '@/core/SvgFidelity';
+import { getSvgParts, type SvgParts } from '@/core/svgCache';
+import { treatmentInlineStyle, treatmentMaskStyle } from '@/core/TreatmentEngine';
+import type { Icon } from '@/core/model';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const DEFAULT_STROKE = 1.5;
 

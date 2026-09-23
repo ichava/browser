@@ -19,7 +19,7 @@ async function loadStore(persisted: Record<string, unknown> | null) {
   vi.resetModules();
   localStorage.clear();
   if (persisted) localStorage.setItem(PERSIST_KEY, JSON.stringify({ state: persisted, version: 3 }));
-  const [{ useStore }, { resolveConfig }] = await Promise.all([import('@js/store'), import('@js/core/config')]);
+  const [{ useStore }, { resolveConfig }] = await Promise.all([import('@/store'), import('@/core/config')]);
   return { useStore, resolveConfig };
 }
 
@@ -80,7 +80,7 @@ describe('config precedence', () => {
 
   it('falls back to core defaults for keys the config omits', async () => {
     const { useStore, resolveConfig } = await loadStore(null);
-    const core = await import('@js/core/defaults');
+    const core = await import('@/core/defaults');
     const config = resolveConfig({ defaults: { perPage: 30 } });
 
     useStore.getState().setConfig(config);

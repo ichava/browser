@@ -1,8 +1,8 @@
 
-import { useT } from '@js/hooks/useT';
-import { Modal } from '@js/components/ui/Modal';
-import { Glyph } from '@js/components/ui/Glyph';
-import { useAppStore } from '@js/hooks/useStoreApi';
+import { useT } from '@/hooks/useT';
+import { Modal } from '@/components/ui/Modal';
+import { Glyph } from '@/components/ui/Glyph';
+import { useAppStore } from '@/hooks/useStoreApi';
 
 const sectionLabel: React.CSSProperties = { fontSize: 10.5, fontWeight: 600, color: 'var(--faint-fg)', textTransform: 'uppercase', letterSpacing: '.04em' };
 

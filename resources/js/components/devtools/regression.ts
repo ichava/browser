@@ -1,11 +1,11 @@
 // DevTools regression (plan Part E). REAL synchronous assertions over the live
 // engines + store — not mocks. Feeds the DevTools "Tests" tab a true pass/total.
 
-import { IconRepository, type Catalog } from '@js/core/IconRepository';
-import { snippets, iconRef } from '@js/core/SnippetFactory';
-import { treatmentMaskStyle } from '@js/core/TreatmentEngine';
-import type { AppConfig } from '@js/core/config';
-import type { BrowserStoreHook } from '@js/store';
+import { IconRepository, type Catalog } from '@/core/IconRepository';
+import { snippets, iconRef } from '@/core/SnippetFactory';
+import { treatmentMaskStyle } from '@/core/TreatmentEngine';
+import type { AppConfig } from '@/core/config';
+import type { BrowserStoreHook } from '@/store';
 
 export interface TestResult {
   name: string;

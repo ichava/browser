@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { IconGrid } from '@js/components/IconGrid';
-import { FlashBanner } from '@js/components/FlashBanner';
-import { normalizeRawIcon } from '@js/core/propsToCatalog';
-import { toIcon, type RawIcon } from '@js/core/model';
-import type { SharedProps } from '@js/types';
+import { IconGrid } from '@/components/IconGrid';
+import { FlashBanner } from '@/components/FlashBanner';
+import { normalizeRawIcon } from '@/core/propsToCatalog';
+import { toIcon, type RawIcon } from '@/core/model';
+import type { SharedProps } from '@/types';
 
 interface CollectionDetail {
   id: string;

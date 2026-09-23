@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-import { useT } from '@js/hooks/useT';
-import { Input } from '@js/components/base/input/input';
-import { Select } from '@js/components/base/select/select';
-import { Glyph } from '@js/components/ui/Glyph';
-import { Popover } from '@js/components/ui/Popover';
-import { iconBtn, segWrap } from '@js/components/ui/controls';
-import { isValidHex } from '@js/core/format';
-import { CONFIG_DEFAULTS } from '@js/core/config';
-import { LOCALES, type Locale } from '@js/core/i18n';
-import { useAppStore } from '@js/hooks/useStoreApi';
-import { Slider } from '@js/components/base/slider/slider';
+import { useT } from '@/hooks/useT';
+import { Input } from '@/components/base/input/input';
+import { Select } from '@/components/base/select/select';
+import { Glyph } from '@/components/ui/Glyph';
+import { Popover } from '@/components/ui/Popover';
+import { iconBtn, segWrap } from '@/components/ui/controls';
+import { isValidHex } from '@/core/format';
+import { CONFIG_DEFAULTS } from '@/core/config';
+import { LOCALES, type Locale } from '@/core/i18n';
+import { useAppStore } from '@/hooks/useStoreApi';
+import { Slider } from '@/components/base/slider/slider';
 
 const segChild = (active: boolean) => ({
   height: 22,

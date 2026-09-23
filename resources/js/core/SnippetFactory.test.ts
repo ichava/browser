@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { snippets, iconRef } from './SnippetFactory';
-import { mkIcon } from '@js/test/fixtures';
+import { mkIcon } from '@/test/fixtures';
 
 const icon = mkIcon({ id: 1, name: 'home' });
 const opts = { size: 24, unit: 'px', color: null };

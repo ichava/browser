@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
-import { propsToCatalog, type ServerIcon, type ServerPackage } from '@js/core/propsToCatalog';
-import type { Catalog, CategoryGroup } from '@js/core/IconRepository';
-import type { IconId } from '@js/core/model';
-import { useStore, type Collection, type HistoryEntry } from '@js/store';
+import { propsToCatalog, type ServerIcon, type ServerPackage } from '@/core/propsToCatalog';
+import type { Catalog, CategoryGroup } from '@/core/IconRepository';
+import type { IconId } from '@/core/model';
+import { useStore, type Collection, type HistoryEntry } from '@/store';
 
 /** Server collection rows (`icon_ids` plus resolved icons). */
 export interface ServerCollection {
