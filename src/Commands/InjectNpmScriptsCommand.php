@@ -6,6 +6,8 @@ namespace Simtabi\Laranail\Ichava\IconBrowser\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Simtabi\Laranail\Console\Tools\Widgets\StatusLine;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
@@ -50,7 +52,7 @@ class InjectNpmScriptsCommand extends Command
         $path = $this->option('path') ?: base_path('package.json');
 
         if (! File::exists($path)) {
-            $this->error("package.json not found at: {$path}");
+            $this->line(StatusLine::make()->error(__('ichava/icon-browser::commands.inject_scripts.not_found', ['path' => $path])));
 
             return self::FAILURE;
         }
@@ -59,7 +61,7 @@ class InjectNpmScriptsCommand extends Command
         $data = json_decode($contents, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('Could not parse package.json: ' . json_last_error_msg());
+            $this->line(StatusLine::make()->error(__('ichava/icon-browser::commands.inject_scripts.unparseable', ['error' => json_last_error_msg()])));
 
             return self::FAILURE;
         }
@@ -79,7 +81,7 @@ class InjectNpmScriptsCommand extends Command
         }
 
         if (empty($added)) {
-            $this->info('Ichava npm scripts already present, nothing to do. Use --force to overwrite.');
+            $this->line(StatusLine::make()->info(__('ichava/icon-browser::commands.inject_scripts.already_present')));
 
             return self::SUCCESS;
         }
@@ -89,9 +91,9 @@ class InjectNpmScriptsCommand extends Command
             json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
         );
 
-        $this->info('Ichava npm scripts injected into package.json:');
+        $this->line(StatusLine::make()->success(__('ichava/icon-browser::commands.inject_scripts.injected')));
         foreach ($added as $key) {
-            $this->line("  <fg=green>+</> {$key}");
+            $this->line('  <fg=green>+</> ' . OutputFormatter::escape($key));
         }
 
         return self::SUCCESS;

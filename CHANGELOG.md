@@ -6,6 +6,13 @@ All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://k
 
 ### Changed
 
+- **`inject-scripts` speaks through translations and the shared status vocabulary.** Its four
+  messages resolve from `resources/lang/en/commands.php` under `ichava/icon-browser::commands.*`,
+  and render through laranail/console's `StatusLine`, so the glyphs and colours match every other
+  ichava command. Injected script names are escaped before they are printed.
+- `InjectNpmScriptsCommandTest` covers injecting, the already-present re-run and the missing-file
+  failure. It also guards against English literals in the command and checks that every key it
+  references resolves.
 - **`composer.json` lists `laranail/db-tools` as a VCS repository.** `ichava/core` is about to
   require it, and Composer reads `repositories` from the root package only, so a
   consumer that does not declare it cannot resolve core at all. The entry is harmless
