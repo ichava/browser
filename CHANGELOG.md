@@ -2,6 +2,15 @@
 
 All notable changes to `ichava/icon-browser` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **`composer.json` lists `laranail/db-tools` as a VCS repository.** `ichava/core` is about to
+  require it, and Composer reads `repositories` from the root package only, so a
+  consumer that does not declare it cannot resolve core at all. The entry is harmless
+  until then. Nothing here is on Packagist.
+
 ## [0.4.1] - 2026-09-26
 
 ### Changed
